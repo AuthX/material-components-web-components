@@ -361,4 +361,9 @@ export class Chip extends BaseElement {
   public beginExit() {
     this.mdcFoundation.beginExit();
   }
+
+  remove() {
+    this.destroy();
+    super.remove();
+  }
 }

@@ -333,7 +333,7 @@ export class TextField extends FormElement {
         const activeElement = (this as any).getRootNode().activeElement;
         return activeElement === this.formElement;
       },
-      registerInputInteractionHandler: (evtType, handler) => this.formElement.addEventListener(evtType, handler),
+      registerInputInteractionHandler: (evtType, handler) => this.formElement.addEventListener(evtType, handler, { passive: true }),
       deregisterInputInteractionHandler: (evtType, handler) => this.formElement.removeEventListener(evtType, handler)
     };
   }

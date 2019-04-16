@@ -134,6 +134,10 @@ limitations under the License.
       if (chip) {
         chip.beginExit();
       }
+    });
+
+    chips.addEventListener('MDCChip:removal', evt => {
+      console.log(evt);
     })
   </script>
 </body>
