@@ -210,4 +210,11 @@ export class ChipSet extends BaseElement {
   protected _findChipIndex(chipId: string) {
     return this._chips.findIndex(chip => chip.id === chipId);
   }
+
+  /**
+   * Returns the chip with the given id
+   */
+  public getChipById(chipId: string) {
+    return this._chips[this._findChipIndex(chipId)];
+  }
 }
