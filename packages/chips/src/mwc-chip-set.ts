@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { BaseElement, customElement, html, property, classMap, query } from '@authentic/mwc-base/base-element';
+import { BaseElement, customElement, html, property, classMap, query, queryAll } from '@authentic/mwc-base/base-element';
 import { MDCChipSetFoundation } from '@material/chips/chip-set/foundation';
 import { MDCChipSetAdapter } from '@material/chips/chip-set/adapter';
 import { MDCChipFoundation } from '@material/chips/chip/foundation';
@@ -29,6 +29,9 @@ export class ChipSet extends BaseElement {
 
   @query(".mdc-chip-set")
   protected mdcRoot!: HTMLElement;
+
+  @queryAll(".mdc-chip")
+  protected chipEls!: MWCChip[];
 
   @query("slot")
   protected slotEl!: HTMLSlotElement;
@@ -132,11 +135,13 @@ export class ChipSet extends BaseElement {
    * Updates chips id and foundation selections
    */
   protected _updateChips() {
-    this._chips = this.slottedChips.map(el => {
+    const slottedChips = this.slottedChips.map(el => {
       el.id = el.id || "mdc-chip-" + ++this.idCounter;
       el.tabIndex = 0;
       return el;
     });
+
+    this._chips = [ ...slottedChips, ...this.chipEls ];
 
     this._chips.forEach(chip => {
       const { id, selected } = chip;
