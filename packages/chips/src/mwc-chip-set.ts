@@ -30,7 +30,7 @@ export class ChipSet extends BaseElement {
   @query(".mdc-chip-set")
   protected mdcRoot!: HTMLElement;
 
-  @queryAll(".mdc-chip")
+  @queryAll("mwc-chip")
   protected chipEls!: MWCChip[];
 
   @query("slot")
@@ -157,8 +157,6 @@ export class ChipSet extends BaseElement {
   public addChip(chipEl: MWCChip) {
     chipEl.id = chipEl.id || `mdc-chip-${++this.idCounter}`;
     chipEl.setParentType(this);
-
-    // this._addListeners(chipEl);
 
     this.mdcRoot.appendChild(chipEl);
     this._chips.push(chipEl);
