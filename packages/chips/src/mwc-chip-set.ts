@@ -159,7 +159,8 @@ export class ChipSet extends BaseElement {
     chipEl.setParentType(this);
 
     this.mdcRoot.appendChild(chipEl);
-    this._chips.push(chipEl);
+
+    this._updateChips();
   };
 
   /**
