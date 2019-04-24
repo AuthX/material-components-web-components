@@ -54,25 +54,25 @@ export class ListItem extends LitElement {
   protected mdcRoot!: HTMLElement;
 
   @property({ type: Boolean })
-  protected accordion = false;
+  public accordion = false;
 
   @property({ type: Boolean })
-  protected modal = false;
+  public modal = false;
 
   @property({ type: String })
-  protected value = "";
+  public value = "";
 
   @property({ type: String })
-  protected label = "";
+  public label = "";
 
   @property({ type: String })
-  protected icon = "";
+  public icon = "";
 
   @property({ type: Number })
-  protected tabindex = 0;
+  public tabindex = 0;
 
   @property({ type: Boolean })
-  protected leading = 0;
+  public leading = 0;
 
   @property({ type: Boolean })
   @observer(function(this: ListItem, value: Boolean) {
