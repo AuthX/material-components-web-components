@@ -316,20 +316,11 @@ export class Menu extends BaseElement {
     }
   }
 
-  protected _handleKeydown;
-  protected _handleClick;
+  protected _handleKeydown = this._onKeydown.bind(this) as EventListenerOrEventListenerObject;
+  protected _handleClick = this._onClick.bind(this) as EventListenerOrEventListenerObject;
 
   firstUpdated() {
     super.firstUpdated();
-
-    this._handleKeydown = evt => {
-      this.mdcFoundation.handleKeydown(evt);
-      this._list.handleKeydown_(evt);
-    }
-    this._handleClick = evt => {
-      this._preventClose = !this.autoclose;
-      this.mdcFoundation.handleClick(evt)
-    };
 
     this._menuSurface.listen('MDCMenuSurface:opened', () => this._afterOpenedCallback());
     this._menuSurface.listen('MDCMenuSurface:closed', () => this._afterClosedCallback());
@@ -344,6 +335,16 @@ export class Menu extends BaseElement {
           </div>
         </div>
       </div>`;
+  }
+
+  _onKeydown(evt) {
+    this.mdcFoundation.handleKeydown(evt);
+    this._list.handleKeydown_(evt);
+  }
+
+  _onClick(evt) {
+    this._preventClose = !this.autoclose;
+    this.mdcFoundation.handleClick(evt);
   }
 
   _notifySelected(data) {
