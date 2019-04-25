@@ -15,7 +15,7 @@
  */
 
 import {assert} from 'chai';
-import {IconButton} from '@material/mwc-icon-button';
+import {IconButton} from '@authentic/mwc-icon-button';
 
 const ICON_SELECTOR = '.mdc-icon-button__icon.mdc-icon-button__icon--on';
 const OFF_ICON_SELECTOR = '.mdc-icon-button__icon:not(.mdc-icon-button__icon--on)';
