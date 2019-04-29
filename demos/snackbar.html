@@ -58,18 +58,21 @@ limitations under the License.
     snack1.onclick = () => {
       snack.stacked = false;
       snack.leading = false;
+      snack.timeoutMs = 5000;
       snack.open();
     }
 
     snack2.onclick = () => {
       snack.stacked = false;
       snack.leading = true;
+      snack.timeoutMs = 8000;
       snack.open();
     }
 
     snack3.onclick = () => {
       snack.stacked = true;
       snack.leading = false;
+      snack.timeoutMs = 5000;
       snack.open();
     }
 

@@ -18,7 +18,6 @@ import {BaseElement, html, property, query, observer, customElement, classMap, a
 import {style} from './mwc-snackbar-css.js';
 import MDCSnackbarFoundation from '@material/snackbar/foundation.js';
 import {MDCSnackbarCloseEventDetail} from '@material/snackbar/types';
-import * as util from '@material/snackbar/util';
 import { MDCSnackbarAdapter } from '@material/snackbar/adapter.js';
 
 const {OPENING_EVENT, OPENED_EVENT, CLOSING_EVENT, CLOSED_EVENT} = MDCSnackbarFoundation.strings;
@@ -44,10 +43,11 @@ export class Snackbar extends BaseElement {
   @property({type: Boolean, reflect: true})
   isOpen = false;
 
+  @property({type: Number})
   @observer(function(this: Snackbar, value: number) {
+    console.log('timeoutMs', value);
     this.mdcFoundation.setTimeoutMs(value);
   })
-  @property({type: Number})
   timeoutMs = 5000;
 
   @observer(function(this: Snackbar, value: boolean) {
@@ -91,7 +91,7 @@ export class Snackbar extends BaseElement {
   protected createAdapter(): MDCSnackbarAdapter {
     return {
       ...addHasRemoveClass(this.mdcRoot),
-      announce: () => util.announce(this.labelElement),
+      announce: () => {},
       notifyClosed: (reason: String) => {
         this.isOpen = false;
         this.dispatchEvent(new CustomEvent(CLOSED_EVENT,

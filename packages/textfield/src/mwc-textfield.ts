@@ -134,9 +134,6 @@ export class TextField extends FormElement {
   public outlined = false;
 
   @property({ type: String })
-  @observer(function(this: TextField, value: string) {
-    this.mdcFoundation && this.mdcFoundation.setHelperTextContent(value);
-  })
   public helperTextContent = '';
 
   @property({ type: String })
@@ -161,15 +158,9 @@ export class TextField extends FormElement {
   public trailingIconAriaLabel = '';
 
   @property({ type: String })
-  @observer(function(this: TextField, value: string) {
-    this.mdcFoundation && this.mdcFoundation.setLeadingIconContent(value);
-  })
   public leadingIconContent = '';
 
   @property({ type: String })
-  @observer(function(this: TextField, value: string) {
-    this.mdcFoundation && this.mdcFoundation.setTrailingIconContent(value);
-  })
   public trailingIconContent = '';
 
   @property({ type: Boolean })
@@ -270,6 +261,8 @@ export class TextField extends FormElement {
   public set useNativeValidation(value: boolean) {
     this.mdcFoundation.setUseNativeValidation(value);
   }
+
+  protected _shouldValidate = false;
 
   protected _characterCounter!: MDCTextFieldCharacterCounter | null;
 
@@ -436,10 +429,14 @@ export class TextField extends FormElement {
   }
 
   _renderIcon(variant: string) {
-    const isTrailingIconInteraction = variant === 'trailing' && this.trailingIconInteraction;
+    const isTrailingIcon = variant === 'trailing';
+    const isTrailingIconInteraction = isTrailingIcon && this.trailingIconInteraction;
+    const iconContent = isTrailingIcon ? this.trailingIconContent : this.leadingIconContent;
 
     return html`
-      <i class="material-icons mdc-text-field__icon mdc-text-field__icon--${variant}" tabindex="${isTrailingIconInteraction ? 0 : -1}"></i>
+      <i class="material-icons mdc-text-field__icon mdc-text-field__icon--${variant}" tabindex="${isTrailingIconInteraction ? 0 : -1}">
+        ${iconContent}
+      </i>
     `;
   }
 
@@ -620,8 +617,10 @@ export class TextField extends FormElement {
 
   protected _setValidity(isValid: boolean) {
     if (this._helperText && this.validationMessage) {
-      this.mdcFoundation && this.mdcFoundation.setHelperTextContent(isValid ? this.helperTextContent : this.validationMessage);
+      // this.mdcFoundation && this.mdcFoundation.setHelperTextContent(isValid ? this.helperTextContent : this.validationMessage);
+      this._shouldValidate = true;
       this._helperText.foundation.setValidation(!isValid);
+      this.requestUpdate();
     }
   }
 
