@@ -45,7 +45,6 @@ export class Snackbar extends BaseElement {
 
   @property({type: Number})
   @observer(function(this: Snackbar, value: number) {
-    console.log('timeoutMs', value);
     this.mdcFoundation.setTimeoutMs(value);
   })
   timeoutMs = 5000;
