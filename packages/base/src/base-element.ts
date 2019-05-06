@@ -15,14 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import {LitElement} from 'lit-element';
-import {MDCFoundation} from '@material/base';
-import {Constructor} from './utils.js';
+import { LitElement } from 'lit-element';
+import { MDCFoundation } from '@material/base';
+import { Constructor } from './utils.js';
 
 export * from 'lit-element';
-export {classMap} from 'lit-html/directives/class-map.js';
-export {observer} from './observer.js';
-export {addHasRemoveClass} from './utils.js';
+export { classMap } from 'lit-html/directives/class-map.js';
+export { observer } from './observer.js';
+export { addHasRemoveClass, emit, findAssignedElement, findAssignedElements } from './utils.js';
 export * from '@material/base/types.js';
 
 export abstract class BaseElement extends LitElement {

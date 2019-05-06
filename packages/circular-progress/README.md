@@ -29,7 +29,7 @@ A [Material Components](https://material.io/components/) icon implementation usi
 
   1. Create an instance of mwc-circular-progress in your HTML page, or via any framework that [supports rendering Custom Elements](https://custom-elements-everywhere.com/):
 
-      ```<mwc-circular-progress-item></mwc-circular-progress-item>```
+      ```<mwc-circular-progress></mwc-circular-progress>```
 
   1. Install the Polymer CLI:
 

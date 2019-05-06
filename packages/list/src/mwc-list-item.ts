@@ -15,234 +15,224 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import {
-  customElement,
-  query,
+  LitElement,
   html,
   property,
-  observer
-} from "@authentic/mwc-base/base-element.js";
-import { LitElement } from "lit-element";
-import "@authentic/mwc-icon/mwc-icon-font";
-import "@authentic/mwc-ripple/mwc-ripple";
+  query,
+  customElement,
+  classMap,
+} from '@authentic/mwc-base/base-element.js';
+import { List as MWCList } from './mwc-list';
 
-import { style } from "./mwc-list-item-css.js";
-import { TemplateResult } from "lit-html";
+import { style } from './mwc-list-item-css';
 
 declare global {
   interface HTMLElementTagNameMap {
-    "mwc-list-item": ListItem;
+    'mwc-list-item': ListItem;
   }
 }
 
-@customElement("mwc-list-item" as any)
+@customElement('mwc-list-item' as any)
 export class ListItem extends LitElement {
-  protected mdcRootPosition: any;
 
-  @property({ type: Boolean })
-  protected accordionIsOpen = false;
-
-  @query(".mdc-list-item__modal-content")
-  protected modalContent!: HTMLElement;
-
-  @query(".mdc-list-item__modal-wrapper")
-  protected wrapper!: HTMLElement;
-
-  @query(".mdc-list-item__invisible-block")
-  protected invisibleBlock!: HTMLElement;
-
-  @query(".mdc-list-item")
+  @query('.mdc-list-item')
   protected mdcRoot!: HTMLElement;
 
-  @property({ type: Boolean })
-  public accordion = false;
+  @property({ type: String })
+  public variant = 'single-line';
 
   @property({ type: Boolean })
-  public modal = false;
+  public disabled = false;
 
   @property({ type: String })
   public value = "";
 
-  @property({ type: String })
-  public label = "";
+  @property({ type: Boolean })
+  public focused = false;
 
-  @property({ type: String })
-  public icon = "";
+  @property({ type: Boolean })
+  public selected = false;
+
+  @property({ type: Boolean })
+  public activated = false;
+
+  @property({ type: Boolean })
+  public checkbox = false;
+
+  @property({ type: Boolean })
+  public radio = false;
+
+  @property({ type: Boolean })
+  public trailingInput = false;
 
   @property({ type: Number })
-  public tabindex = 0;
+  public tabindex = -1;
 
   @property({ type: Boolean })
-  public leading = 0;
+  public expandable = false;
 
   @property({ type: Boolean })
-  @observer(function(this: ListItem, value: Boolean) {
-    this.setAttribute("aria-disabled", String(value));
-  })
-  disabled = false;
+  public expanded = false;
 
-  get classList() {
-    return this.mdcRoot.classList;
-  }
+  @property({ type: Boolean })
+  public indent = false;
 
-  get setAttribute() {
-    return this.mdcRoot ? this.mdcRoot.setAttribute : () => {};
-  }
+  protected _lines = 1;
+  protected _ripple = false;
+  protected _avatarList = false;
+  protected _nonInteractive = false;
+  protected _inputType = 'none';
+  protected _inputAction = '';
 
   static styles = style;
 
-  protected closeModal(e): void {
-    if (this.modal) {
-      this.wrapper.classList.remove("mdc-list-item__modal-wrapper--open");
-      this.modalContent.style.transform = "translateY(0)";
-
-      setTimeout(() => {
-        this.modalContent.style.top = "0";
-
-        this.mdcRoot.classList.remove("mdc-list-item--modal");
-        this.invisibleBlock.classList.remove(
-          "mdc-list-item__invisible-block--modal"
-        );
-        this.lockScrollFor("body", false);
-      }, 400);
-    }
-
-    e.stopPropagation();
-  }
-
-  firstUpdated() {
-    this.mdcRootPosition = this.mdcRoot.getBoundingClientRect();
-  }
-
-  focus() {
-    this.mdcRoot.focus();
-  }
-
-  protected lockScrollFor(element: string, status: boolean): void {
-    const el: HTMLElement | null = document.querySelector(element);
-
-    if (el) {
-      el.style.height = status ? "100%" : "auto";
-      el.style.overflow = status ? "hidden" : "auto";
-    }
-  }
-
-  protected openModal(): void {
-    if (this.modal) {
-      this.lockScrollFor("body", true);
-
-      setTimeout(() => {
-        this.mdcRoot.classList.add("mdc-list-item--modal");
-        this.wrapper.classList.add("mdc-list-item__modal-wrapper--open");
-        this.invisibleBlock.classList.add(
-          "mdc-list-item__invisible-block--modal"
-        );
-
-        this.modalContent.style.top = `${this.mdcRootPosition.top}px`;
-        this.modalContent.style.transform = `translateY(-${
-          this.mdcRootPosition.top
-        }px)`;
-      }, 170);
-    }
-  }
-
   render() {
-    const { disabled, tabindex } = this;
+    const classes = {
+      "mdc-list-item": true,
+      "mdc-list-item__avatar-list": this._avatarList,
+      "mdc-list-item--two-line": this._lines === 2,
+      "mdc-list-item--disabled": this.disabled,
+      "mdc-list-item--non-interactive": this._nonInteractive,
+      "mdc-list-item--selected": this.selected,
+      "mdc-list-item--activated": this.activated,
+      "mdc-list-item--expanded": this.expanded,
+      "mdc-list-item--expandable": this.expandable,
+      "mdc-list-item--indented": this.indent,
+      "mdc-ripple-upgraded": this._ripple,
+      "mdc-ripple-upgraded--background-focused": this._ripple && this.focused,
+      "mdc-list-item--background-focused": !this._ripple && this.focused,
+    };
 
     return html`
-      <span class="mdc-list-item__invisible-block"></span>
-      <div
-        class="mdc-list-item "
-        role="menuitem"
-        @click="${this.openModal}"
-        tabindex="${tabindex}"
-        aria-disabled="${this.modal ? true : disabled}"
-      >
-        ${this.accordion
-          ? html`
-              <span
-                class="material-icons mdc-chip__icon mdc-list-item__btn-expand"
-                @click="${this.toggleList}"
-              >
-                ${this.accordionIsOpen ? "expand_less" : "expand_more"}
-              </span>
-            `
-          : null}
-        ${this._renderLeading()} ${this.label || ""}
-        <slot name="text"></slot>
-        <span class="mdc-list-item__text" @click="${this.toggleList}">
-          <span class="mdc-list-item__primary-text">
-            <slot name="primary-text"></slot>
-          </span>
-          <span class="mdc-list-item__secondary-text">
-            <slot name="secondary-text"></slot>
-          </span>
+      <li class="${classMap(classes)}" tabindex="${this.tabindex}" aria-current="${this.focused}" aria-selected="${this.selected}">
+        ${this.renderGraphic()}
+        <span class="mdc-list-item__text">
+          ${this._lines === 1 ? this.renderSingleLine() : this.renderDoubleLine()}
         </span>
-        <span class="mdc-list-item__meta">
-          <slot name="meta"></slot>
-        </span>
+        ${this.renderMeta()}
+      </li>
+      ${this.renderContent()}
+    `;
+  }
 
-        ${this.modal
-          ? html`
-              <div class="mdc-list-item__modal-wrapper">
-                <div class="mdc-list-item__modal-content">
-                  <div>
-                    <span
-                      class="mdc-list-item__modal-close"
-                      @click="${this.closeModal}"
-                    ></span>
-                    <slot name="content"></slot>
-                  </div>
-                </div>
-              </div>
-            `
-          : null}
-        ${this.accordion
-          ? html`
-              <div class="mdc-list-item__accordion-content">
-                <div
-                  class="mdc-list-item__accordion-content-wrapper ${this.leading
-                    ? "mdc-list-item__accordion-content-wrapper--aligned"
-                    : ""}"
-                >
-                  <slot name="content"></slot>
-                </div>
-              </div>
-            `
-          : null}
+  public firstUpdated(changed) {
+    super.firstUpdated(changed);
 
+    this.updateComplete
+      .then(() => {
+        this.setParentType();
+      });
+  }
+
+  public toggle(): void {
+    this.expanded = this.expandable
+      ? !this.expanded
+      : false;
+    this.requestUpdate();
+  }
+
+  public updated() {
+    this.focused = this.tabindex >= 0;
+  }
+
+  public renderSingleLine() {
+    return html`
+      <slot></slot>
+    `;
+  }
+
+  public renderDoubleLine() {
+    return html`
+      <span class="mdc-list-item__primary-text">
         <slot></slot>
-        ${this.modal
-          ? null
-          : html`<mwc-ripple></mwc-ripple>`
-        }
+      </span>
+      <span class="mdc-list-item__secondary-text">
+        <slot name='secondary'></slot>
+      </span>
+    `;
+  }
+
+  public renderGraphic() {
+    return html`
+      <span class="mdc-list-item__graphic">
+        <slot name='graphic'></slot>
+      </span>
+    `;
+  }
+
+  public renderMeta() {
+    let moreorless = this.expanded ? "expand_less" : "expand_more";
+    return this.expandable
+      ? html`
+        <span class="mdc-list-item__meta">
+          <mwc-icon>${moreorless}</mwc-icon>
+        </span>
+      `: html`
+        <span class="mdc-list-item__meta">
+          <slot name='meta'></slot>
+        </span>
+      `;
+  }
+
+  public renderContent() {
+    const classes = {
+      "mdc-list-item__content": true,
+      "mdc-list-item__content--expanded": this.expanded,
+    }
+    return html`
+      <div class="${classMap(classes)}">
+        <slot name='content'></slot>
       </div>
     `;
   }
 
-  _renderLeading(): TemplateResult | string {
-    if (this.leading) {
-      return html`
-        <span class="mdc-list-item__graphic">
-          <slot name="graphic"></slot>
-        </span>
-      `;
-    }
 
-    if (this.icon) {
-      return html`
-        <span class="mdc-list-item__graphic material-icons">
-          ${this.icon}
-        </span>
-      `;
-    }
-
-    return "";
+  public addClass(className) {
+    this.mdcRoot.classList.add(className)
   }
 
-  protected toggleList() {
-    if (this.accordion) {
-      this.accordionIsOpen = !this.accordionIsOpen;
-      this.mdcRoot.classList.toggle("mdc-list-item--accordion");
+  public removeClass(className) {
+    this.mdcRoot.classList.remove(className)
+  }
+
+  public getAttribute(attr) {
+    return this[attr];
+  }
+
+  public setAttribute(attr, value) {
+    this[attr] = value;
+  }
+
+  public setFocused(focus: boolean) {
+    if (focus) {
+      this.focused = true;
+      this.tabindex = 0;
+    } else {
+      this.tabindex = -1;
+      this.focused = false;
     }
   }
+
+  public setParentType(parentElement = this.parentElement) {
+    if (parentElement instanceof MWCList) {
+      this._lines = parentElement.lines;
+      this._ripple = parentElement.ripple;
+      this._avatarList = parentElement.avatarList;
+      this._nonInteractive = parentElement.nonInteractive;
+      this._inputType = parentElement.inputType;
+      this._inputAction = parentElement.inputAction;
+      this.requestUpdate();
+    }
+  }
+
+  public focus() {
+    this.mdcRoot.focus();
+    this.setFocused(true);
+  }
+
+  public blur() {
+    this.mdcRoot.blur();
+    this.setFocused(false);
+  }
+
 }

@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {PropertyValues} from 'lit-element/lib/updating-element';
+import { PropertyValues } from 'lit-element/lib/updating-element';
 
 export interface Observer {
   (value: any, old: any): void;
@@ -25,7 +25,7 @@ export const observer = (observer: Observer) => (proto: any, propName: PropertyK
   if (!proto.constructor._observers) {
     proto.constructor._observers = new Map<PropertyKey, Observer>();
     const userUpdated = proto.updated;
-    proto.updated = function(changedProperties: PropertyValues) {
+    proto.updated = function (changedProperties: PropertyValues) {
       userUpdated.call(this, changedProperties);
       changedProperties.forEach((v, k) => {
         const observer = this.constructor._observers.get(k);
@@ -34,10 +34,10 @@ export const observer = (observer: Observer) => (proto: any, propName: PropertyK
         }
       });
     };
-  // clone any existing observers (superclasses)
+    // clone any existing observers (superclasses)
   } else if (!proto.constructor.hasOwnProperty('_observers')) {
     const observers = proto.constructor._observers;
-    proto.constructor._observers  = new Map();
+    proto.constructor._observers = new Map();
     observers.forEach((v: any, k: PropertyKey) => proto.constructor._observers.set(k, v));
   }
   // set this method

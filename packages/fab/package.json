@@ -13,10 +13,10 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@material/fab": "^2.0.0",
     "@authentic/mwc-base": "^0.5.0-rc.22",
     "@authentic/mwc-icon": "^0.5.0-rc.22",
-    "@authentic/mwc-ripple": "^0.5.0-rc.22",
-    "@material/fab": "^1.0.0"
+    "@authentic/mwc-ripple": "^0.5.0-rc.22"
   },
   "publishConfig": {
     "access": "public"

@@ -14,13 +14,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { BaseElement, customElement, html, property, classMap, query, queryAll } from '@authentic/mwc-base/base-element';
+import {
+  BaseElement,
+  customElement,
+  html,
+  property,
+  classMap,
+  query,
+  queryAll,
+  addHasRemoveClass
+} from '@authentic/mwc-base/base-element';
+import { findAssignedElements } from '@authentic/mwc-base/utils';
 import { MDCChipSetFoundation } from '@material/chips/chip-set/foundation';
 import { MDCChipSetAdapter } from '@material/chips/chip-set/adapter';
 import { MDCChipFoundation } from '@material/chips/chip/foundation';
 import { Chip as MWCChip } from './mwc-chip';
-import { findAssignedElements } from '@authentic/mwc-base/utils';
-import { addHasRemoveClass } from '@authentic/mwc-base/base-element.js';
 
 import { style } from './mwc-chip-set-css';
 
@@ -44,7 +52,7 @@ export class ChipSet extends BaseElement {
 
   @property({ type: Boolean })
   input = false;
-  
+
   protected _chips: MWCChip[] = [];
 
   public get chips() {
@@ -80,7 +88,7 @@ export class ChipSet extends BaseElement {
       ...addHasRemoveClass(this.mdcRoot),
       removeChip: (chipId) => {
         const index = this._findChipIndex(chipId);
-        
+
         if (index >= 0) {
           const chip = this._chips[index];
           this._chips.splice(index, 1);
@@ -98,7 +106,7 @@ export class ChipSet extends BaseElement {
   }
 
   static styles = style;
-  
+
   render() {
     const classes = {
       'mdc-chip-set': true,
@@ -141,7 +149,7 @@ export class ChipSet extends BaseElement {
       return el;
     });
 
-    this._chips = [ ...slottedChips, ...this.chipEls ];
+    this._chips = [...slottedChips, ...this.chipEls];
 
     this._chips.forEach(chip => {
       const { id, selected } = chip;

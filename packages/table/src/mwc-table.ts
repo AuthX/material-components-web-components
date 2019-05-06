@@ -14,7 +14,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { LitElement, customElement, query, property, html, TemplateResult } from 'lit-element';
+import {
+  LitElement,
+  customElement,
+  query,
+  property,
+  html,
+  TemplateResult
+} from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { findAssignedElement } from '@authentic/mwc-base/utils';

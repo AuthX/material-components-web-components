@@ -14,27 +14,39 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html, property, customElement, classMap} from '@authentic/mwc-base/base-element';
-import {style} from './mwc-fab-css.js';
-import {ripple} from '@authentic/mwc-ripple/ripple-directive.js';
+import {
+  LitElement,
+  html,
+  property,
+  customElement,
+  classMap
+} from '@authentic/mwc-base/base-element';
+import { style } from './mwc-fab-css.js';
+import { ripple } from '@authentic/mwc-ripple/ripple-directive.js';
 import '@authentic/mwc-icon/mwc-icon-font.js';
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'mwc-fab': Fab;
+  }
+}
 
 @customElement('mwc-fab' as any)
 export class Fab extends LitElement {
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   mini = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   exited = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   disabled = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   extended = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   showIconAtEnd = false;
 
   @property()
@@ -45,7 +57,7 @@ export class Fab extends LitElement {
 
 
   createRenderRoot() {
-    return this.attachShadow({mode: 'open', delegatesFocus: true});
+    return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
   static styles = style;
@@ -58,20 +70,10 @@ export class Fab extends LitElement {
     };
     const showLabel = this.label !== '' && this.extended;
     return html`
-      <button
-          .ripple="${ripple()}"
-          class="mdc-fab ${classMap(classes)}"
-          ?disabled="${this.disabled}"
-          aria-label="${this.label || this.icon}">
+      <button .ripple="${ripple()}" class="mdc-fab ${classMap(classes)}" ?disabled="${this.disabled}" aria-label="${this.label || this.icon}">
         ${showLabel && this.showIconAtEnd ? this.label : ''}
         ${this.icon ? html`<span class="material-icons mdc-fab__icon">${this.icon}</span>` : ''}
         ${showLabel && !this.showIconAtEnd ? this.label : ''}
       </button>`;
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'mwc-fab': Fab;
   }
 }

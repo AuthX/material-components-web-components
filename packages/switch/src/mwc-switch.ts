@@ -14,10 +14,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {FormElement, html, property, observer, query, customElement, HTMLElementWithRipple, addHasRemoveClass} from '@authentic/mwc-base/form-element.js';
-import {style} from './mwc-switch-css.js';
+import {
+  FormElement,
+  html,
+  property,
+  observer,
+  query,
+  customElement,
+  HTMLElementWithRipple,
+  addHasRemoveClass
+} from '@authentic/mwc-base/form-element.js';
+import { style } from './mwc-switch-css.js';
 import MDCSwitchFoundation from '@material/switch/foundation.js';
-import {ripple} from '@authentic/mwc-ripple/ripple-directive.js';
+import { ripple } from '@authentic/mwc-ripple/ripple-directive.js';
 import { MDCSwitchAdapter } from '@material/switch/adapter';
 
 declare global {
@@ -28,20 +37,20 @@ declare global {
 
 @customElement('mwc-switch' as any)
 export class Switch extends FormElement {
-  @property({type: Boolean})
-  @observer(function(this: Switch, value: boolean) {
+  @property({ type: Boolean })
+  @observer(function (this: Switch, value: boolean) {
     this.mdcFoundation.setChecked(value);
   })
   checked = false;
 
-  @property({type: String})
+  @property({ type: String })
   name = ''
 
-  @property({type: String})
+  @property({ type: String })
   value = ''
 
-  @property({type: Boolean})
-  @observer(function(this: Switch, value: boolean) {
+  @property({ type: Boolean })
+  @observer(function (this: Switch, value: boolean) {
     this.mdcFoundation.setDisabled(value);
   })
   disabled = false;
@@ -87,15 +96,10 @@ export class Switch extends FormElement {
     return html`
       <div class="mdc-switch">
         <div class="mdc-switch__track"></div>
-        <div class="mdc-switch__thumb-underlay" .ripple="${ripple({interactionNode: this})}">
+        <div class="mdc-switch__thumb-underlay" .ripple="${ripple({ interactionNode: this })}">
           <div class="mdc-switch__thumb">
-            <input type="checkbox"
-              id="basic-switch"
-              class="mdc-switch__native-control"
-              role="switch"
-              .checked="${this.checked}"
-              .value="${this.value}"
-              @change="${this._changeHandler}">
+            <input type="checkbox" id="basic-switch" class="mdc-switch__native-control" role="switch" .checked="${this.checked}"
+              .value="${this.value}" @change="${this._changeHandler}">
           </div>
         </div>
       </div>

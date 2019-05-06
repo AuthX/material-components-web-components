@@ -10,4 +10,6 @@ node_modules
 /packages/*/src/*-css.ts
 /packages/*/package-lock.json
 .tsbuildinfo
+*.tsbuildinfo
 !packages/*/custom_types/**
+.vscode

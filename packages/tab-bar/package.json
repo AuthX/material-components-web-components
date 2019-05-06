@@ -14,10 +14,10 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@material/tab-bar": "^2.0.0",
     "@authentic/mwc-base": "^0.5.0-rc.22",
     "@authentic/mwc-tab": "^0.5.0-rc.22",
-    "@authentic/mwc-tab-scroller": "^0.5.0-rc.22",
-    "@material/tab-bar": "^1.0.0"
+    "@authentic/mwc-tab-scroller": "^0.5.0-rc.22"
   },
   "publishConfig": {
     "access": "public"

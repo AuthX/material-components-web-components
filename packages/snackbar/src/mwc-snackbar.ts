@@ -14,13 +14,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {BaseElement, html, property, query, observer, customElement, classMap, addHasRemoveClass} from '@authentic/mwc-base/base-element.js';
-import {style} from './mwc-snackbar-css.js';
+import {
+  BaseElement,
+  html,
+  property,
+  query,
+  observer,
+  customElement,
+  classMap,
+  addHasRemoveClass
+} from '@authentic/mwc-base/base-element.js';
+import { style } from './mwc-snackbar-css.js';
 import MDCSnackbarFoundation from '@material/snackbar/foundation.js';
-import {MDCSnackbarCloseEventDetail} from '@material/snackbar/types';
+import { MDCSnackbarCloseEventDetail } from '@material/snackbar/types';
 import { MDCSnackbarAdapter } from '@material/snackbar/adapter.js';
 
-const {OPENING_EVENT, OPENED_EVENT, CLOSING_EVENT, CLOSED_EVENT} = MDCSnackbarFoundation.strings;
+const { OPENING_EVENT, OPENED_EVENT, CLOSING_EVENT, CLOSED_EVENT } = MDCSnackbarFoundation.strings;
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -40,28 +49,28 @@ export class Snackbar extends BaseElement {
   @query('.mdc-snackbar__label')
   protected labelElement!: HTMLElement
 
-  @property({type: Boolean, reflect: true})
+  @property({ type: Boolean, reflect: true })
   isOpen = false;
 
-  @property({type: Number})
-  @observer(function(this: Snackbar, value: number) {
+  @property({ type: Number })
+  @observer(function (this: Snackbar, value: number) {
     this.mdcFoundation.setTimeoutMs(value);
   })
   timeoutMs = 5000;
 
-  @observer(function(this: Snackbar, value: boolean) {
+  @observer(function (this: Snackbar, value: boolean) {
     this.mdcFoundation.setCloseOnEscape(value);
   })
-  @property({type: Boolean})
+  @property({ type: Boolean })
   closeOnEscape = false;
 
   @property()
   labelText = '';
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   stacked = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   leading = false;
 
   static styles = style;
@@ -74,9 +83,7 @@ export class Snackbar extends BaseElement {
     return html`
       <div class="mdc-snackbar ${classMap(classes)}" @keydown="${this._handleKeydown}">
         <div class="mdc-snackbar__surface">
-          <div class="mdc-snackbar__label"
-               role="status"
-               aria-live="polite">
+          <div class="mdc-snackbar__label" role="status" aria-live="polite">
             ${this.labelText}
           </div>
           <div class="mdc-snackbar__actions">
@@ -90,19 +97,19 @@ export class Snackbar extends BaseElement {
   protected createAdapter(): MDCSnackbarAdapter {
     return {
       ...addHasRemoveClass(this.mdcRoot),
-      announce: () => {},
+      announce: () => { },
       notifyClosed: (reason: String) => {
         this.isOpen = false;
         this.dispatchEvent(new CustomEvent(CLOSED_EVENT,
-          {bubbles: true, cancelable: true, detail: <MDCSnackbarCloseEventDetail>{reason: reason}}))
+          { bubbles: true, cancelable: true, detail: <MDCSnackbarCloseEventDetail>{ reason: reason } }))
       },
       notifyClosing: (reason: String) => this.dispatchEvent(new CustomEvent(CLOSING_EVENT,
-          {bubbles: true, cancelable: true, detail: <MDCSnackbarCloseEventDetail>{reason: reason}})),
+        { bubbles: true, cancelable: true, detail: <MDCSnackbarCloseEventDetail>{ reason: reason } })),
       notifyOpened: () => {
         this.isOpen = true;
-        this.dispatchEvent(new CustomEvent(OPENED_EVENT, {bubbles: true, cancelable: true}))
+        this.dispatchEvent(new CustomEvent(OPENED_EVENT, { bubbles: true, cancelable: true }))
       },
-      notifyOpening: () => this.dispatchEvent(new CustomEvent(OPENING_EVENT, {bubbles: true, cancelable: true})),
+      notifyOpening: () => this.dispatchEvent(new CustomEvent(OPENING_EVENT, { bubbles: true, cancelable: true })),
     };
   }
 
@@ -111,7 +118,7 @@ export class Snackbar extends BaseElement {
   }
 
   close(reason = '') {
-    this.mdcFoundation. close(reason);
+    this.mdcFoundation.close(reason);
   }
 
   _handleKeydown(e: KeyboardEvent) {

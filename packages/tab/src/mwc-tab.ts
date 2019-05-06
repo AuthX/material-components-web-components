@@ -14,16 +14,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {BaseElement, html, property, query, customElement, classMap, addHasRemoveClass} from '@authentic/mwc-base/base-element.js';
-import {TabIndicator} from '@authentic/mwc-tab-indicator';
+import {
+  BaseElement,
+  html,
+  property,
+  query,
+  customElement,
+  classMap,
+  addHasRemoveClass
+} from '@authentic/mwc-base/base-element.js';
+import { TabIndicator } from '@authentic/mwc-tab-indicator';
+import { ripple } from '@authentic/mwc-ripple/ripple-directive';
+import MDCTabFoundation from '@material/tab/foundation';
+import { MDCTabAdapter } from '@material/tab/adapter';
+
+import { style } from './mwc-tab-css';
 
 // Make TypeScript not remove the import.
 import '@authentic/mwc-tab-indicator';
-
-import {ripple} from '@authentic/mwc-ripple/ripple-directive';
-import MDCTabFoundation from '@material/tab/foundation';
-import {style} from './mwc-tab-css';
-import { MDCTabAdapter } from '@material/tab/adapter';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -53,19 +61,19 @@ export class Tab extends BaseElement {
   @property()
   icon = '';
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   isFadingIndicator = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   minWidth = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   isMinWidthIndicator = false;
 
   @property()
   indicatorIcon = '';
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   stacked = false;
 
   /**
@@ -86,7 +94,7 @@ export class Tab extends BaseElement {
   }
 
   createRenderRoot() {
-    return this.attachShadow({mode: 'open', delegatesFocus: true});
+    return this.attachShadow({ mode: 'open', delegatesFocus: true });
   }
 
   connectedCallback() {
@@ -116,14 +124,12 @@ export class Tab extends BaseElement {
           ${this.isMinWidthIndicator ? this.renderIndicator() : ''}
         </span>
         ${this.isMinWidthIndicator ? '' : this.renderIndicator()}
-        <span class="mdc-tab__ripple" .ripple="${ripple({interactionNode: this, unbounded: false})}"></span>
+        <span class="mdc-tab__ripple" .ripple="${ripple({ interactionNode: this, unbounded: false })}"></span>
       </button>`;
   }
 
   renderIndicator() {
-    return html`<mwc-tab-indicator
-        .icon="${this.indicatorIcon}"
-        .fade="${this.isFadingIndicator}"></mwc-tab-indicator>`;
+    return html`<mwc-tab-indicator .icon="${this.indicatorIcon}" .fade="${this.isFadingIndicator}"></mwc-tab-indicator>`;
   }
 
 
@@ -132,16 +138,16 @@ export class Tab extends BaseElement {
       ...addHasRemoveClass(this.mdcRoot),
       setAttr: (attr: string, value: string) => this.mdcRoot.setAttribute(attr, value),
       activateIndicator: (previousIndicatorClientRect: ClientRect) =>
-          (this._tabIndicator as TabIndicator).activate(previousIndicatorClientRect),
+        (this._tabIndicator as TabIndicator).activate(previousIndicatorClientRect),
       deactivateIndicator: () =>
-          (this._tabIndicator as TabIndicator).deactivate(),
+        (this._tabIndicator as TabIndicator).deactivate(),
       notifyInteracted: () => this.dispatchEvent(
-          new CustomEvent(MDCTabFoundation.strings.INTERACTED_EVENT, {
-            detail: {tabId: this.id},
-            bubbles: true,
-            composed: true,
-            cancelable: true
-          })),
+        new CustomEvent(MDCTabFoundation.strings.INTERACTED_EVENT, {
+          detail: { tabId: this.id },
+          bubbles: true,
+          composed: true,
+          cancelable: true
+        })),
       getOffsetLeft: () => this.offsetLeft,
       getOffsetWidth: () => this.mdcRoot.offsetWidth,
       getContentOffsetLeft: () => this._contentElement.offsetLeft,

@@ -12,8 +12,11 @@
     "@authentic/mwc-base": "^0.5.0-rc.22",
     "@material/floating-label": "^1.1.0",
     "@material/line-ripple": "^1.1.0",
-    "@material/notched-outline": "^1.1.0",
-    "@material/textfield": "^1.1.0",
+    "@authentic/mwc-base": "^0.5.0-rc.22",
+    "@authentic/mwc-icon": "^0.5.0-rc.22",
+    "@authentic/mwc-ripple": "^0.5.0-rc.22",
+    "@material/notched-outline": "^1.1.1",
+    "@material/textfield": "^2.0.0",
     "lit-element": "^2.0.1"
   },
   "publishConfig": {

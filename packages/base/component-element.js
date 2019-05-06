@@ -14,9 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {LitElement, html} from 'lit-element/lit-element.js';
-export {html} from 'lit-element/lit-element.js';
-export {MDCWebComponentMixin} from './mdc-web-component.js';
+import { LitElement } from 'lit-element/lit-element.js';
+export { MDCWebComponentMixin } from './mdc-web-component.js';
 
 export class ComponentElement extends LitElement {
   static get ComponentClass() {

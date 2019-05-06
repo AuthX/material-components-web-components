@@ -18,63 +18,11 @@ limitations under the License.
 @import '@material/menu/mdc-menu';
 @import '@material/menu-surface/mdc-menu-surface';
 @import '@material/list/mdc-list';
-@import '@material/typography/mixins';
-
-// TODO(sorvell) #css: NOTE, these selectors are intended to target elements inside
-// the shadowRoot of the `mdc-list-item` element which won't work. However,
-// practically, this isn't a problem here because the styling is inherited properties.
-// Note also, skeezed this for `disabled`.
-/*
-
-  old:
-  .mdc-menu
-    .mdc-menu__items
-      .mdc-list-item
-
-  new:
-  <mdc-menu>
-    #shadowRoot
-      .mdc-menu__items
-        slot
-    <mdc-list-item>
-      #shadowRoot
-        .mdc-list-item
-*/
 
 :host {
   display: block;
-  position: relative;
 }
 
 .mdc-menu {
   min-width: 100%;
-}
-
-// TODO(sorvell) #css: note, needs SASS changes in MDC
-.mdc-menu__items ::slotted(*) {
-  cursor: pointer;
-  // TODO(dfreedm): use `subtitle1` when MDC revs
-  @include mdc-typography(subtitle1);
-  // @include mdc-typography(subheading2);
-
-  position: relative;
-  outline: none;
-  color: inherit;
-  text-decoration: none;
-  user-select: none;
-}
-
-.mdc-menu ::slotted([aria-disabled="true"]) {
-  @include mdc-theme-prop(color, text-disabled-on-background);
-
-  cursor: default;
-  pointer-events: none;
-
-  &:focus::before {
-    opacity: 0;
-  }
-}
-
-.mdc-menu ::slotted([graphic]) {
-  @include mdc-theme-prop(color, text-secondary-on-background);
 }

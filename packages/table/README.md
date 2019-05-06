@@ -3,7 +3,7 @@ A [Material Components](https://material.io/components/) icon implementation usi
 
 ## Getting started
 
-* Install it via [npm](https://www.npmjs.com/). To run the project in the browser, a module-compatible toolctain is required. We recommend installing the [Polymer CLI](https://github.com/Polymer/polymer-cli) and using its development server as follows.
+* When you're ready to use mwc-tab-scroller in a project, install it via [npm](https://www.npmjs.com/). To run the project in the browser, a module-compatible toolctain is required. We recommend installing the [Polymer CLI](https://github.com/Polymer/polymer-cli) and using its development server as follows.
 
   1. Ensure the webcomponents polyfills are included in your HTML page
 

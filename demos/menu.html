@@ -53,14 +53,16 @@ limitations under the License.
 
     <div class="demo-mdc-menu-anchor">
       <mwc-button id="button" raised ripple label="Go"></mwc-button>
-      <mwc-menu autofocus autoclose id="menu">
-        <mwc-list-item label="one"></mwc-list-item>
-        <mwc-list-item label="two"></mwc-list-item>
-        <mwc-list-item label="three"></mwc-list-item>
-        <mwc-list-item disabled label="four"></mwc-list-item>
-        <mwc-list-item-separator></mwc-list-item-separator>
-        <mwc-list-item label="aaa"></mwc-list-item>
-        <mwc-list-item label="bbb"></mwc-list-item>
+      <mwc-menu id="menu">
+        <mwc-list>
+          <mwc-list-item>one</mwc-list-item>
+          <mwc-list-item>two</mwc-list-item>
+          <mwc-list-item>three</mwc-list-item>
+          <mwc-list-item disabled>four - disabled</mwc-list-item>
+          <mwc-list-item-separator></mwc-list-item-separator>
+          <mwc-list-item>aaa</mwc-list-item>
+          <mwc-list-item>bbb</mwc-list-item>
+        </mwc-list>
       </mwc-menu>
     </div>
     <div class="demo-log" id="log"></div>
@@ -68,12 +70,14 @@ limitations under the License.
   <script>
     button.addEventListener('click', (e) => {
       menu.setAnchorCorner(menu.Corner.BOTTOM_START);
+      menu.setAnchorElement(button);
+      menu.setDefaultFocusState(2);
       menu.open = !menu.open;
     })
 
     menu.addEventListener('MDCMenu:selected', function(evt) {
       var detail = evt.detail;
-      log.textContent = `selected: ${detail.index}, ${detail.item.label}`;
+      log.textContent = `selected: ${detail.index}, ${detail.item.innerHTML}`;
     });
 
     addEventListener('load', () => document.body.classList.remove('unresolved'));

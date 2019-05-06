@@ -18,7 +18,7 @@
     "@material/base": "^1.0.0",
     "@material/theme": "^1.1.0",
     "@material/typography": "^1.0.0",
-    "lit-element": "^2.0.1"
+    "lit-html": "^1.0.0"
   },
   "publishConfig": {
     "access": "public"

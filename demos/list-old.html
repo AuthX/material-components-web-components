@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!--
+@license
+Copyright 2018 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+  <head>
+    <title>list demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script type="module" src="../node_modules/@authentic/mwc-list/mwc-list-item.js"
+    ></script>
+    <script type="module" src="../node_modules/@authentic/mwc-icon/mwc-icon.js"></script>
+    <script type="module" src="../node_modules/@authentic/mwc-radio/mwc-radio.js"></script>
+    <script type="module" src="../node_modules/@authentic/mwc-checkbox/mwc-checkbox.js"></script>
+    <script type="module" src="../node_modules/@authentic/mwc-card/mwc-card.js"></script>
+    <script type="module" src="../node_modules/@authentic/mwc-icon-button/mwc-icon-button.js"></script>
+    <script type="module" src="../node_modules/@authentic/mwc-button/mwc-button.js"></script>
+    <link rel="stylesheet" href="demo-component.css" />
+  </head>
+  <body class="unresolved">
+    <header>
+      <a href="index.html"
+        ><mwc-icon>arrow_back</mwc-icon> <span>List item</span></a
+      >
+    </header>
+
+    <main>
+      <div>
+        <section>
+          <h4>Accordion - Open on modal</h4>
+          <mwc-list-item modal>
+            <span slot="primary-text" class="primaryText">Texto 1</span>
+            <span slot="secondary-text" class="secondary-Text">Texto 2</span>
+
+            <div slot="content">
+              <mwc-card outlined aspectRatio="square">
+                <div slot="media" class="my-media"></div>
+
+                <div slot="content" class="mwc-card__content">
+                  This is where any card content you want goes.
+                </div>
+                <div slot="action-buttons">
+                    <mwc-button dense class="mdc-card__action--button">Read</mwc-button>
+                    <mwc-button dense class="mdc-card__action--button">Save</mwc-button>
+                  </div>
+                <div slot="action-icons">
+                    <mwc-icon-button title="Favorite" icon="favorite"></mwc-icon-button>
+                    <mwc-icon-button title="Share" icon="share"></mwc-icon-button>
+                    <mwc-icon-button
+                      title="More options"
+                      icon="more_vert"
+                    ></mwc-icon-button>
+                  </div>
+              </mwc-card>
+            </div>
+          </mwc-list-item>
+
+          <mwc-list-item modal>
+            <span slot="primary-text" class="primaryText">Texto 1</span>
+            <span slot="secondary-text" class="secondary-Text">Texto 2</span>
+
+            <div slot="content">
+                <mwc-button label="Normal" icon="explore"></mwc-button>
+                <mwc-button class="light" raised label="raised" icon="code"></mwc-button>
+                <mwc-button unelevated label="unelevated" icon="check"></mwc-button>
+                <mwc-button outlined label="outlined" icon="alarm"></mwc-button>
+                <mwc-button class="pink" dense label="dense" icon="feedback"></mwc-button>
+                <mwc-button class="pink wide" raised label="wide" icon="code"></mwc-button>
+                <mwc-button disabled label="disabled" icon="fingerprint"></mwc-button>
+            </div>
+          </mwc-list-item>
+        </section>
+          <hr>
+
+        <section>
+          <h4>Accordion - Expand and collapse</h4>
+
+          <mwc-list-item accordion>
+              <span slot="primary-text" class="primaryText">Texto 1</span>
+              <span slot="secondary-text" class="secondary-Text">Texto 2</span>
+
+              <div slot="content">
+                <mwc-list-item>
+                  <span slot="primary-text" class="primaryText">List Item</span>
+                </mwc-list-item>
+    
+                <mwc-list-item>
+                  <span slot="primary-text" class="primaryText">List Item</span>
+                </mwc-list-item>
+    
+                <mwc-list-item>
+                  <span slot="primary-text" class="primaryText">List Item</span>
+                </mwc-list-item>
+              </div>
+            </mwc-list-item>
+
+          <mwc-list-item accordion leading>
+              <mwc-icon slot="graphic">alarm_on</mwc-icon>
+              <span slot="primary-text" class="primaryText">Texto 1</span>
+
+              <div slot="content">
+                <mwc-list-item>
+                  <span slot="primary-text" class="primaryText">List Item</span>
+                </mwc-list-item>
+    
+                <mwc-list-item>
+                  <span slot="primary-text" class="primaryText">List Item</span>
+                </mwc-list-item>
+    
+                <mwc-list-item>
+                  <span slot="primary-text" class="primaryText">List Item</span>
+                </mwc-list-item>
+              </div>
+            </mwc-list-item>
+
+        </section>
+        <hr>
+
+        <section>
+          <h4>Single-Line</h4>
+            
+              <mwc-list-item>
+                <span slot="primary-text" class="primaryText">List Item</span>
+              </mwc-list-item>
+  
+              <mwc-list-item>
+                <span slot="primary-text" class="primaryText">List Item</span>
+              </mwc-list-item>
+  
+              <mwc-list-item>
+                <span slot="primary-text" class="primaryText">List Item</span>
+              </mwc-list-item>
+            </section>
+            <hr>
+
+            <section>
+              <h4>Two-Line</h4>
+              <mwc-list-item>
+                <span slot="primary-text" class="primaryText">primary text</span>
+                <span slot="secondary-text" class="secondary-Text">secondary text</span>
+              </mwc-list-item>
+              <mwc-list-item>
+                <span slot="primary-text" class="primaryText">primary text</span>
+                <span slot="secondary-text" class="secondary-Text">secondary text</span>
+              </mwc-list-item>
+              <mwc-list-item>
+                <span slot="primary-text" class="primaryText">primary text</span>
+                <span slot="secondary-text" class="secondary-Text">secondary text</span>
+                </mwc-list-item>              
+            </section>
+            <hr>
+
+            <section>
+            <h4>Leading Icon</h4>
+              <mwc-list-item leading>
+              <mwc-icon slot="graphic">alarm_on</mwc-icon>
+                <span slot="primary-text" class="primaryText">List Item</span>
+              </mwc-list-item>
+  
+              <mwc-list-item leading>
+              <mwc-icon slot="graphic">alarm_on</mwc-icon>
+                <span slot="primary-text" class="primaryText">List Item</span>
+              </mwc-list-item>
+  
+              <mwc-list-item leading> 
+                <mwc-icon slot="graphic">alarm_on</mwc-icon>
+                <span slot="primary-text" class="primaryText">List Item</span>
+              </mwc-list-item>
+              
+            </section>
+            <hr>
+
+            <section>
+            <h4>Trailing Icon</h4>
+              <mwc-list-item>
+              <mwc-icon>alarm_on</mwc-icon>
+                <span slot="primary-text" class="primaryText">List Item</span>
+              </mwc-list-item>
+  
+              <mwc-list-item>
+              <mwc-icon>alarm_on</mwc-icon>
+                <span slot="primary-text" class="primaryText">List Item</span>
+              </mwc-list-item>
+  
+              <mwc-list-item>
+              <mwc-icon>alarm_on</mwc-icon>
+                <span slot="primary-text" class="primaryText">List Item</span>
+              </mwc-list-item>
+            </section>
+            <hr>
+            
+            <section>
+            <h4>Two-Line with Leading and Trailing Icon and Divider</h4>
+              <mwc-list-item leading>
+              <mwc-icon slot="graphic">alarm_on</mwc-icon>
+                <mwc-icon>alarm_on</mwc-icon>
+                <span slot="primary-text" class="primaryText">primary text</span>
+                <span slot="secondary-text" class="secondary-Text">secondary text</span>
+              </mwc-list-item> 
+             <mwc-list-item leading>
+              <mwc-icon slot="graphic">alarm_on</mwc-icon>
+                <mwc-icon>alarm_on</mwc-icon>
+                <span slot="primary-text" class="primaryText">primary text</span>
+                <span slot="secondary-text" class="secondary-Text">secondary text</span>
+              </mwc-list-item>
+              
+              <mwc-list-item leading>
+              <mwc-icon slot="graphic">alarm_on</mwc-icon>
+                <mwc-icon>alarm_on</mwc-icon>
+                <span slot="primary-text" class="primaryText">primary text</span>
+                <span slot="secondary-text" class="secondary-Text">secondary text</span>
+              </mwc-list-item>
+              <mwc-list-item leading>
+              <mwc-icon slot="graphic">alarm_on</mwc-icon>
+                <mwc-icon>alarm_on</mwc-icon>
+                <span slot="primary-text" class="primaryText">primary text</span>
+                <span slot="secondary-text" class="secondary-Text">secondary text</span>
+              </mwc-list-item>              
+            </section>
+            <hr>
+
+            <section>
+            <h4>List with Trailing Checkbox</h4>
+              <mwc-list-item disabled label="Line item" class="primaryText"><mwc-checkbox></mwc-list-item>
+              <mwc-list-item disabled label="Line item" class="primaryText"><mwc-checkbox></mwc-list-item>
+              
+              <mwc-list-item disabled label="Line item" class="primaryText"><mwc-checkbox></mwc-list-item>
+              <mwc-list-item disabled label="Line item" class="primaryText"><mwc-checkbox></mwc-list-item>
+              
+            </section>
+            <hr>
+
+            <section>
+            <h4>List with Trailing Radio Buttons</h4>
+              <mwc-list-item label="Line item" class="primaryText"><mwc-radio></mwc-list-item>
+              <mwc-list-item label="Line item" class="primaryText"><mwc-radio></mwc-list-item>
+              
+              <mwc-list-item label="Line item" class="primaryText"><mwc-radio></mwc-list-item>
+              <mwc-list-item label="Line item" class="primaryText"><mwc-radio></mwc-list-item>
+              
+            </section>
+             
+          </div>
+      
+    </main>
+    <script>
+      addEventListener("load", () =>
+        document.body.classList.remove("unresolved")
+      );
+    </script>
+  </body>
+</html>

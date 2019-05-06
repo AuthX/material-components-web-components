@@ -35,12 +35,15 @@ import { MDCSelectHelperText, MDCSelectHelperTextFactory } from '@material/selec
 import { MDCNotchedOutline, MDCNotchedOutlineFactory } from '@material/notched-outline';
 import { MDCFloatingLabel, MDCFloatingLabelFactory } from '@material/floating-label';
 import { MDCLineRipple, MDCLineRippleFactory } from '@material/line-ripple';
+import { findAssignedElement } from '@authentic/mwc-base/utils';
 import * as menuSurfaceConstants from '@material/menu-surface/constants';
 import * as menuConstants from '@material/menu/constants';
+import { ripple } from '@authentic/mwc-ripple/ripple-directive';
 import { emit } from '@authentic/mwc-base/utils';
+import { Menu as MWCMenu } from '@authentic/mwc-menu/mwc-menu';
+import { ListItem as MWCListItem } from '@authentic/mwc-list/mwc-list-item';
 
 import { style } from './mwc-select-css.js';
-import { findAssignedElement } from '@authentic/mwc-base/utils';
 
 const lineRippleFactory: MDCLineRippleFactory = el => new MDCLineRipple(el);
 const helperTextFactory: MDCSelectHelperTextFactory = el => new MDCSelectHelperText(el);
@@ -64,8 +67,20 @@ export class Select extends FormElement {
   @query('.mdc-select')
   protected mdcRoot!: HTMLElementWithRipple;
 
-  @query('slot')
-  protected slotEl!: HTMLSlotElement;
+  @query(strings.HIDDEN_INPUT_SELECTOR)
+  protected _hiddenInput!: HTMLInputElement;
+
+  @query('.mdc-select__selected-text')
+  protected _selectedText!: HTMLElement;
+
+  @query('.mdc-select__menu-anchor')
+  protected _menuAnchor!: HTMLElement;
+
+  @query('slot[name="select"]')
+  protected slotSelect!: HTMLSlotElement;
+
+  @query('slot[name="menu"]')
+  protected slotMenu!: HTMLSlotElement;
 
   @query(strings.LABEL_SELECTOR)
   protected labelElement!: HTMLLabelElement;
@@ -163,16 +178,19 @@ export class Select extends FormElement {
     this._useNativeValidation = value;
   }
 
-  public get slottedElement(): HTMLElement | null {
-    return this.slotEl && findAssignedElement(this.slotEl, '*');
+  public get slottedSelect(): HTMLSelectElement | null {
+    return this.slotSelect && findAssignedElement(this.slotSelect, 'select') as HTMLSelectElement;
+  }
+
+  public get slottedMenu(): MWCMenu | null {
+    return this.slotMenu && findAssignedElement(this.slotMenu, 'mwc-menu') as MWCMenu;
   }
 
   public get selectedIndex(): number {
     let selectedIndex = -1;
 
-    if (this._menuElement && this._menu) {
-      const selectedEl = this._menuElement.querySelector(strings.SELECTED_ITEM_SELECTOR)!;
-      selectedIndex = this._menu.items.indexOf(selectedEl);
+    if (this.slottedMenu) {
+      selectedIndex = this.slottedMenu.items.indexOf(this._selectedItem);
     } else if (this._nativeControl) {
       selectedIndex = this._nativeControl.selectedIndex;
     }
@@ -192,18 +210,16 @@ export class Select extends FormElement {
   protected get formElement(): HTMLElement {
     return (this._nativeControl || this._selectedText) as HTMLElement;
   }
+
+  protected get selectEl() {
+    return this.slottedSelect;
+  }
+
+  protected _selectedItem!: MWCListItem;
   
   protected _isMenuOpen: boolean = false;
 
   protected _nativeControl!: HTMLSelectElement | null;
-
-  protected _selectedText!: HTMLElement | null;
-
-  protected _hiddenInput!: HTMLInputElement | null;
-
-  protected _menu!: { open, items, hoistMenuToBody, setAnchorElement, setAnchorCorner, wrapFocus, addEventListener } | null;
-
-  protected _menuElement!: Element | null;
 
   protected _leadingIcon!: MDCSelectIcon;
 
@@ -280,29 +296,27 @@ export class Select extends FormElement {
   protected _getEnhancedSelectAdapterMethods() {
     return {
       getValue: () => {
-        const listItem = this._menuElement!.querySelector(strings.SELECTED_ITEM_SELECTOR);
-        if (listItem && listItem.hasAttribute(strings.ENHANCED_VALUE_ATTR)) {
-          return listItem.getAttribute(strings.ENHANCED_VALUE_ATTR) || '';
-        }
-        return '';
+        return this.value;
       },
       setValue: (value: string) => {
-        const element = this._menuElement!.querySelector(`[${strings.ENHANCED_VALUE_ATTR}="${value}"]`);
-        this._setEnhancedSelectedIndex(element ? this._menu!.items.indexOf(element) : -1);
+        const element = this.slottedMenu!.items.find(item => item['value'] === value);
+        // const element = this.slottedMenu!.querySelector(`[${strings.ENHANCED_VALUE_ATTR}="${value}"]`);
+        this._setEnhancedSelectedIndex(element ? this.slottedMenu!.items.indexOf(element) : -1);
       },
       openMenu: () => {
-        if (this._menu && !this._menu.open) {
-          this._menu.open = true;
+        if (this.slottedMenu && !this.slottedMenu.open) {
+          this.slottedMenu.setDefaultFocusState(2);
+          this.slottedMenu.open = true;
           this._isMenuOpen = true;
           this._selectedText!.setAttribute('aria-expanded', 'true');
         }
       },
       closeMenu: () => {
-        if (this._menu && this._menu.open) {
-          this._menu.open = false;
+        if (this.slottedMenu && this.slottedMenu.open) {
+          this.slottedMenu.open = false;
         }
       },
-      isMenuOpen: () => Boolean(this._menu) && this._isMenuOpen,
+      isMenuOpen: () => Boolean(this.slottedMenu) && this._isMenuOpen,
       setSelectedIndex: (index: number) => this._setEnhancedSelectedIndex(index),
       setDisabled: (isDisabled: boolean) => {
         this._selectedText!.setAttribute('tabindex', isDisabled ? '-1' : '0');
@@ -411,25 +425,23 @@ export class Select extends FormElement {
     }
 
     return html`
-      <div class="${classMap(classes)}">
+      <div class="${classMap(classes)}" .ripple="${!hasOutline && ripple({ unbounded: false })}">
+        <input type="hidden" name="enhanced-select">
         <i class="mdc-select__dropdown-icon"></i>
-        <slot></slot>
+        <div class="mdc-select__selected-text"></div>
+        <slot name="select"></slot>
         ${hasLabel && !hasOutline ? this._renderFloatingLabel() : ''}
         ${hasOutline ? this._renderNotchedOutline() : this._renderLineRipple()}
       </div>
       ${hasHelperText ? this._renderHelperText() : ''}
+      <slot name="menu"></slot>
     `;
   }
 
   firstUpdated() {
-    if (this._selectedText) {
-      this._enhancedSelectSetup();
-    }
-
-    if (this.slottedElement instanceof HTMLSelectElement) {
-      this._nativeControl = this.slottedElement;
-    } else {
-      this._selectedText = this.mdcRoot;
+    if (this.slottedSelect) {
+      this._nativeControl = this.slottedSelect;
+      this._selectedText.remove();
     }
 
     this.formElement.id = 'form-element';
@@ -442,10 +454,6 @@ export class Select extends FormElement {
     if (this.leadingIconElement) {
       this.mdcRoot.classList.add(cssClasses.WITH_LEADING_ICON);
       this._leadingIcon = iconFactory(this.leadingIconElement);
-
-      if (this._menuElement) {
-        this._menuElement.classList.add(cssClasses.WITH_LEADING_ICON);
-      }
     }
 
     // The required state needs to be sync'd before the mutation observer is added.
@@ -462,22 +470,30 @@ export class Select extends FormElement {
       this.formElement.addEventListener(evtType, this._handleClick);
     });
 
-    if (this._menuElement) {
+    if (this.slottedMenu) {
       this._selectedText!.addEventListener('keydown', this._handleKeydown);
-      this._menu!.addEventListener(menuSurfaceConstants.strings.CLOSED_EVENT, this._handleMenuClosed);
-      this._menu!.addEventListener(menuSurfaceConstants.strings.OPENED_EVENT, this._handleMenuOpened);
-      this._menu!.addEventListener(menuConstants.strings.SELECTED_EVENT, this._handleMenuSelected);
+      this.slottedMenu!.addEventListener(menuSurfaceConstants.strings.CLOSED_EVENT, this._handleMenuClosed);
+      this.slottedMenu!.addEventListener(menuSurfaceConstants.strings.OPENED_EVENT, this._handleMenuOpened);
+      this.slottedMenu!.addEventListener(menuConstants.strings.SELECTED_EVENT, this._handleMenuSelected);
+
+      if (this.leadingIconElement) {
+        this.slottedMenu.classList.add(cssClasses.WITH_LEADING_ICON);
+      }
 
       if (this._hiddenInput && this._hiddenInput.value) {
         // If the hidden input already has a value, use it to restore the select's value.
         // This can happen e.g. if the user goes back or (in some browsers) refreshes the page.
         const enhancedAdapterMethods = this._getEnhancedSelectAdapterMethods();
         enhancedAdapterMethods.setValue(this._hiddenInput.value);
-      } else if (this._menuElement.querySelector(strings.SELECTED_ITEM_SELECTOR)) {
+      } else if (this.slottedMenu.querySelector(strings.SELECTED_ITEM_SELECTOR)) {
         // If an element is selected, the select should set the initial selected text.
         const enhancedAdapterMethods = this._getEnhancedSelectAdapterMethods();
         enhancedAdapterMethods.setValue(enhancedAdapterMethods.getValue());
       }
+
+      setTimeout(() => {
+        this._enhancedSelectSetup();
+      }, 0);
     }
 
     // Initially sync floating label
@@ -511,16 +527,17 @@ export class Select extends FormElement {
   /**
    * Handle focus event
    */
-  protected _onFocus() {
+  protected _onFocus(evt) {
     this.mdcFoundation.handleFocus();
+    emit(this.mdcRoot, evt.type, {}, false);
   }
 
   /**
    * Handle blur event
    */
-  protected _onBlur() {
-
+  protected _onBlur(evt) {
     this.mdcFoundation.handleBlur();
+    emit(this.mdcRoot, evt.type, {}, false);
   }
 
   /**
@@ -545,13 +562,13 @@ export class Select extends FormElement {
    * Handle menu opened event
    */
   protected _onMenuOpened() {
-    if (this._menu!.items.length === 0) {
+    if (this.slottedMenu!.items.length === 0) {
       return;
     }
 
     // Menu should open to the last selected element, should open to first menu item otherwise.
     const focusItemIndex = this.selectedIndex >= 0 ? this.selectedIndex : 0;
-    const focusItemEl = this._menu!.items[focusItemIndex] as HTMLElement;
+    const focusItemEl = this.slottedMenu!.items[focusItemIndex] as HTMLElement;
     focusItemEl.focus();
   }
 
@@ -567,7 +584,7 @@ export class Select extends FormElement {
     this._isMenuOpen = false;
     this._selectedText!.removeAttribute('aria-expanded');
 
-    if (activeElement !== this._selectedText) {
+    if (activeElement !== this) {
       this.mdcFoundation.handleBlur();
     }
   }
@@ -577,6 +594,8 @@ export class Select extends FormElement {
    */
   protected _onMenuSelected(evt) {
     this.selectedIndex = evt.detail.index;
+    this._selectedItem = evt.detail.item;
+    this.value = evt.detail.item['value'];
   }
 
   /**
@@ -585,12 +604,9 @@ export class Select extends FormElement {
   private _enhancedSelectSetup() {
     const isDisabled = this.mdcRoot.classList.contains(cssClasses.DISABLED);
     this._selectedText!.setAttribute('tabindex', isDisabled ? '-1' : '0');
-    this._hiddenInput = this.mdcRoot.querySelector(strings.HIDDEN_INPUT_SELECTOR);
-    this._menuElement = this.mdcRoot.querySelector(strings.MENU_SELECTOR)!;
-    this._menu!.hoistMenuToBody();
-    this._menu!.setAnchorElement(this.mdcRoot);
-    this._menu!.setAnchorCorner(menuSurfaceConstants.Corner.BOTTOM_START);
-    this._menu!.wrapFocus = false;
+    this.slottedMenu!.setAnchorElement(this.mdcRoot);
+    this.slottedMenu!.setAnchorCorner(menuSurfaceConstants.Corner.BOTTOM_START);
+    this.slottedMenu!.wrapFocus = false;
   }
 
   /**
@@ -624,24 +640,22 @@ export class Select extends FormElement {
   }
 
   private _setEnhancedSelectedIndex(index: number) {
-    const selectedItem = this._menu!.items[index];
+    const selectedItem = this.slottedMenu!.items[index];
     this._selectedText!.textContent = selectedItem ? selectedItem.textContent!.trim() : '';
-    const previouslySelected = this._menuElement!.querySelector(strings.SELECTED_ITEM_SELECTOR);
+    const previouslySelected = this._selectedItem;
 
     if (previouslySelected) {
-      previouslySelected.classList.remove(cssClasses.SELECTED_ITEM_CLASS);
-      previouslySelected.removeAttribute(strings.ARIA_SELECTED_ATTR);
+      previouslySelected.selected = false;
     }
 
     if (selectedItem) {
-      selectedItem.classList.add(cssClasses.SELECTED_ITEM_CLASS);
-      selectedItem.setAttribute(strings.ARIA_SELECTED_ATTR, 'true');
+      selectedItem['selected'] = true;
     }
 
     // Synchronize hidden input's value with data-value attribute of selected item.
     // This code path is also followed when setting value directly, so this covers all cases.
     if (this._hiddenInput) {
-      this._hiddenInput.value = selectedItem ? selectedItem.getAttribute(strings.ENHANCED_VALUE_ATTR) || '' : '';
+      this._hiddenInput.value = selectedItem ? selectedItem['value'] || '' : '';
     }
 
     this.layout();

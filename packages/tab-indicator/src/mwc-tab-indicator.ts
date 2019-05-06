@@ -14,12 +14,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {BaseElement, html, property, query, customElement, PropertyValues, classMap, addHasRemoveClass} from '@authentic/mwc-base/base-element.js';
+import {
+  BaseElement,
+  html,
+  property,
+  query,
+  customElement,
+  PropertyValues,
+  classMap,
+  addHasRemoveClass
+} from '@authentic/mwc-base/base-element.js';
 import MDCTabIndicatorFoundation from '@material/tab-indicator/foundation';
 import MDCSlidingTabIndicatorFoundation from '@material/tab-indicator/sliding-foundation.js';
 import MDCFadingTabIndicatorFoundation from '@material/tab-indicator/fading-foundation.js';
-import {style} from './mwc-tab-indicator-css.js';
 import { MDCTabIndicatorAdapter } from '@material/tab-indicator/adapter';
+
+import { style } from './mwc-tab-indicator-css.js';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -45,7 +55,7 @@ export class TabIndicator extends BaseElement {
   @property()
   icon = '';
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   fade = false;
 
   static styles = style;
@@ -57,7 +67,7 @@ export class TabIndicator extends BaseElement {
       'mdc-tab-indicator__content--underline': !this.icon
     };
     return html`
-      <span class="mdc-tab-indicator ${classMap({'mdc-tab-indicator--fade': this.fade})}">
+      <span class="mdc-tab-indicator ${classMap({ 'mdc-tab-indicator--fade': this.fade })}">
         <span class="mdc-tab-indicator__content ${classMap(contentClasses)}">${this.icon}</span>
       </span>
       `;
@@ -74,7 +84,7 @@ export class TabIndicator extends BaseElement {
       ...addHasRemoveClass(this.mdcRoot),
       computeContentClientRect: () => this.contentElement.getBoundingClientRect(),
       setContentStyleProperty: (prop: string, value: string) =>
-          this.contentElement.style.setProperty(prop, value)
+        this.contentElement.style.setProperty(prop, value)
     };
   }
 

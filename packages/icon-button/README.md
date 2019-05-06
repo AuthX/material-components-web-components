@@ -1,4 +1,4 @@
-# mwc-list
+# mwc-icon-button
 A [Material Components](https://material.io/components/) icon implementation using [Web Components](https://www.webcomponents.org/introduction)
 
 ## Getting started
@@ -15,21 +15,21 @@ A [Material Components](https://material.io/components/) icon implementation usi
 
           ```<script src="@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>```
 
-  1. Add mwc-list to your project:
+  1. Add mwc-icon-button to your project:
 
-      ```npm i @authentic/mwc-list```
+      ```npm i @authentic/mwc-icon-button```
 
-  1. Import the mwc-list definition into your HTML page:
+  1. Import the mwc-icon-button definition into your HTML page:
 
-      ```<script type="module" src="@authentic/mwc-list/index.js"></script>```
+      ```<script type="module" src="@authentic/mwc-icon-button/index.js"></script>```
 
       Or into your module script:
 
-      ```import {ListItem} from "@authentic/mwc-list"```
+      ```import { IconButton } from "@authentic/mwc-icon-button"```
 
-  1. Create an instance of mwc-list in your HTML page, or via any framework that [supports rendering Custom Elements](https://custom-elements-everywhere.com/):
+  1. Create an instance of mwc-icon-button in your HTML page, or via any framework that [supports rendering Custom Elements](https://custom-elements-everywhere.com/):
 
-      ```<mwc-list-item></mwc-list-item>```
+      ```<mwc-icon-button></mwc-icon-button>```
 
   1. Install the Polymer CLI:
 
@@ -39,12 +39,12 @@ A [Material Components](https://material.io/components/) icon implementation usi
 
       ```polymer serve```
 
-  > mwc-list is published on [npm](https://www.npmjs.com/package/@authentic/mwc-list) using JavaScript Modules.
+  > mwc-icon-button is published on [npm](https://www.npmjs.com/package/@authentic/mwc-icon-button) using JavaScript Modules.
   This means it can take advantage of the standard native JavaScript module loader available in all current major browsers.
   >
-  > However, since mwc-list uses npm convention to reference dependencies by name, a light transform to rewrite specifiers to URLs is required to get it to run in the browser. The polymer-cli's development server `polymer serve` automatically handles this transform.
+  > However, since mwc-icon-button uses npm convention to reference dependencies by name, a light transform to rewrite specifiers to URLs is required to get it to run in the browser. The polymer-cli's development server `polymer serve` automatically handles this transform.
 
-  Tools like [WebPack](https://webpack.js.org/) and [Rollup](https://rollupjs.org/) can also be used to serve and/or bundle mwc-list.
+  Tools like [WebPack](https://webpack.js.org/) and [Rollup](https://rollupjs.org/) can also be used to serve and/or bundle mwc-icon-button.
 
 ## Supported Browsers
 

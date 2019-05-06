@@ -19,7 +19,7 @@ limitations under the License.
  * Return an element assigned to a given slot that matches the given selector
  */
 export function findAssignedElement(slot: HTMLSlotElement, selector: string) {
-  for (const node of slot.assignedNodes({flatten: true})) {
+  for (const node of slot.assignedNodes({ flatten: true })) {
     if (node.nodeType === Node.ELEMENT_NODE) {
       const el = (node as HTMLElement);
       if (el.matches(selector)) {
@@ -37,7 +37,7 @@ export function findAssignedElement(slot: HTMLSlotElement, selector: string) {
 export function findAssignedElements(slot: HTMLSlotElement, selector: string) {
   const els: HTMLElement[] = [];
 
-  for (const node of slot.assignedNodes({flatten: true})) {
+  for (const node of slot.assignedNodes({ flatten: true })) {
     if (node.nodeType === Node.ELEMENT_NODE) {
       const el = (node as HTMLElement);
       if (el.matches(selector)) {
@@ -54,7 +54,7 @@ export function findAssignedElements(slot: HTMLSlotElement, selector: string) {
  */
 export function emit(target: HTMLElement, evtType: string, evtData = {}, shouldBubble = false) {
   let evt;
-  
+
   if (typeof CustomEvent === 'function') {
     evt = new CustomEvent(evtType, {
       detail: evtData,

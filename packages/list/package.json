@@ -2,17 +2,25 @@
   "name": "@authentic/mwc-list",
   "version": "0.5.0-rc.22",
   "description": "",
-  "main": "mwc-list-item.js",
+  "main": "mwc-list.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@material/base": "^1.0.0",
+    "@material/dom": "^1.1.0",
+    "@material/feature-targeting": "^0.44.1",
+    "@material/ripple": "^2.0.0",
+    "@material/rtl": "^0.42.0",
+    "@material/shape": "^1.1.1",
+    "@material/theme": "^1.1.0",
+    "@material/typography": "^1.0.0",
+    "@material/list": "^2.0.0",
     "@authentic/mwc-base": "^0.5.0-rc.22",
     "@authentic/mwc-icon": "^0.5.0-rc.22",
     "@authentic/mwc-ripple": "^0.5.0-rc.22",
-    "@material/list": "^0.40.1",
     "lit-element": "^2.0.1"
   },
   "publishConfig": {

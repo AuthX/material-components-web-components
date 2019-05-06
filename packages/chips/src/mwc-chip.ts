@@ -14,14 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { BaseElement, customElement, html, property, classMap, query, observer } from '@authentic/mwc-base/base-element';
+import {
+  BaseElement,
+  customElement,
+  html,
+  property,
+  classMap,
+  query,
+  observer,
+  emit,
+  addHasRemoveClass
+} from '@authentic/mwc-base/base-element';
 import { MDCChipFoundation } from '@material/chips/chip/foundation';
 import { MDCChipAdapter } from '@material/chips/chip/adapter';
 import { ChipSet as MWCChipSet } from './mwc-chip-set';
 import { styleMap } from 'lit-html/directives/style-map';
 import { strings } from '@material/chips/chip/constants';
 import { ripple } from '@authentic/mwc-ripple/ripple-directive';
-import { emit, addHasRemoveClass } from '@authentic/mwc-base/utils';
 import { style } from './mwc-chip-css';
 
 import "@authentic/mwc-icon/mwc-icon-font";

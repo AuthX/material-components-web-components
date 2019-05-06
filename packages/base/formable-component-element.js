@@ -14,8 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {ComponentElement} from './component-element.js';
-export {MDCWebComponentMixin, html} from './component-element.js';
+import { ComponentElement } from './component-element.js';
+export { MDCWebComponentMixin, html } from './component-element.js';
 
 export class FormableComponentElement extends ComponentElement {
   static get formElementSelector() {

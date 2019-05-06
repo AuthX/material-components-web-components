@@ -13,11 +13,11 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@material/button": "^2.0.0",
     "@authentic/mwc-base": "^0.5.0-rc.22",
     "@authentic/mwc-icon": "^0.5.0-rc.22",
     "@authentic/mwc-ripple": "^0.5.0-rc.22",
-    "@material/button": "^1.0.0",
-    "lit-element": "^2.0.1"
+    "lit-element": "^2.1.0"
   },
   "publishConfig": {
     "access": "public"

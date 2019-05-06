@@ -17,26 +17,25 @@ limitations under the License.
 import {
   BaseElement,
   customElement,
+  addHasRemoveClass,
   query,
   html,
   property,
-  observer
+  observer,
+  emit,
+  findAssignedElement
 } from '@authentic/mwc-base/base-element.js';
-import { ListItem } from '@authentic/mwc-list';
-import { MDCList, MDCListFoundation } from '@material/list';
-import { MDCMenuFoundation } from '@material/menu';
-import { MDCMenuSurface } from '@material/menu-surface';
-import { Corner } from '@material/menu-surface/constants';
-import { AnchorMargin } from '@material/menu-surface/foundation';
-import { emit, addHasRemoveClass } from '@authentic/mwc-base/utils';
+import { MDCMenuFoundation, MDCMenuAdapter, Corner } from '@material/menu';
+import { cssClasses, DefaultFocusState, strings } from '@material/menu/constants';
+import { MDCMenuSurface, MDCMenuSurfaceFactory } from '@material/menu-surface/component';
+import MDCListFoundation from '@material/list/foundation';
+import MDCMenuSurfaceFoundation from '@material/menu-surface/foundation';
+import { MDCMenuDistance } from '@material/menu-surface/types';
+import { List as MWCList } from '@authentic/mwc-list/mwc-list';
 
 import { style } from './mwc-menu-css.js';
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'mwc-menu': Menu;
-  }
-}
+const menuSurfaceFactory: MDCMenuSurfaceFactory = el => new MDCMenuSurface(el);
 
 @customElement('mwc-menu' as any)
 export class Menu extends BaseElement {
@@ -44,230 +43,65 @@ export class Menu extends BaseElement {
   @query('.mdc-menu')
   protected mdcRoot!: HTMLElement;
 
-  @query('.mdc-list')
-  protected list!: HTMLElement;
-
-  @query('.mdc-menu__selection-group')
-  protected _selectionGroup!: HTMLElement;
+  @query('slot')
+  protected slotEl!: HTMLSlotElement;
 
   @property({ type: Boolean })
-  selectionGroup = false;
-
-  @property({ type: Boolean })
-  @observer(function (this: Menu, value: Boolean) {
-    if (value !== this._menuSurface.open) {
+  @observer(function (this: Menu, value: boolean) {
+    if (this._menuSurface && this._menuSurface.open !== value) {
       this._menuSurface.open = value;
     }
   })
-  open = false;
+  public open = false;
 
   @property({ type: Boolean })
-  multiselect = false;
+  @observer(function (this: Menu, value: boolean) {
+    if (this._menuSurface) {
+      this._menuSurface.quickOpen = value;
+    }
+  })
+  public quickOpen = false;
 
   @property({ type: Boolean })
-  autofocus = false;
+  @observer(function (this: Menu, value: boolean) {
+    if (this.listEl) {
+      this.listEl.wrapFocus = value;
+    }
+  })
+  public wrapFocus = false;
 
-  @property({ type: Boolean })
-  autoclose = false;
-
-  @property({ type: Boolean })
-  noWrapFocus = false;
-
-  protected _selectedIndex: number = -1;
-  get selectedIndex() {
-    return this._selectedIndex;
-  }
-  set selectedIndex(value: number) {
-    this._selectedIndex = value;
-    const selectedElement = this.items[this._selectedIndex];
-    this._list.selectedIndex = this.enabledItems.indexOf(selectedElement);
-  }
-
-  get Corner() {
+  public get Corner() {
     return Corner;
   }
 
-  get items(): ListItem[] {
-    return this.shadowRoot!
-      .querySelector('slot')!
-      .assignedNodes({ flatten: true })
-      .filter(el => el instanceof ListItem)
-      .map(el => el as ListItem)
+  /**
+   * Return the items within the menu. Note that this only contains the set of elements within
+   * the items container that are proper list items, and not supplemental / presentational DOM
+   * elements.
+   */
+  get items(): Element[] {
+    return this.listEl ? this.listEl.listElements : [];
   }
 
-  get enabledItems(): ListItem[] {
-    return this.items.filter( el => el.getAttribute('aria-disabled') === 'false' );
+  protected get listEl() {
+    return this.slotEl && findAssignedElement(this.slotEl, 'mwc-list') as MWCList;
   }
 
-  get selectedItems(): ListItem[] {
-    return this.items.filter( el => el.getAttribute('aria-selected') === 'true' );
-  }
+  protected _menuSurface!: MDCMenuSurface;
 
-  protected _menuSurfaceInstance!: MDCMenuSurface;
-  protected get _menuSurface(): MDCMenuSurface {
-    if (!this._menuSurfaceInstance) {
-      let previousFocus_;
+  protected _handleKeydown = this._onKeydown.bind(this) as EventListenerOrEventListenerObject;
 
-      this._menuSurfaceInstance = new MDCMenuSurface(this.mdcRoot);
+  protected _handleItemAction = this._onItemAction.bind(this) as EventListenerOrEventListenerObject;
 
-      this._menuSurfaceInstance.foundation_.adapter_.isFocused = () => {
-        return document.activeElement === this.mdcRoot;
-      };
+  protected _handleMenuSurfaceOpened = this._onMenuSurfaceOpened.bind(this) as EventListener;
 
-      this._menuSurfaceInstance.foundation_.adapter_.saveFocus = () => {
-        if (document.activeElement) {
-          previousFocus_ = document.activeElement.shadowRoot
-            ? document.activeElement.shadowRoot.activeElement
-            : document.activeElement;
-        }
-      };
+  protected _handleMenuSurfaceClosed = this._onMenuSurfaceClosed.bind(this) as EventListener;
 
-      this._menuSurfaceInstance.foundation_.adapter_.restoreFocus = () => {
-        if (this.mdcRoot.contains(document.activeElement)) {
-          if (previousFocus_ && previousFocus_.focus) {
-            previousFocus_.focus();
-          }
-        }
-      };
-
-      this._menuSurfaceInstance.foundation_.adapter_.isElementInContainer = el => {
-        return this === el || this.contains(el as Node) || !this.autoclose;
-      };
-    }
-
-    return this._menuSurfaceInstance;
-  }
-
-  protected _listInstance!: MDCList;
-  protected get _list(): MDCList {
-    if (!this._listInstance) {
-      this._listInstance = new MDCList(this.list);
-      this._listInstance.wrapFocus = !this.noWrapFocus;
-      this._listInstance.selectedIndex = this.selectedIndex;
-
-      // Prevents default listeners conflicts
-      this._listInstance.destroy();
-
-      this._listInstance.getListItemIndex_ = evt => {
-        return evt.target instanceof ListItem ? this.enabledItems.indexOf(evt.target) : -1;
-      }
-
-      this._listInstance.handleKeydown_ = evt => {
-        const index = this._listInstance.getListItemIndex_(evt);
-    
-        if (index >= 0) {
-          this._listInstance.foundation_.handleKeydown(evt, evt.target instanceof ListItem, index);
-        }
-      }
-
-      this._listInstance.foundation_.focusNextElement = index => {
-        const count = this._listInstance.foundation_.adapter_.getListItemCount();
-        let nextIndex = index + 1;
-        if (nextIndex >= count) {
-          if (this._listInstance.foundation_.wrapFocus_) {
-            nextIndex = 0;
-          } else {
-            emit(this, 'MDCList:afterLastFocusNext');
-            // Return early because last item is already focused.
-            return;
-          }
-        }
-        this._listInstance.foundation_.adapter_.focusItemAtIndex(nextIndex);
-      }
-
-      this._listInstance.foundation_.focusPrevElement = index => {
-        let prevIndex = index - 1;
-        if (prevIndex < 0) {
-          if (this._listInstance.foundation_.wrapFocus_) {
-            prevIndex = this._listInstance.foundation_.adapter_.getListItemCount() - 1;
-          } else {
-            emit(this, 'MDCList:afterLastFocusPrev');
-            // Return early because first item is already focused.
-            return;
-          }
-        }
-        this._listInstance.foundation_.adapter_.focusItemAtIndex(prevIndex);
-      }
-
-      this._listInstance.foundation_.adapter_ = {
-        ...this._listInstance.foundation_.adapter_,
-        getListItemCount: () => this.enabledItems.length,
-        getFocusedElementIndex: () => {
-          return this.enabledItems.indexOf(document.activeElement as ListItem)
-        },
-        setAttributeForElementIndex: (index, attr, value) => {
-          const element = this.enabledItems[index];
-          if (element) {
-            element.setAttribute(attr, value);
-          }
-        },
-        removeAttributeForElementIndex: (index, attr) => {
-          const element = this.enabledItems[index];
-          if (element) {
-            element.removeAttribute(attr);
-          }
-        },
-        addClassForElementIndex: (index, className) => {
-          const element = this.enabledItems[index];
-          if (element) {
-            element.classList.add(className);
-          }
-        },
-        removeClassForElementIndex: (index, className) => {
-          const element = this.enabledItems[index];
-          if (element) {
-            element.classList.remove(className);
-          }
-        },
-        focusItemAtIndex: (index) => {
-          const element = this.enabledItems[index];
-          if (element) {
-            element.focus();
-          }
-        },
-        setTabIndexForListItemChildren: (listItemIndex, tabIndexValue) => {
-          const element = this.enabledItems[listItemIndex] as ListItem;
-          element.setAttribute('tabindex', tabIndexValue);
-        },
-        followHref: (index) => {
-          const listItem = this.enabledItems[index];
-          if (listItem && listItem['href']) {
-            listItem.click();
-          }
-        },
-        toggleCheckbox: (/* index */) => {
-          // let checkboxOrRadioExists = false;
-          // const listItem = this.enabledItems[index];
-          // const elementsToToggle =
-          //   [].slice.call(listItem.querySelectorAll(strings.CHECKBOX_RADIO_SELECTOR));
-          // elementsToToggle.forEach((element) => {
-          //   const event = document.createEvent('Event');
-          //   event.initEvent('change', true, true);
-
-          //   if (!element.checked || element.type !== 'radio') {
-          //     element.checked = !element.checked;
-          //     element.dispatchEvent(event);
-          //   }
-          //   checkboxOrRadioExists = true;
-          // });
-          // return checkboxOrRadioExists;
-          return false;
-        },
-      }
-    }
-
-    return this._listInstance;
-  }
-
-  protected readonly mdcFoundationClass = MDCMenuFoundation;
+  protected mdcFoundationClass = MDCMenuFoundation;
 
   protected mdcFoundation!: MDCMenuFoundation;
 
-  protected _preventClose = false;
-
-  static styles = style;
-
-  protected createAdapter() {
+  protected createAdapter(): MDCMenuAdapter {
     return {
       ...addHasRemoveClass(this.mdcRoot),
       addClassToElementAtIndex: (index, className) => {
@@ -286,90 +120,95 @@ export class Menu extends BaseElement {
         const list = this.items;
         list[index].removeAttribute(attr);
       },
-      elementContainsClass: (element, className) => {
-        return element && element.classList.contains(className);
+      elementContainsClass: (element, className) => element.classList.contains(className),
+      closeSurface: () => this.open = false,
+      getElementIndex: (element) => {
+        return this.items.indexOf(element)
       },
-      closeSurface: () => {
-        if (this._preventClose) {
-          this._preventClose = false;
-        } else {
-          this.open = false;
-        }
-      },
-      getElementIndex: element => this.items.indexOf(element),
-      getParentElement: element => {
-        if (!element) return null;
-
-        switch (element.localName) {
-          case 'mwc-list-item':
-            return this._selectionGroup || this.list;
-          default:
-            return element.parentElement;
-        }
-      },
-      getSelectedElementIndex: () => {
-        const selectedElement = this.selectedItems[0];
-        return this.items.indexOf(selectedElement);
+      getParentElement: (element) => element.parentElement,
+      getSelectedElementIndex: (selectionGroup) => {
+        const selectedListItem = selectionGroup.querySelector(`.${cssClasses.MENU_SELECTED_LIST_ITEM}`);
+        return selectedListItem ? this.items.indexOf(selectedListItem) : -1;
       },
       notifySelected: (evtData) => {
-        this._notifySelected(evtData);
+        emit(this, strings.SELECTED_EVENT, {
+          index: evtData.index,
+          item: this.items[evtData.index],
+        }, true)
       },
+      getMenuItemCount: () => this.items.length,
+      focusItemAtIndex: (index) => (this.items[index] as HTMLElement).focus(),
+      focusListRoot: () => this.listEl.focus()
     }
   }
 
-  protected _handleKeydown = this._onKeydown.bind(this) as EventListenerOrEventListenerObject;
-  protected _handleClick = this._onClick.bind(this) as EventListenerOrEventListenerObject;
-
-  firstUpdated() {
-    super.firstUpdated();
-
-    this._menuSurface.listen('MDCMenuSurface:opened', () => this._afterOpenedCallback());
-    this._menuSurface.listen('MDCMenuSurface:closed', () => this._afterClosedCallback());
-  }
+  static styles = style;
 
   render() {
     return html`
-      <div class="mdc-menu mdc-menu-surface" tabindex="-1">
-        <div class="mdc-menu__items mdc-list" role="menu" aria-hidden="true">
-          <div class="${this.selectionGroup ? 'mdc-menu__selection-group' : ''}">
-            <slot></slot>
-          </div>
-        </div>
-      </div>`;
+      <div class="mdc-menu mdc-menu-surface">
+        <slot></slot>
+      </div>
+    `;
   }
 
-  _onKeydown(evt) {
+  firstUpdated() {
+    this._menuSurface = menuSurfaceFactory(this.mdcRoot);
+
+    super.firstUpdated();
+
+    this._menuSurface.listen(MDCMenuSurfaceFoundation.strings.OPENED_EVENT, this._handleMenuSurfaceOpened);
+    this._menuSurface.listen(MDCMenuSurfaceFoundation.strings.CLOSED_EVENT, this._handleMenuSurfaceClosed);
+
+    if (this.listEl) {
+      this.listEl.addEventListener('keydown', this._handleKeydown);
+      this.listEl.addEventListener(MDCListFoundation.strings.ACTION_EVENT, this._handleItemAction);
+    }
+  }
+
+  protected _onKeydown(evt) {
     this.mdcFoundation.handleKeydown(evt);
-    this._list.handleKeydown_(evt);
   }
 
-  _onClick(evt) {
-    this._preventClose = !this.autoclose;
-    this.mdcFoundation.handleClick(this.items[evt.detail]);
+  protected _onItemAction(evt) {
+    this.mdcFoundation.handleItemAction(this.items[evt.detail.listIndex]);
   }
 
-  _notifySelected(data) {
-    const selectedElement = this.items[data.index];
-    this._list.selectedIndex = this.enabledItems.indexOf(selectedElement);
-    this.selectedIndex = data.index;
-    emit(this, 'MDCMenu:selected', { index: data.index, item: this.items[data.index] });
+  protected _onMenuSurfaceOpened(evt) {
+    this.mdcFoundation.handleMenuSurfaceOpened();
+    emit(this, evt.type, evt.detail, true);
+  }
+
+  protected _onMenuSurfaceClosed(evt) {
+    this.open = false;
+    emit(this, evt.type, evt.detail, true);
   }
 
   /**
-   * Default anchor corner alignment of top-left
+   * Sets default focus state where the menu should focus every time when menu
+   * is opened. Focuses the list root (`DefaultFocusState.LIST_ROOT`) element by
+   * default.
+   * @param focusState Default focus state.
+   */
+  setDefaultFocusState(focusState: DefaultFocusState) {
+    this.mdcFoundation.setDefaultFocusState(focusState);
+  }
+
+  /**
+   * @param corner Default anchor corner alignment of top-left menu corner.
    */
   setAnchorCorner(corner: Corner) {
     this._menuSurface.setAnchorCorner(corner);
   }
 
-  setAnchorMargin(margin: AnchorMargin) {
+  setAnchorMargin(margin: Partial<MDCMenuDistance>) {
     this._menuSurface.setAnchorMargin(margin);
   }
 
   /**
-   * Return the item within the menu at the index specified.
+   * @return The item within the menu at the index specified.
    */
-  getOptionByIndex(index: number): HTMLElement | null {
+  getOptionByIndex(index: number): Element | null {
     const items = this.items;
 
     if (index < items.length) {
@@ -379,23 +218,8 @@ export class Menu extends BaseElement {
     }
   }
 
-  set quickOpen(quickOpen: boolean) {
-    this._menuSurface.quickOpen = quickOpen;
-  }
-
   setFixedPosition(isFixed: boolean) {
     this._menuSurface.setFixedPosition(isFixed);
-  }
-
-  /**
-   * Return the menu width
-   */
-  getWidth(): number {
-    this.mdcRoot.style.display = 'block';
-    const width = this.mdcRoot.offsetWidth;
-    this.mdcRoot.style.display = null;
-
-    return width;
   }
 
   hoistMenuToBody() {
@@ -410,32 +234,10 @@ export class Menu extends BaseElement {
     this._menuSurface.setAbsolutePosition(x, y);
   }
 
-  setAnchorElement(element: HTMLElement) {
-    this._menuSurface.setMenuSurfaceAnchorElement(element);
-  }
-
-  _afterOpenedCallback() {
-    if (this.autofocus) {
-      this.setFocus();
-    }
-
-    emit(this, 'MDCMenu:opened');
-
-    this.addEventListener('keydown', this._handleKeydown);
-    this.addEventListener(MDCListFoundation.strings.ACTION_EVENT, this._handleClick);
-  }
-
-  _afterClosedCallback() {
-    this.open = false;
-    emit(this, 'MDCMenu:closed');
-
-    this.removeEventListener('keydown', this._handleKeydown);
-    this.removeEventListener(MDCListFoundation.strings.ACTION_EVENT, this._handleClick);
-  }
-
-  setFocus() {
-    if (this.enabledItems.length > 0) {
-      this.items[this.selectedIndex !== -1 ? this.selectedIndex : 0].focus();
-    }
+  /**
+   * Sets the element that the menu-surface is anchored to.
+   */
+  setAnchorElement(element: Element) {
+    this._menuSurface.anchorElement = element;
   }
 }

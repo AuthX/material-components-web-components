@@ -9,8 +9,8 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@authentic/mwc-base": "^0.5.0-rc.22",
-    "@material/linear-progress": "^1.0.0"
+    "@material/linear-progress": "^1.1.0",
+    "@authentic/mwc-base": "^0.5.0-rc.22"
   },
   "publishConfig": {
     "access": "public"

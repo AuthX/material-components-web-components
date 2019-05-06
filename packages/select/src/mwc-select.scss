@@ -25,6 +25,7 @@ limitations under the License.
 :host {
   display: block;
   outline: none;
+  position: relative;
 }
 
 :host([fullwidth]) {
@@ -32,6 +33,11 @@ limitations under the License.
 }
 
 .mdc-select {
+  width: 100%;
+}
+
+.mdc-select__menu-anchor {
+  position: relative;
   width: 100%;
 }
 

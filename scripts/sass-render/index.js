@@ -30,7 +30,7 @@ async function sassToCss(sassFile) {
   const result = await renderSass({
     file: sassFile,
     importer: nodeSassImport,
-    outputStyle: 'compressed',
+    outputStyle: 'expanded',
   });
   return result.css.toString();
 }

@@ -14,12 +14,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {html, BaseElement, property, query, observer, classMap} from '@authentic/mwc-base/base-element.js';
-import {FormElement} from '@authentic/mwc-base/form-element.js';
-import {findAssignedElement} from '@authentic/mwc-base/utils.js';
-import {style} from './mwc-formfield-css.js';
+import { html, BaseElement, property, query, observer, classMap } from '@authentic/mwc-base/base-element.js';
+import { FormElement } from '@authentic/mwc-base/form-element.js';
+import { findAssignedElement } from '@authentic/mwc-base/utils.js';
+import { style } from './mwc-formfield-css.js';
 import MDCFormFieldFoundation from '@material/form-field/foundation.js';
-import {MDCFormFieldAdapter} from '@material/form-field/adapter.js';
+import { MDCFormFieldAdapter } from '@material/form-field/adapter.js';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -28,11 +28,11 @@ declare global {
 }
 
 export class Formfield extends BaseElement {
-  @property({type: Boolean})
+  @property({ type: Boolean })
   alignEnd = false;
 
-  @property({type: String})
-  @observer(async function(this: Formfield, label: string) {
+  @property({ type: String })
+  @observer(async function (this: Formfield, label: string) {
     const input = this.input;
     if (input) {
       if (input.localName === 'input') {
@@ -89,7 +89,7 @@ export class Formfield extends BaseElement {
 
   render() {
     return html`
-      <div class="mdc-form-field ${classMap({'mdc-form-field--align-end': this.alignEnd})}">
+      <div class="mdc-form-field ${classMap({ 'mdc-form-field--align-end': this.alignEnd })}">
         <slot></slot>
         <label class="mdc-label" @click="${this._labelClick}">${this.label}</label>
       </div>`;

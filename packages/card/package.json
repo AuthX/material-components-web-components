@@ -13,11 +13,10 @@
     "@authentic/mwc-icon": "^0.5.0-rc.22",
     "@authentic/mwc-ripple": "^0.5.0-rc.22",
     "@authentic/mwc-typography": "^0.5.0-rc.22",
-    "@material/base": "^1.0.0",
-    "@material/card": "^1.1.0",
+    "@material/card": "^2.0.0",
+    "@material/ripple": "^2.0.0",
     "@material/typography": "^1.0.0",
-    "lit-element": "^2.0.1",
-    "lit-html": "^1.0.0"
+    "lit-element": "^2.1.0"
   },
   "publishConfig": {
     "access": "public"

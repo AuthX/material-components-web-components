@@ -14,13 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {BaseElement, html, property, query, customElement, PropertyValues, classMap, SpecificEventListener, addHasRemoveClass} from '@authentic/mwc-base/base-element.js';
+import {
+  BaseElement,
+  html,
+  property,
+  query,
+  customElement,
+  PropertyValues,
+  classMap,
+  SpecificEventListener,
+  addHasRemoveClass
+} from '@authentic/mwc-base/base-element.js';
 import MDCTopAppBarBaseFoundation from '@material/top-app-bar/foundation';
 import MDCTopAppBarFoundation from '@material/top-app-bar/standard/foundation.js';
 import MDCShortTopAppBarFoundation from '@material/top-app-bar/short/foundation.js';
 import MDCFixedTopAppBarFoundation from '@material/top-app-bar/fixed/foundation.js';
-import {strings} from '@material/top-app-bar/constants.js';
-import {style} from './mwc-top-app-bar-css.js';
+import { strings } from '@material/top-app-bar/constants.js';
+import { style } from './mwc-top-app-bar-css.js';
 import { MDCTopAppBarAdapter } from '@material/top-app-bar/adapter';
 
 declare global {
@@ -36,7 +46,7 @@ export class TopAppBar extends BaseElement {
 
   protected get mdcFoundationClass() {
     return this.type === 'fixed' || this.type === 'prominentFixed' ? MDCFixedTopAppBarFoundation :
-        (this.type === 'short' || this.type === 'shortCollapsed' ? MDCShortTopAppBarFoundation : MDCTopAppBarFoundation);
+      (this.type === 'short' || this.type === 'shortCollapsed' ? MDCShortTopAppBarFoundation : MDCTopAppBarFoundation);
   }
 
   @query('.mdc-top-app-bar')
@@ -49,16 +59,16 @@ export class TopAppBar extends BaseElement {
   private _actionItemsSlot!: HTMLSlotElement;
 
   // type can be 'fixed' || 'prominent' || 'short' || 'shortCollapsed' || 'prominentFixed'
-  @property({reflect: true})
+  @property({ reflect: true })
   type = '';
 
-  @property({type: Boolean, reflect: true})
+  @property({ type: Boolean, reflect: true })
   dense = false;
 
-  @property({type: Boolean, reflect: true})
+  @property({ type: Boolean, reflect: true })
   centerTitle = false;
 
-  private _scrollTarget!: HTMLElement|Window;
+  private _scrollTarget!: HTMLElement | Window;
 
   get scrollTarget() {
     return this._scrollTarget || window as Window;
@@ -85,25 +95,29 @@ export class TopAppBar extends BaseElement {
       'mwc-top-app-bar--center-title': this.centerTitle
     };
     const alignStartTitle = !this.centerTitle ? html`
-      <span class="mdc-top-app-bar__title"><slot name="title"></slot></span>
+      <span class="mdc-top-app-bar__title">
+        <slot name="title"></slot>
+      </span>
     ` : '';
     const centerSection = this.centerTitle ? html`
       <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-center">
-        <span class="mdc-top-app-bar__title"><slot name="title"></slot></span>
+        <span class="mdc-top-app-bar__title">
+          <slot name="title"></slot>
+        </span>
       </section>` : '';
     return html`
       <header class="mdc-top-app-bar ${classMap(classes)}">
-      <div class="mdc-top-app-bar__row">
-        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-          <slot name="navigationIcon"></slot>
-          ${alignStartTitle}
-        </section>
-        ${centerSection}
-        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
-          <slot name="actionItems"></slot>
-        </section>
-      </div>
-    </header>`;
+        <div class="mdc-top-app-bar__row">
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <slot name="navigationIcon"></slot>
+            ${alignStartTitle}
+          </section>
+          ${centerSection}
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+            <slot name="actionItems"></slot>
+          </section>
+        </div>
+      </header>`;
   }
 
   protected createAdapter(): MDCTopAppBarAdapter {
@@ -123,24 +137,24 @@ export class TopAppBar extends BaseElement {
         }
       },
       notifyNavigationIconClicked: () => {
-        this.dispatchEvent(new Event(strings.NAVIGATION_EVENT, {bubbles: true, cancelable: true}));
+        this.dispatchEvent(new Event(strings.NAVIGATION_EVENT, { bubbles: true, cancelable: true }));
       },
       registerScrollHandler: (handler: SpecificEventListener<'scroll'>) =>
-          this.scrollTarget.addEventListener('scroll', handler as EventListenerOrEventListenerObject),
+        this.scrollTarget.addEventListener('scroll', handler as EventListenerOrEventListenerObject),
       deregisterScrollHandler: (handler: SpecificEventListener<'scroll'>) =>
-          this.scrollTarget.removeEventListener('scroll', handler as EventListenerOrEventListenerObject),
+        this.scrollTarget.removeEventListener('scroll', handler as EventListenerOrEventListenerObject),
       registerResizeHandler: (handler: SpecificEventListener<'resize'>) =>
-          window.addEventListener('resize', handler),
+        window.addEventListener('resize', handler),
       deregisterResizeHandler: (handler: SpecificEventListener<'resize'>) =>
-          window.removeEventListener('resize', handler),
+        window.removeEventListener('resize', handler),
       getViewportScrollY: () => this.scrollTarget[this.scrollTarget === window ? 'pageYOffset' : 'scrollTop'],
       getTotalActionItems: () =>
-        this._actionItemsSlot.assignedNodes({flatten: true}).length,
+        this._actionItemsSlot.assignedNodes({ flatten: true }).length,
     };
   }
 
   // override that prevents `super.firstUpdated` since we are controlling when `createFoundation` is called.
-  firstUpdated() {}
+  firstUpdated() { }
 
   updated(changedProperties: PropertyValues) {
     // update foundation if `type` or `scrollTarget` changes

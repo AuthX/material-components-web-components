@@ -9,11 +9,10 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@material/list": "^2.0.0",
+    "@material/menu": "^2.0.0",
+    "@material/menu-surface": "^1.1.1",
     "@authentic/mwc-base": "^0.5.0-rc.22",
-    "@authentic/mwc-list": "^0.5.0-rc.22",
-    "@material/list": "^0.40.1",
-    "@material/menu": "^0.40.1",
-    "@material/menu-surface": "^0.40.1",
     "@material/typography": "^1.0.0",
     "lit-element": "^2.0.1"
   },
