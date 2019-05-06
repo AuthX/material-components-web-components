@@ -1,6 +1,6 @@
 {
   "name": "@authentic/mwc-button",
-  "version": "0.5.0-rc.22",
+  "version": "0.5.0-rc.23",
   "description": "",
   "main": "mwc-button.js",
   "repository": {
@@ -13,10 +13,10 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@authentic/mwc-base": "^0.5.0-rc.23",
+    "@authentic/mwc-icon": "^0.5.0-rc.23",
+    "@authentic/mwc-ripple": "^0.5.0-rc.23",
     "@material/button": "^2.0.0",
-    "@authentic/mwc-base": "^0.5.0-rc.22",
-    "@authentic/mwc-icon": "^0.5.0-rc.22",
-    "@authentic/mwc-ripple": "^0.5.0-rc.22",
     "lit-element": "^2.1.0"
   },
   "publishConfig": {
