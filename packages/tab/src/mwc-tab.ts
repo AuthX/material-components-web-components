@@ -104,12 +104,6 @@ export class Tab extends BaseElement {
 
   static styles = style;
 
-  constructor() {
-    super();
-    // create an unique id
-    this.id = this.id || `mdc-tab-${++tabIdCounter}`;
-  }
-
   render() {
     const classes = {
       'mdc-tab--min-width': this.minWidth,
@@ -126,6 +120,13 @@ export class Tab extends BaseElement {
         ${this.isMinWidthIndicator ? '' : this.renderIndicator()}
         <span class="mdc-tab__ripple" .ripple="${ripple({ interactionNode: this, unbounded: false })}"></span>
       </button>`;
+  }
+
+  firstUpdated() {
+    super.firstUpdated();
+
+    // create a unique id
+    this.id = this.id || `mdc-tab-${++tabIdCounter}`;
   }
 
   renderIndicator() {

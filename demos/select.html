@@ -67,7 +67,7 @@ limitations under the License.
 
       <div>
         <h3>box enhanced</h3>
-        <mwc-select label="Choose an item...">
+        <mwc-select leadingIconContent="event" label="Choose an item...">
           <mwc-menu slot="menu">
             <mwc-list>
               <mwc-list-item value="one">this is choice one</mwc-list-item>
@@ -103,7 +103,7 @@ limitations under the License.
       <div>
         <h3>box disabled</h3>
       
-        <mwc-select box disabled label="Disabled...">
+        <mwc-select leadingIconContent="event" box disabled label="Disabled...">
           <mwc-menu slot="menu">
             <mwc-list>
               <mwc-list-item value="one">this is choice one</mwc-list-item>
@@ -135,7 +135,7 @@ limitations under the License.
 
       <div>
         <h3>outlined enhanced</h3>
-        <mwc-select outlined label="Choose an item...">
+        <mwc-select leadingIconContent="event" outlined label="Choose an item...">
           <mwc-menu slot="menu">
             <mwc-list>
               <mwc-list-item value="one">this is choice one</mwc-list-item>
@@ -153,7 +153,7 @@ limitations under the License.
       <div>
         <h3>outlined disabled</h3>
 
-        <mwc-select outlined disabled label="Disabled...">
+        <mwc-select outlined disabled leadingIconContent="event" label="Disabled...">
           <mwc-menu slot="menu">
             <mwc-list>
               <mwc-list-item value="one">this is choice one</mwc-list-item>
@@ -164,7 +164,7 @@ limitations under the License.
       </div>
     </div>
 
-    <h3>outlined - required - email - helperText</h3>
+    <h3>outlined - required - helperText</h3>
 
     <div class="demo-group">
       <div>
@@ -199,6 +199,7 @@ limitations under the License.
           validationMessage="Validation Message"
           persistentHelperText
           required
+          leadingIconContent="event"
         >
           <mwc-menu slot="menu">
             <mwc-list>
@@ -249,6 +250,7 @@ limitations under the License.
           helperTextContent="Helper Text"
           persistentHelperText
           id="select_2"
+          leadingIconContent="event"
         >
           <mwc-menu slot="menu">
             <mwc-list>

@@ -415,7 +415,14 @@ export class Select extends FormElement {
     `
   }
 
+  _renderLeadingIcon() {
+    return html`
+      <i class="material-icons mdc-select__icon">${this.leadingIconContent}</i>
+    `;
+  }
+
   render() {
+    const hasLeadingIcon = this.leadingIconContent;
     const hasOutline = this.outlined;
     const hasLabel = this.label;
     const hasHelperText = !!(this.helperTextContent || this.validationMessage);
@@ -427,6 +434,7 @@ export class Select extends FormElement {
     return html`
       <div class="${classMap(classes)}" .ripple="${!hasOutline && ripple({ unbounded: false })}">
         <input type="hidden" name="enhanced-select">
+        ${hasLeadingIcon ? this._renderLeadingIcon() : ''}
         <i class="mdc-select__dropdown-icon"></i>
         <div class="mdc-select__selected-text"></div>
         <slot name="select"></slot>
