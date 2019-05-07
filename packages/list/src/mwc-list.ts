@@ -109,8 +109,11 @@ export class List extends BaseElement {
     const classes = {
     };
     return html`
-      <ul class="mdc-list ${classMap(classes)}" @keydown=${this.handleKeydownEvent_} @click=${this.handleClickEvent_}
-        @focusin=${this.handleFocusInEvent_} @focusout=${this.handleFocusOutEvent_}>
+      <ul class="mdc-list ${classMap(classes)}"
+        @keydown=${this.handleKeydownEvent_}
+        @click=${this.handleClickEvent_}
+        @focusin=${this.handleFocusInEvent_}
+        @focusout=${this.handleFocusOutEvent_}>
         <slot></slot>
       </ul>
     `;
@@ -181,10 +184,6 @@ export class List extends BaseElement {
     this.mdcFoundation.layout();
   }
 
-  public getFound() {
-    return this.mdcFoundation
-  }
-
   /**
    * Initialize selectedIndex value based on pre-selected checkbox list items, single selection or radio.
    */
@@ -196,22 +195,22 @@ export class List extends BaseElement {
     return findAssignedElements(this.slotEl, 'mwc-list-item') as ListItem[];
   }
 
-  private getListItemIndex_(evt: Event): number {
+  protected getListItemIndex_(evt: Event): number {
     return this.getIndex(this.getListItem_(evt))
   }
 
-  private getListItem_(evt: Event): ListItem | null {
+  protected getListItem_(evt: Event): ListItem | null {
     const eventTarget = evt.target as Element;
     return closest(eventTarget, `mwc-list-item`) as ListItem || null;
   }
 
-  private getIndex(item): number {
+  protected getIndex(item): number {
     return item ? this.listElements.indexOf(item) : -1
   }
   /**
    * Used to figure out which element was clicked before sending the event to the foundation.
    */
-  private handleFocusInEvent_(evt: FocusEvent) {
+  protected handleFocusInEvent_(evt: FocusEvent) {
     const index = this.getListItemIndex_(evt);
     this.mdcFoundation!.handleFocusIn(evt, index);
   }
@@ -219,7 +218,7 @@ export class List extends BaseElement {
   /**
  * Used to figure out which element was clicked before sending the event to the foundation.
  */
-  private handleFocusOutEvent_(evt: FocusEvent) {
+  protected handleFocusOutEvent_(evt: FocusEvent) {
     const index = this.getListItemIndex_(evt);
     this.mdcFoundation!.handleFocusOut(evt, index);
   }
@@ -228,7 +227,7 @@ export class List extends BaseElement {
    * Used to figure out which element was focused when keydown event occurred before sending the event to the
    * foundation.
    */
-  private handleKeydownEvent_(evt: KeyboardEvent) {
+  protected handleKeydownEvent_(evt: KeyboardEvent) {
     const index = this.getListItemIndex_(evt);
     const target = evt.target as Element;
 
@@ -240,7 +239,7 @@ export class List extends BaseElement {
   /**
    * Used to figure out which element was clicked before sending the event to the foundation.
    */
-  private handleClickEvent_(evt: MouseEvent) {
+  protected handleClickEvent_(evt: MouseEvent) {
     const index = this.getListItemIndex_(evt);
     const target = evt.target as Element;
     if (this.nonInteractive) return;
