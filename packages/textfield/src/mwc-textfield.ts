@@ -612,7 +612,7 @@ export class TextField extends FormElement {
    * Handle formElement interaction event
    */
   protected _handleInteractionEvent(evt) {
-    emit(this.mdcRoot, evt.type, {}, true);
+    emit(this.mdcRoot, evt.type, {}, false);
   }
 
   protected _setValidity(isValid: boolean) {

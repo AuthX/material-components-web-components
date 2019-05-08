@@ -59,7 +59,7 @@ export function emit(target: HTMLElement, evtType: string, evtData = {}, shouldB
     evt = new CustomEvent(evtType, {
       detail: evtData,
       bubbles: shouldBubble,
-      composed: true
+      composed: shouldBubble
     });
   } else {
     evt = document.createEvent('CustomEvent');
