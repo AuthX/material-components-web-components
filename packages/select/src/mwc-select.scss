@@ -36,6 +36,24 @@ limitations under the License.
   width: 100%;
 }
 
+// Fixes selected-text bottom-line hover state
+.mdc-select__selected-text:hover {
+  &:not(.mdc-select--disabled) {
+    @include mdc-select-native-control-bottom-line-color_($mdc-select-bottom-line-hover-color);
+  }
+}
+
+// Fixes outlined hover state
+.mdc-select--outlined:hover {
+  &:not(.mdc-select--disabled) {
+    &:not(.mdc-select--focused) {
+      .mdc-notched-outline {
+        @include mdc-notched-outline-color($mdc-select-outlined-hover-border);
+      }
+    }
+  }
+}
+
 .mdc-select__menu-anchor {
   position: relative;
   width: 100%;
