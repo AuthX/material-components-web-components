@@ -42,6 +42,9 @@ body {
   mwc-icon {
     margin: 0 16px;
   }
+  mwc-list-item mwc-icon {
+    margin: auto;
+  }
 
   main {
     margin-top: 64px;

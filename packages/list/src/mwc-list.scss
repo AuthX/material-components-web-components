@@ -94,36 +94,8 @@
     }
   }
 
-  .mdc-list-group {
-    @include mdc-feature-targets($feat-structure) {
-      // Cancel top/bottom padding on individual lists within group
-      .mdc-list {
-        padding: 0;
-      }
-    }
-  }
-
-  .mdc-list-group__subheader {
-    $mdc-list-subheader-virtual-height: 3rem;
-    $mdc-list-subheader-leading: map-get(map-get($mdc-typography-styles, body1), line-height);
-    $mdc-list-subheader-margin: ($mdc-list-subheader-virtual-height - $mdc-list-subheader-leading) / 2;
-
-    @include mdc-typography(subtitle1, $query);
-
-    @include mdc-feature-targets($feat-structure) {
-      margin: $mdc-list-subheader-margin $mdc-list-side-padding;
-    }
-  }
 }
 
-
-@mixin mdc-list-item-primary-text-ink-color($color, $query: mdc-feature-all()) {
-  $feat-color: mdc-feature-create-target($query, color);
-
-  @include mdc-feature-targets($feat-color) {
-    @include mdc-theme-prop(color, $color);
-  }
-}
 
 @mixin mdc-list-divider-color($color, $query: mdc-feature-all()) {
   $feat-color: mdc-feature-create-target($query, color);
@@ -169,7 +141,6 @@
     list-style-type: none;
   }
 
-  @include mdc-list-item-primary-text-ink-color(text-primary-on-background, $query);
 }
 
 @include mdc-list-core-styles;

@@ -44,6 +44,8 @@ export interface MDCListAdapter {
 
   removeClassForElementIndex(index: number, className: string): void;
 
+  isDisabledAtIndex(index: number): Boolean;
+
   /**
    * Focuses list item at the index specified.
    */

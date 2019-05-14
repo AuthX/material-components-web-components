@@ -125,10 +125,13 @@ export class List extends BaseElement {
       getListItemCount: () => this.listElements.length,
       inputType: () => this.inputType,
       setSelectedAtIndex: (index) => {
-        this.listElements.forEach(ele => {
-          ele.selected = false;
-        })
-        this.listElements[index].selected = true;
+        this.selectItem(this.listElements[index] as ListItem);
+        // this.listElements.forEach(ele => {
+        //   ele.selected = false;
+        //   ele.setFocused(false);
+        // })
+        // this.listElements[index].selected = true;
+        // this.listElements[index].setFocused(true);
       },
       toggleItemAtIndex: (index) => { this.listElements[index].toggle() },
       getFocusedElementIndex: () => {
@@ -152,9 +155,13 @@ export class List extends BaseElement {
         const ele = this.listElements[index] as ListItem;
         if (ele) ele.removeClass(className); // temp solution
       },
+      isDisabledAtIndex: (index: number) => {
+        const ele = this.listElements[index] as ListItem;
+        return ele && ele.disabled;
+      },
       focusItemAtIndex: (index: number) => {
         const ele = this.listElements[index] as ListItem;
-        if (ele) ele.setFocused(true);
+        if (ele && ele.disabled === false) ele.setFocused(true);
       },
       setTabIndexForListItemChildren: (listItemIndex: number, tabIndexValue: string) => {
         return `${listItemIndex} , ${tabIndexValue}`; // TODO
@@ -192,7 +199,7 @@ export class List extends BaseElement {
   }
 
   get listElements(): ListItem[] {
-    return findAssignedElements(this.slotEl, 'mwc-list-item') as ListItem[];
+    return findAssignedElements(this.slotEl, 'mwc-list-item:not(disabled)') as ListItem[];
   }
 
   protected getListItemIndex_(evt: Event): number {
@@ -252,6 +259,34 @@ export class List extends BaseElement {
   // NOTE: needed only for ShadyDOM where delegatesFocus is not implemented
   public focus() {
     this.mdcRoot.focus();
+  }
+
+  protected defocusAllItems() {
+    this.listElements.forEach(e => e.setFocused(false))
+  }
+
+  protected focusItem(item: ListItem, hard: boolean = false) {
+    this.defocusAllItems();
+    item.setFocused(true);
+    if (hard) item.focus();
+  }
+
+  protected deselectAllItems() {
+    this.listElements.forEach(e => e.selected = false)
+  }
+
+  protected selectItem(item: ListItem) {
+    this.focusItem(item, false);
+    this.deselectAllItems();
+    item.selected = true;
+  }
+
+  public selectItemAtIndex(index: number) {
+    this.selectItem(this.listElements[index])
+  }
+
+  public focusItemAtIndex(index: number, hard: boolean) {
+    this.focusItem(this.listElements[index], hard);
   }
 
 }

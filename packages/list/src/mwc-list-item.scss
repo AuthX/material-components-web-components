@@ -77,6 +77,17 @@
   .mdc-list-item--background-focused:not( .mdc-list-item--selected):not( .mdc-list-item--activated) {
     background-color: rgba(0,0,0,0.12);
   }
+  .mdc-list-item--background-focused.mdc-list-item--selected {
+    background-color: rgba(0,0,0,0);
+  }
+  .mdc-list-item--background-focused-disabled {
+    background-color: rgba(0,0,0,0.03);
+  }
+
+  :not(.mdc-list-item--non-interactive):not(.mdc-list-item--disabled):not(.mdc-list-item--background-focused):not( .mdc-list-item--selected):not( .mdc-list-item--activated).mdc-list-item::before {
+    background: none;
+  }
+
   // "Selected" is ephemeral and likely to change soon. E.g., selecting one or more photos to share in Google Photos.
   // "Activated" is more permanent. E.g., the currently highlighted navigation destination in a drawer.
   .mdc-list-item--selected,
@@ -89,7 +100,8 @@
     @include mdc-list-item-primary-text-ink-color(text-disabled-on-background, $query);
   }
 
-  .mdc-list-item__graphic:has(slot:not(:empty)) {
+  .mdc-list-item__graphic {
+    display: inline;
     @include mdc-feature-targets($feat-structure) {
       @include mdc-list-graphic-size_(24px);
 
@@ -99,18 +111,21 @@
       fill: currentColor;
     }
   }
+  .mdc-list-item__graphic-empty {
+    display: contents;
+  }
 
   // Extra specificity is to override .material-icons display style if used in
   // conjunction with mdc-list-item__graphic
   // stylelint-disable plugin/selector-bem-pattern
-  .mdc-list .mdc-list-item__graphic:has(slot:not(:empty)) {
+  .mdc-list .mdc-list-item__graphic {
     @include mdc-feature-targets($feat-structure) {
       display: inline-flex;
     }
   }
   // stylelint-enable plugin/selector-bem-pattern
 
-  .mdc-list-item__meta:has(slot:not(:empty)) {
+  .mdc-list-item__meta {
     @include mdc-feature-targets($feat-structure) {
       @include mdc-rtl-reflexive-property(margin, auto, 0, ".mdc-list-item");
     }
@@ -195,6 +210,7 @@
     @include mdc-feature-targets($feat-structure) {
       cursor: pointer;
     }
+    background-color: none;
   }
 
   // Override anchor tag styles for the use-case of a list being used for navigation

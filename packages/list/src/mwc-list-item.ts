@@ -83,24 +83,30 @@ export class ListItem extends LitElement {
   protected _nonInteractive = false;
   protected _inputType = 'none';
   protected _inputAction = '';
+  protected _slot_graphic = true;
+  protected _slot_content = true;
+  protected _slot_meta = true;
+  protected _slot_secondary = true;
 
   static styles = style;
 
   render() {
+    let inactive = this._nonInteractive || this.disabled;
     const classes = {
       "mdc-list-item": true,
       "mdc-list-item__avatar-list": this._avatarList,
       "mdc-list-item--two-line": this._lines === 2,
       "mdc-list-item--disabled": this.disabled,
       "mdc-list-item--non-interactive": this._nonInteractive,
-      "mdc-list-item--selected": this.selected,
-      "mdc-list-item--activated": this.activated,
+      "mdc-list-item--selected": this.selected && !inactive,
+      "mdc-list-item--activated": this.activated && !inactive,
       "mdc-list-item--expanded": this.expanded,
       "mdc-list-item--expandable": this.expandable,
       "mdc-list-item--indented": this.indent,
       "mdc-ripple-upgraded": this._ripple,
-      "mdc-ripple-upgraded--background-focused": this._ripple && this.focused,
-      "mdc-list-item--background-focused": !this._ripple && this.focused,
+      "mdc-ripple-upgraded--background-focused": this._ripple && this.focused && !inactive,
+      "mdc-list-item--background-focused": !this._ripple && this.focused && !inactive,
+      "mdc-list-item--background-focused-disabled": !this._ripple && this.focused && this.disabled,
     };
 
     return html`
@@ -121,6 +127,7 @@ export class ListItem extends LitElement {
     this.updateComplete
       .then(() => {
         this.setParentType();
+        this.removeEmptySlots();
       });
   }
 
@@ -153,22 +160,22 @@ export class ListItem extends LitElement {
   }
 
   public renderGraphic() {
+    const orNot = this._slot_graphic ? '' : '-empty';
     return html`
-      <span class="mdc-list-item__graphic">
-        <slot name='graphic'></slot>
-      </span>
-    `;
+      <slot class="mdc-list-item__graphic${orNot}" name='graphic'></slot>
+    `
   }
 
   public renderMeta() {
     let moreorless = this.expanded ? "expand_less" : "expand_more";
+    const orNot = this._slot_meta ? '' : '-empty';
     return this.expandable
       ? html`
-        <span class="mdc-list-item__meta">
+        <span class="mdc-list-item__meta${orNot}">
           <mwc-icon>${moreorless}</mwc-icon>
         </span>
       `: html`
-        <span class="mdc-list-item__meta">
+        <span class="mdc-list-item__meta${orNot}">
           <slot name='meta'></slot>
         </span>
       `;
@@ -223,6 +230,19 @@ export class ListItem extends LitElement {
       this._inputAction = parentElement.inputAction;
       this.requestUpdate();
     }
+  }
+
+  public removeEmptySlots() {
+    Array
+      .from( this.shadowRoot!.querySelectorAll( "slot" ) )
+      .forEach( ( slot ) => {
+        let nodes = slot.assignedNodes();
+        if (nodes.length) {
+        } else {
+          this[ `_slot_${slot.name}` ] = false;
+          this.requestUpdate()
+        }
+      } );
   }
 
   public focus() {

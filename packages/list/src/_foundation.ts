@@ -57,6 +57,7 @@ export class MDCListFoundation extends MDCFoundation<MDCListAdapter> {
       hasRadioAtIndex: () => false,
       isCheckboxCheckedAtIndex: () => false,
       isFocusInsideList: () => false,
+      isDisabledAtIndex: () => false,
       notifyAction: () => undefined,
       removeClassForElementIndex: () => undefined,
       setAttributeForElementIndex: () => undefined,
@@ -203,13 +204,14 @@ export class MDCListFoundation extends MDCFoundation<MDCListAdapter> {
         if (target && target.tagName === 'A' && isEnter) {
           return;
         }
+        if (!this.adapter_.isDisabledAtIndex(currentIndex)) {
+          if (this.isSelectableList_()) {
+            this.setSelectedIndexOnAction_(currentIndex);
+          }
+          this.adapter_.notifyAction(currentIndex);
+        }
         this.preventDefaultEvent_(evt);
 
-        if (this.isSelectableList_()) {
-          this.setSelectedIndexOnAction_(currentIndex);
-        }
-
-        this.adapter_.notifyAction(currentIndex);
       }
     }
 
@@ -229,11 +231,12 @@ export class MDCListFoundation extends MDCFoundation<MDCListAdapter> {
       return;
     }
 
-    if (this.isSelectableList_()) {
-      this.setSelectedIndexOnAction_(index, toggleCheckbox);
+    if (!this.adapter_.isDisabledAtIndex(index)) {
+      if (this.isSelectableList_()) {
+        this.setSelectedIndexOnAction_(index, toggleCheckbox);
+      }
+      this.adapter_.notifyAction(index);
     }
-
-    this.adapter_.notifyAction(index);
 
     this.setTabindexAtIndex_(index);
     this.focusedItemIndex_ = index;

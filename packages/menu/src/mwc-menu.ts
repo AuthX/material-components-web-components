@@ -80,7 +80,7 @@ export class Menu extends BaseElement {
    * elements.
    */
   get items(): Element[] {
-    return this.listEl ? this.listEl.listElements : [];
+    return this.listEl ? this.listEl.listElements as Element[] : [];
   }
 
   protected get listEl() {
@@ -137,7 +137,9 @@ export class Menu extends BaseElement {
         }, true)
       },
       getMenuItemCount: () => this.items.length,
-      focusItemAtIndex: (index) => (this.items[index] as HTMLElement).focus(),
+      focusItemAtIndex: (index) => {
+        this.listEl.focusItemAtIndex(index, true);
+      },
       focusListRoot: () => this.listEl.focus()
     }
   }
