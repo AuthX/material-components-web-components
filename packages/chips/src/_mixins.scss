@@ -22,6 +22,7 @@
 @import "@material/rtl/mixins";
 @import "@material/theme/mixins";
 @import "@material/shape/mixins";
+@import "@material/feature-targeting/functions";
 @import "./variables";
 
 @mixin mdc-chip-avatar-shape-radius($radius, $rtl-reflexive: false) {
@@ -66,9 +67,9 @@
   }
 }
 
-@mixin mdc-chip-avatar-icon-size($size) {
+@mixin mdc-chip-avatar-icon-size($size, $query: mdc-feature-all()) {
   .mdc-chip__avatar-icon {
-    @include mdc-chip-icon-size_($size);
+    @include mdc-chip-icon-size_($size, $query);
   }
 }
 
