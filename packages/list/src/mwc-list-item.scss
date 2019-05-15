@@ -65,6 +65,8 @@
   @include mdc-list-group-subheader-ink-color(text-primary-on-background, $query);
 
   .mdc-list-item {
+    text-align: left;
+    
     @include mdc-feature-targets($feat-structure) {
       @include mdc-list-item-base_;
     }
@@ -179,7 +181,7 @@
 
     @include mdc-feature-targets($feat-structure) {
       display: block;
-      margin-left: -5px;
+      // margin-left: -5px;
     }
   }
 
