@@ -267,8 +267,11 @@ export class List extends BaseElement {
 
   protected focusItem(item: ListItem, hard: boolean = false) {
     this.defocusAllItems();
-    item.setFocused(true);
-    if (hard) item.focus();
+
+    if (item) {
+      item.setFocused(true);
+      if (hard) item.focus();
+    }
   }
 
   protected deselectAllItems() {
@@ -276,9 +279,12 @@ export class List extends BaseElement {
   }
 
   protected selectItem(item: ListItem) {
-    this.focusItem(item, false);
+    if (item) {
+      this.focusItem(item, false);
+      item.selected = true;
+    }
+    
     this.deselectAllItems();
-    item.selected = true;
   }
 
   public selectItemAtIndex(index: number) {

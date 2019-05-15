@@ -84,9 +84,38 @@
     background-color: rgba(0,0,0,0.03);
   }
 
-  :not(.mdc-list-item--non-interactive):not(.mdc-list-item--disabled):not(.mdc-list-item--background-focused):not( .mdc-list-item--selected):not( .mdc-list-item--activated).mdc-list-item::before {
-    background: none;
+  :not(.mdc-list-item--non-interactive):not(.mdc-list-item--disabled):not(.mdc-list-item--background-focused):not(.mdc-list-item--selected):not(.mdc-list-item--activated).mdc-list-item::before {
+    // background: none;
   }
+
+  :not(.mdc-list-item--non-interactive):not(.mdc-list-item--disabled).mdc-list-item {
+
+    &:hover::before {
+      // background: #000;
+      opacity: 0.04;
+    }
+    &-activated:hover::before {
+      // background: #000;
+      opacity: 0.16;
+    }
+    &--selected:hover::before {
+      // background: #000;
+      opacity: 0.12;
+    }
+    &:not(.mdc-ripple-upgraded):focus::before {
+      opacity: 0 !important;
+    }
+    &--selected:not(.mdc-ripple-upgraded):focus::before {
+      opacity: 0.2 !important;
+    }
+    // &.mdc-list-item--activated:not(.mdc-ripple-upgraded):focus::before {
+    //   opacity: 0.12;
+    // }
+    // &:focus::before {
+    //   opacity: 0.4;
+    // }
+  }
+
 
   // "Selected" is ephemeral and likely to change soon. E.g., selecting one or more photos to share in Google Photos.
   // "Activated" is more permanent. E.g., the currently highlighted navigation destination in a drawer.
