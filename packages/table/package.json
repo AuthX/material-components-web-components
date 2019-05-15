@@ -1,6 +1,6 @@
 {
   "name": "@authentic/mwc-table",
-  "version": "0.5.0-rc.29",
+  "version": "0.5.0-rc.30",
   "description": "",
   "main": "mwc-table.js",
   "scripts": {
@@ -9,10 +9,10 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@authentic/mwc-base": "^0.5.0-rc.29",
-    "@authentic/mwc-circular-progress": "^0.5.0-rc.29",
-    "@authentic/mwc-icon": "^0.5.0-rc.29",
-    "@authentic/mwc-tooltip": "^0.5.0-rc.29",
+    "@authentic/mwc-base": "^0.5.0-rc.30",
+    "@authentic/mwc-circular-progress": "^0.5.0-rc.30",
+    "@authentic/mwc-icon": "^0.5.0-rc.30",
+    "@authentic/mwc-tooltip": "^0.5.0-rc.30",
     "@material/elevation": "^1.1.0",
     "@material/shape": "^1.1.1",
     "@material/theme": "^1.1.0",
