@@ -1,6 +1,6 @@
 {
   "name": "@authentic/mwc-circular-progress",
-  "version": "0.5.0-rc.31",
+  "version": "0.5.0-rc.32",
   "description": "",
   "main": "mwc-circular-progress.js",
   "scripts": {
@@ -9,7 +9,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@authentic/mwc-base": "^0.5.0-rc.31",
+    "@authentic/mwc-base": "^0.5.0-rc.32",
     "@material/theme": "^1.1.0",
     "lit-element": "^2.1.0",
     "lit-html": "^1.0.0"
