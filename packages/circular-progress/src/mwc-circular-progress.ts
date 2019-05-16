@@ -51,10 +51,13 @@ export class CircularProgress extends LitElement {
   protected SIZE = 44;
 
   @query('.mwc-circular-progress')
-  protected mdcRoot!: HTMLElement
+  protected mdcRoot!: HTMLElement;
+
+  @query('circle')
+  protected circleEl!: HTMLElement;
 
   @query('.mdc-circular-progress__bar')
-  protected bar!: HTMLElement
+  protected bar!: HTMLElement;
 
   @property({ type: String })
   @observer(function (this: CircularProgress, value: String) {
@@ -120,7 +123,6 @@ export class CircularProgress extends LitElement {
     };
 
     return html`
-      ${this.getCircleStyle()}
       <div role="progressbar" class="${classMap(classes)}">
         ${svg`
           <svg viewBox="${SIZE / 2} ${SIZE / 2} ${SIZE} ${SIZE}">
@@ -172,47 +174,34 @@ export class CircularProgress extends LitElement {
     this.mdcFoundation.init();
   }
 
-  getCircleStyle() {
-    const { fixed, determinate, SIZE, size, thickness, progress } = this;
-
-    if (determinate || fixed) {
-      const circumference = 2 * Math.PI * ((SIZE - thickness) / 2);
-      const strokeDasharray = circumference.toFixed(3);
-      const strokeDashoffset = fixed
-        ? `${(((100 - progress) / 100) * circumference).toFixed(3)}px`
-        : `${(easeIn((100 - progress) / 100) * circumference).toFixed(3)}px`
-      const transform = fixed
-        ? 'rotate(-90deg)'
-        : `rotate(${(easeOut(progress / 70) * 270).toFixed(3)}deg)`;
-
-      return html`
-        <style>
-          .mwc-circular-progress {
-            transform: ${transform};
-            width: ${size}px;
-            height: ${size}px;
-          }
-
-          .mwc-circular-progress circle {
-            stroke-dasharray: ${strokeDasharray};
-            stroke-dashoffset: ${strokeDashoffset};
-          }
-        </style>
-      `;
-    }
-
-    return html`
-      <style>
-        .mwc-circular-progress {
-          width: ${size}px;
-          height: ${size}px;
-        }
-      </style>
-    `;
-  }
-
   firstUpdated() {
     this.createFoundation();
+  }
+
+  updated(changedProperties) {
+    super.update(changedProperties);
+
+    if (changedProperties.has('size')) {
+        const { fixed, determinate, SIZE, size, thickness, progress } = this;
+
+        if (determinate || fixed) {
+            const circumference = 2 * Math.PI * ((SIZE - thickness) / 2);
+            const strokeDasharray = circumference.toFixed(3);
+            const strokeDashoffset = fixed
+              ? `${(((100 - progress) / 100) * circumference).toFixed(3)}px`
+              : `${(easeIn((100 - progress) / 100) * circumference).toFixed(3)}px`;
+            const transform = fixed
+              ? 'rotate(-90deg)'
+              : `rotate(${(easeOut(progress / 70) * 270).toFixed(3)}deg)`;
+
+            this.mdcRoot.style.transform = transform;
+            this.circleEl.style.strokeDasharray = strokeDasharray;
+            this.circleEl.style.strokeDashoffset = strokeDashoffset;
+        }
+
+        this.mdcRoot.style.width = `${size}px`;
+        this.mdcRoot.style.height = `${size}px`;
+    }
   }
 
   open() {
