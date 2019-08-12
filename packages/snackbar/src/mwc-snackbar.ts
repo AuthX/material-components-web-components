@@ -81,6 +81,20 @@ export class Snackbar extends BaseElement {
 
   static styles = style;
 
+  /**
+   * Used to render the lit-html TemplateResult with a label
+   */
+  protected _renderLabel() {
+    const classes = {
+      'mdc-snackbar__label': true
+    };
+
+    return html`
+      <div class="${classMap(classes)}" role="status" aria-live="polite">
+        ${this.labelText}
+      </div>
+    `;
+  }
   render() {
     const classes = {
       'mdc-snackbar--stacked': this.stacked,
@@ -89,9 +103,7 @@ export class Snackbar extends BaseElement {
     return html`
       <div class="mdc-snackbar ${classMap(classes)}" @keydown="${this._handleKeydown}">
         <div class="mdc-snackbar__surface">
-          <div class="mdc-snackbar__label" role="status" aria-live="polite">
-            ${this.labelText}
-          </div>
+          ${this._renderLabel()}
           <div class="mdc-snackbar__actions">
             <slot name="action" @click="${this._handleActionClick}"></slot>
             <slot name="dismiss" @click="${this._handleDismissClick}"></slot>
