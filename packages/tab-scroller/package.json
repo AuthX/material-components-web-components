@@ -1,6 +1,6 @@
 {
   "name": "@authentic/mwc-tab-scroller",
-  "version": "0.6.11",
+  "version": "0.6.12",
   "description": "",
   "main": "mwc-tab-scroller.js",
   "repository": {
@@ -14,7 +14,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@authentic/mwc-base": "^0.6.11",
+    "@authentic/mwc-base": "^0.6.12",
     "@material/dialog": "~1.1.0",
     "@material/tab-scroller": "~2.3.0"
   },
