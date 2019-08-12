@@ -1,6 +1,6 @@
 {
   "name": "@authentic/mwc-top-app-bar",
-  "version": "0.6.12",
+  "version": "0.6.13",
   "description": "",
   "main": "mwc-top-app-bar.js",
   "repository": {
@@ -14,7 +14,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@authentic/mwc-base": "^0.6.12",
+    "@authentic/mwc-base": "^0.6.13",
     "@material/top-app-bar": "~2.3.0"
   },
   "publishConfig": {
