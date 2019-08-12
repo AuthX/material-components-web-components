@@ -64,3 +64,7 @@ limitations under the License.
   position: relative;
   width: 100%;
 }
+
+::slotted(select) {
+  min-height: 100%;
+}
