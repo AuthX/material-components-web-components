@@ -21,7 +21,7 @@ import {
   html,
   classMap,
   findAssignedElements
-} from '@material/mwc-base/base-element';
+} from '@authentic/mwc-base/base-element';
 import { List as MWCList } from './mwc-list';
 
 import { style } from './mwc-list-group-css';

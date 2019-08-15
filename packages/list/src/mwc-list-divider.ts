@@ -21,7 +21,7 @@ import {
   html,
   classMap,
   property
-} from '@material/mwc-base/base-element';
+} from '@authentic/mwc-base/base-element';
 
 import { style } from './mwc-list-item-css';
 

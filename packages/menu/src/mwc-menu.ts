@@ -30,8 +30,8 @@ import { DefaultFocusState } from '@material/menu/constants';
 import { MDCMenuSurface, MDCMenuSurfaceFactory } from '@material/menu-surface/component';
 import MDCMenuSurfaceFoundation from '@material/menu-surface/foundation';
 import { MDCMenuDistance } from '@material/menu-surface/types';
-import { List as MWCList } from '@material/mwc-list/mwc-list';
-import { ListItem as MWCListItem } from '@material/mwc-list/mwc-list-item';
+import { List as MWCList } from '@authentic/mwc-list/mwc-list';
+import { ListItem as MWCListItem } from '@authentic/mwc-list/mwc-list-item';
 
 import { style } from './mwc-menu-css';
 

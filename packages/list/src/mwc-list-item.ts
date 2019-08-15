@@ -25,12 +25,12 @@ import {
   findAssignedElement,
   observer,
   // observer
-} from '@material/mwc-base/base-element';
-import { ripple } from '@material/mwc-ripple/ripple-directive';
+} from '@authentic/mwc-base/base-element';
+import { ripple } from '@authentic/mwc-ripple/ripple-directive';
 
 import { style } from './mwc-list-item-css';
 
-import '@material/mwc-icon/mwc-icon';
+import '@authentic/mwc-icon/mwc-icon';
 
 interface List extends HTMLElement {
   content: Boolean;

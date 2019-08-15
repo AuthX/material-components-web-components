@@ -15,7 +15,7 @@
   "dependencies": {
     "@material/feature-targeting": "^0.44.1",
     "@material/list": "~2.3.0",
-    "@material/mwc-base": "~0.6.0",
+    "@authentic/mwc-base": "~0.6.0",
     "@material/ripple": "^2.3.0",
     "@material/rtl": "^0.42.0",
     "@material/shape": "^1.1.1",
