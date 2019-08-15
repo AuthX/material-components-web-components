@@ -60,10 +60,9 @@ limitations under the License.
   }
 }
 
-.mdc-select__menu-anchor {
-  position: relative;
-  width: 100%;
-}
+// slot[name="menu"]::slotted(*) {
+//   position: relative;
+// }
 
 ::slotted(select) {
   min-height: 100%;

@@ -16,16 +16,27 @@ limitations under the License.
 */
 import {
   LitElement,
-  html,
-  property,
-  query,
   customElement,
+  query,
+  html,
   classMap,
-  PropertyValues
-} from '@authentic/mwc-base/base-element';
-import { List as MWCList } from './mwc-list';
+  property,
+  emit,
+  findAssignedElement,
+  observer,
+  // observer
+} from '@material/mwc-base/base-element';
+import { ripple } from '@material/mwc-ripple/ripple-directive';
 
 import { style } from './mwc-list-item-css';
+
+import '@material/mwc-icon/mwc-icon';
+
+interface List extends HTMLElement {
+  content: Boolean;
+  offsetContent: Boolean;
+  listElements: ListItem[];
+}
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -39,17 +50,29 @@ export class ListItem extends LitElement {
   @query('.mdc-list-item')
   protected mdcRoot!: HTMLElement;
 
+  @query('slot[name="graphic"]')
+  protected graphicSlot!: HTMLSlotElement;
+
+  @query('slot[name="meta"]')
+  protected metaSlot!: HTMLSlotElement;
+
+  @query('slot[name="content"]')
+  protected contentSlot!: HTMLSlotElement;
+
+  @query('.mdc-list-item-wrapper')
+  protected listItemWrapper!: HTMLElement;
+
+  @query('.mdc-list-item-content')
+  protected listItemContent!: HTMLElement;
+
+  @query('.mdc-list-item-content__inner')
+  protected listItemContentInner!: HTMLElement;
+
+  @property({ type: String, reflect: true })
+  public type = 'single-line';
+
   @property({ type: String })
-  public variant = 'single-line';
-
-  @property({ type: Boolean })
-  public disabled = false;
-
-  @property({ type: String })
-  public value = "";
-
-  @property({ type: Boolean })
-  public focused = false;
+  public nonInteractive = false;
 
   @property({ type: Boolean })
   public selected = false;
@@ -58,211 +81,362 @@ export class ListItem extends LitElement {
   public activated = false;
 
   @property({ type: Boolean })
-  public checkbox = false;
+  public offsetContent = false;
+
+  @property({ type: String })
+  public value = '';
+
+  @property({ type: Boolean, reflect: true })
+  @observer(function(this: ListItem, value: boolean) {
+    if (this.expandable) {
+      if (value) {
+        if (this.expanded) {
+          this.collapse();
+        }
+
+        this._removeExpandableListeners();
+      } else {
+        this._addExpandableListeners();
+      }
+    }
+  })
+  public disabled = false;
 
   @property({ type: Boolean })
-  public radio = false;
+  public avatarList = false;
 
-  @property({ type: Boolean })
-  public trailingInput = false;
-
-  @property({ type: Number })
-  public tabindex = -1;
-
-  @property({ type: Boolean })
+  @property({ type: Boolean, reflect: true })
   public expandable = false;
 
   @property({ type: Boolean })
-  public expanded = false;
+  @observer(function(this: ListItem, value: boolean) {
+    this.expanded = value;
+    this.collapsed = !value;
+  })
+  public startExpanded = false;
 
-  @property({ type: Boolean })
-  public indent = false;
+  protected get graphicElement(): HTMLElement {
+    return this.graphicSlot && findAssignedElement(this.graphicSlot, '*') as HTMLElement;
+  }
 
-  protected _lines = 1;
-  protected _ripple = false;
-  protected _avatarList = false;
-  protected _nonInteractive = false;
-  protected _inputType = 'none';
-  protected _inputAction = '';
-  protected _slot_graphic = true;
-  protected _slot_content = true;
-  protected _slot_meta = true;
-  protected _slot_secondary = true;
+  protected get metaElement(): HTMLElement {
+    return this.metaSlot && findAssignedElement(this.metaSlot, '*') as HTMLElement;
+  }
+
+  protected get contentElement(): List {
+    return this.contentSlot && findAssignedElement(this.contentSlot, '*') as List;
+  }
+
+  protected set expanded(value: boolean) {
+    this._expanded = value;
+
+    if (value) {
+      this.setAttribute('expanded', 'true');
+    } else {
+      this.setAttribute('expanded', 'false');
+    }
+  }
+
+  protected get expanded(): boolean {
+    return this._expanded;
+  }
+
+  protected set expanding(value: boolean) {
+    this._expanding = value;
+
+    if (value) {
+      this.setAttribute('expanding', 'true');
+    } else {
+      this.setAttribute('expanding', 'false');
+    }
+  }
+
+  protected get expanding(): boolean {
+    return this._expanding;
+  }
+
+  protected set collapsed(value: boolean) {
+    this._collapsed = value;
+    
+    if (value) {
+      this.setAttribute('collapsed', 'true');
+    } else {
+      this.setAttribute('collapsed', 'false');
+    }
+  }
+
+  protected get collapsed(): boolean {
+    return this._collapsed;
+  }
+
+  protected set collapsing(value: boolean) {
+    this._collapsing = value;
+
+    if (value) {
+      this.setAttribute('collapsing', 'true');
+    } else {
+      this.setAttribute('collapsing', 'false');
+    }
+  }
+
+  protected get collapsing(): boolean {
+    return this._collapsing;
+  }
+
+  protected _expanded!: boolean;
+
+  protected _expanding!: boolean;
+
+  protected _collapsing!: boolean;
+
+  protected _collapsed = !this._expanded;
+  
+  protected _expandable = false;
+  
+  protected _withGraphic = false;
+  
+  protected _withMeta = false;
+
+  protected _handleFocus = this._onFocus.bind(this);
+
+  protected _handleBlur = this._onBlur.bind(this);
+
+  protected _handleClick = this._onClick.bind(this);
+
+  protected _handleKeyDown = this._onKeyDown.bind(this);
+
+  protected _handleExpandTransitionEnd = this._onExpandTransitionEnd.bind(this);
+
+  protected _handleCollapseTransitionEnd = this._onCollapseTransitionEnd.bind(this);
 
   static styles = style;
 
-  render() {
-    let inactive = this._nonInteractive;
+  protected _renderArrowIcon() {
+    return html`
+      <mwc-icon>keyboard_arrow_down</mwc-icon>
+    `;
+  }
+
+  protected _renderExpandableListItem() {
     const classes = {
-      "mdc-list-item": true,
-      "mdc-list-item__avatar-list": this._avatarList,
-      "mdc-list-item--two-line": this._lines === 2,
-      "mdc-list-item--disabled": this.disabled,
-      "mdc-list-item--non-interactive": this._nonInteractive,
-      "mdc-list-item--selected": this.selected && !inactive,
-      "mdc-list-item--activated": this.activated && !inactive,
-      "mdc-list-item--expanded": this.expanded,
-      "mdc-list-item--expandable": this.expandable,
-      "mdc-list-item--indented": this.indent,
-      "mdc-ripple-upgraded": this._ripple,
-      "mdc-ripple-upgraded--background-focused": this._ripple && this.focused && !inactive,
-      "mdc-list-item--background-focused": !this._ripple && this.focused && !inactive,
-      "mdc-list-item--background-focused-disabled": !this._ripple && this.focused && this.disabled,
-    };
-
-    return html`
-      <li
-        class="${classMap(classes)}"
-        tabindex="${this.tabindex}"
-        aria-current="${this.focused}"
-        aria-selected="${this.selected}"
-        @focusout=${this.handleFocusOut}
-      >
-        ${this.renderGraphic()}
-        <span class="mdc-list-item__text">
-          ${this._lines === 1 ? this.renderSingleLine() : this.renderDoubleLine()}
-        </span>
-        ${this.renderMeta()}
-      </li>
-      ${this.renderContent()}
-    `;
-  }
-
-  public firstUpdated(changed) {
-    super.firstUpdated(changed);
-
-    this.updateComplete
-      .then(() => {
-        this.setParentType();
-        this.removeEmptySlots();
-      });
-  }
-
-  public toggle(): void {
-    this.expanded = this.expandable
-      ? !this.expanded
-      : false;
-    this.requestUpdate();
-  }
-
-  public updated(_changedProperties: PropertyValues) {
-    super.updated(_changedProperties);
-  }
-
-  public renderSingleLine() {
-    return html`
-      <slot></slot>
-    `;
-  }
-
-  public renderDoubleLine() {
-    return html`
-      <span class="mdc-list-item__primary-text">
-        <slot></slot>
-      </span>
-      <span class="mdc-list-item__secondary-text">
-        <slot name='secondary'></slot>
-      </span>
-    `;
-  }
-
-  public renderGraphic() {
-    const orNot = this._slot_graphic ? '' : '-empty';
-    return html`
-      <span class="mdc-list-item__graphic${orNot}">
-        <slot name='graphic'></slot>
-      </span>
-    `
-  }
-
-  public renderMeta() {
-    const moreorless = this.expanded ? "expand_less" : "expand_more";
-    const orNot = this._slot_meta ? '' : '-empty';
-    const tab = this.focused ? 0 : -1;
-    return this.expandable
-      ? html`
-        <span class="mdc-list-item__meta${orNot}">
-          <mwc-icon tabindex="${tab}">${moreorless}</mwc-icon>
-        </span>
-      `: html`
-        <span class="mdc-list-item__meta${orNot}">
-          <slot name='meta' tabindex="${tab}"></slot>
-        </span>
-      `;
-  }
-
-  public renderContent() {
-    const classes = {
-      "mdc-list-item__content": true,
-      "mdc-list-item__content--expanded": this.expanded,
+      'mdc-list-item-wrapper': true,
+      'mdc-list-item-wrapper--collapsed': this.collapsed,
+      'mdc-list-item-wrapper--expanded': this.expanded,
+      'mdc-list-item-wrapper--collapsing': this.collapsing,
+      'mdc-list-item-wrapper--expanding': this.expanding,
     }
+
     return html`
       <div class="${classMap(classes)}">
-        <slot name='content'></slot>
+        ${this._renderListItem()}
+
+        <div class="mdc-list-item-content">
+          <div class="mdc-list-item-content__inner">
+            <slot name="content"></slot>
+          </div>
+        </div>
       </div>
     `;
   }
 
-  protected handleFocusOut(_) {
-    this.focused = false;
-  }
-
-  public addClass(className) {
-    this.mdcRoot.classList.add(className)
-  }
-
-  public removeClass(className) {
-    this.mdcRoot.classList.remove(className)
-  }
-
-  public setAttribute(attr, value) {
-    this[attr] = value;
-  }
-
-  public setFocused(focus: boolean) {
-    if (focus) {
-      this.focused = true;
-      this.tabindex = 0;
-    } else {
-      this.tabindex = -1;
-      this.focused = false;
+  protected _renderListItem() {
+    const classes = {
+      'mdc-list-item': true,
+      'mdc-list-item--two-line': this.type === 'two-line',
+      'mdc-list-item--non-interactive': this.nonInteractive && !this.expandable,
+      'mdc-list-item--selected': this.selected,
+      'mdc-list-item--activated': this.activated,
+      'mdc-list-item--disabled': this.disabled,
+      'mdc-list-item--avatar-list': this.avatarList,
+      'mdc-list-item--with-graphic': this._withGraphic,
+      'mdc-list-item--with-meta': this._withMeta,
+      'mdc-list-item--offset-content': this.offsetContent
     }
+
+    return html`
+      <div class="${classMap(classes)}" .ripple="${ripple({ unbounded: false })}">
+        <div class="mdc-list-item__graphic">
+          <slot name="graphic"></slot>
+        </div>
+        <div class="mdc-list-item__text">
+          <slot></slot>
+          <div class="mdc-list-item__primary-text">
+            <slot name="primary"></slot>
+          </div>
+          <div class="mdc-list-item__secondary-text">
+            <slot name="secondary"></slot>
+          </div>
+        </div>
+        <div class="mdc-list-item__meta">
+          <slot name="meta"></slot>
+          ${this.expandable ? this._renderArrowIcon() : ''}
+        </div>
+      </div>
+    `;
   }
 
-  public setParentType(parentElement = this.parentElement) {
-    if (parentElement instanceof MWCList) {
-      this._lines = parentElement.lines;
-      this._ripple = parentElement.ripple;
-      this._avatarList = parentElement.avatarList;
-      this._nonInteractive = parentElement.nonInteractive;
-      this._inputType = parentElement.inputType;
-      this._inputAction = parentElement.inputAction;
-      this.requestUpdate();
-    }
+  protected render() {
+    return this.expandable
+      ? this._renderExpandableListItem()
+      : this._renderListItem();
   }
 
-  public removeEmptySlots() {
-    Array
-      .from( this.shadowRoot!.querySelectorAll( "slot" ) )
-      .forEach( ( slot ) => {
-        const nodes = slot.assignedNodes();
-        const name = slot.name || slot['Ba']; // da fuq is IE doing here?
-        if (nodes.length) {
-        } else {
-          this[ `_slot_${name}` ] = false;
-          this.requestUpdate()
+  public firstUpdated() {
+    this.addEventListener('focus', this._handleFocus);
+    this.addEventListener('blur', this._handleBlur);
+
+    this.updateComplete
+      .then(() => {
+        this._withGraphic = !!this.graphicElement;
+        this._withMeta = !!this.metaElement || !!this.expandable;
+
+        if (this.expandable) {
+          if (this.contentElement) {
+            this.contentElement.content = true;
+            this.contentElement.offsetContent = this._withGraphic;
+          }
+
+          this._disableTabIndex();
         }
-      } );
+        
+        this.requestUpdate();
+      })
   }
 
-  public focus() {
-    this.mdcRoot.focus();
-    this.setFocused(true);
+  protected _onFocus(e: FocusEvent) {
+    emit(this.mdcRoot, e.type, undefined, false);
   }
 
-  public blur() {
-    this.mdcRoot.blur();
-    this.setFocused(false);
+  protected _onBlur(e: FocusEvent) {
+    emit(this.mdcRoot, e.type, undefined, false);
   }
 
+  protected _onClick() {
+    this.toggle();
+  }
+
+  protected _onKeyDown(e: KeyboardEvent) {
+    const isEnter = e.code === 'Enter' || e.keyCode === 13;
+    const isSpace = e.code === 'Space' || e.keyCode === 32;
+
+    if (isEnter || isSpace) {
+      if (this.contentElement) {
+        this.toggle();
+
+        if (this.expanding) {
+          this.contentElement.focus();
+        }
+      }
+    }
+  }
+
+  protected _onExpandTransitionEnd() {
+    this.style.transitionProperty = '';
+    this.expanding = false;
+    this.expanded = true;
+    this.requestUpdate();
+  }
+
+  protected _onCollapseTransitionEnd() {
+    this.style.transitionProperty = '';
+    this.collapsing = false;
+    this.collapsed = true;
+    this.requestUpdate();
+  }
+
+  protected _addExpandableListeners() {
+    this.addEventListener('keydown', this._handleKeyDown);
+    this.mdcRoot.addEventListener('click', this._handleClick);
+  }
+
+  protected _removeExpandableListeners() {
+    this.removeEventListener('keydown', this._handleKeyDown);
+    this.mdcRoot.removeEventListener('click', this._handleClick);
+  }
+
+  protected _enableTabIndex() {
+    if (this.contentElement) {
+      this.contentElement.listElements[0].tabIndex = 0;
+    }
+  }
+
+  protected _disableTabIndex() {
+    if (this.contentElement) {
+      this.contentElement.listElements.forEach(item => item.tabIndex = -1);
+    }
+  }
+
+  public expand() {
+    if (this.collapsing) return;
+
+    const contentHeight = this.listItemContentInner.getBoundingClientRect().height;
+
+    this.expanding = true;
+    this.collapsed = false;
+
+    const siblings = [...this.parentElement!.children];
+    const currentIndex = siblings.indexOf(this);
+    if (currentIndex > 0) {
+      const previousSibling: HTMLElement = siblings[currentIndex - 1] as HTMLElement;
+      if (previousSibling.getAttribute('expanded') === 'true') {
+        this.style.borderTop = 'none';
+        this.style.marginTop = '0';
+        this.style.paddingTop = '0';
+      }
+    }
+
+    if (currentIndex < siblings.length - 1) {
+      const nextSibling: HTMLElement = siblings[currentIndex + 1] as HTMLElement;
+      if (nextSibling.getAttribute('expanded') === 'true' || nextSibling.getAttribute('expanding') === 'true') {
+        this.style.transitionProperty = 'padding-top, margin-top, border-top-width';
+        nextSibling.style.borderTop = '0';
+        nextSibling.style.marginTop = '0';
+        nextSibling.style.paddingTop = '0';
+      }
+    }
+
+    this.listItemContent.style.height = `${contentHeight}px`;
+    this.listItemContent.addEventListener("transitionend", this._handleExpandTransitionEnd, { once: true });
+
+    this._enableTabIndex();
+    this.requestUpdate();
+  }
+
+  public collapse() {
+    if (this.expanding) return;
+
+    this.collapsing = true;
+    this.expanded = false;
+
+    this.style.transitionProperty = '';
+    this.style.borderTop = '';
+    this.style.marginTop = '';
+    this.style.paddingTop = '';
+
+    const siblings = [...this.parentElement!.children];
+    const currentIndex = siblings.indexOf(this);
+    if (currentIndex < siblings.length - 1) {
+      const nextSibling: HTMLElement = siblings[currentIndex + 1] as HTMLElement;
+      if (nextSibling.getAttribute('expanded') === 'true' || nextSibling.getAttribute('expanded') === 'true') {
+        this.style.transitionProperty = 'padding-top, margin-top, border-top-width';
+        nextSibling.style.borderTop = '';
+        nextSibling.style.marginTop = '';
+        nextSibling.style.paddingTop = '';
+      }
+    }
+
+    this.listItemContent.style.height = '';
+    this.listItemContent.addEventListener("transitionend", this._handleCollapseTransitionEnd, { once: true });
+
+    this._disableTabIndex();
+    this.requestUpdate();
+  }
+
+  public toggle() {
+    if (this.collapsed || this.collapsing) {
+      this.expand();
+    } else {
+      this.collapse();
+    }
+  }
 }
