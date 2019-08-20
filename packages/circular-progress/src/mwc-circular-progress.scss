@@ -24,6 +24,12 @@ limitations under the License.
 .mwc-circular-progress {
   line-height: 1;
 
+  &__bg {
+    stroke-dasharray: 0 !important;
+    stroke-dashoffset: 0 !important;
+    animation:none !important;
+  }
+
   &--closed {
     display: none;
   }

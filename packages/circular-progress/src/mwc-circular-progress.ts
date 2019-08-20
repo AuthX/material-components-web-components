@@ -56,7 +56,7 @@ export class CircularProgress extends LitElement {
   @query('.mwc-circular-progress')
   protected mdcRoot!: HTMLElement;
 
-  @query('circle')
+  @query('circle#progress')
   protected circleEl!: HTMLElement;
 
   @query('.mdc-circular-progress__bar')
@@ -159,7 +159,8 @@ export class CircularProgress extends LitElement {
       <div role="progressbar" class="${classMap(classes)}">
         ${svg`
           <svg viewBox="${SIZE / 2} ${SIZE / 2} ${SIZE} ${SIZE}">
-            <circle cx="${SIZE}" cy="${SIZE}" r="${(SIZE - thickness) / 2}" fill="none" stroke-width="${thickness}" />
+            <circle class="mwc-circular-progress__bg" color="#efefed" cx="${SIZE}" cy="${SIZE}" r="${(SIZE - thickness) / 2}" fill="none" stroke-width="${thickness}" />
+            <circle id="progress" cx="${SIZE}" cy="${SIZE}" r="${(SIZE - thickness) / 2}" fill="none" stroke-width="${thickness}" />
           </svg>
         `}
       </div>`;
