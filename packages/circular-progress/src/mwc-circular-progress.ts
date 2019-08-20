@@ -78,16 +78,25 @@ export class CircularProgress extends LitElement {
   secondary = false;
 
   /**
-   * Optional. Default value is 40. A number representing the size of the circle
+   * A number representing the size of the circle
    */
   @property({ type: Number })
-  size = 40;
+  @observer(function (this: CircularProgress, value: number) {
+      this._size = value;
+  })
+  size = 4;
+  protected _size = 44;
 
   /**
-   * Optional. Default value is 3.6. A number representing thickness of the circle
+   * A number representing thickness of the circle
    */
   @property({ type: Number })
-  thickness = 3.6;
+  @observer(function (this: CircularProgress, value: number) {
+      this._thickness = value;
+  })
+  thickness = 4;
+  protected _thickness = 4;
+
 
   /**
    * Optional. Default value sets to false. Allows the indicator to be set to a defined state of progress, from 0 to 100%
@@ -142,7 +151,7 @@ export class CircularProgress extends LitElement {
    * Used to render the lit-html TemplateResult to the element's DOM
    */
   render() {
-    const { fixed, determinate, closed, SIZE, thickness, disableShrink } = this;
+    const { fixed, determinate, closed, SIZE, _thickness, disableShrink } = this;
 
     const classes = {
       'mwc-circular-progress': true,
@@ -159,8 +168,8 @@ export class CircularProgress extends LitElement {
       <div role="progressbar" class="${classMap(classes)}">
         ${svg`
           <svg viewBox="${SIZE / 2} ${SIZE / 2} ${SIZE} ${SIZE}">
-            <circle class="mwc-circular-progress__bg" color="#efefed" cx="${SIZE}" cy="${SIZE}" r="${(SIZE - thickness) / 2}" fill="none" stroke-width="${thickness}" />
-            <circle id="progress" cx="${SIZE}" cy="${SIZE}" r="${(SIZE - thickness) / 2}" fill="none" stroke-width="${thickness}" />
+            <circle class="mwc-circular-progress__bg" color="#efefed" cx="${SIZE}" cy="${SIZE}" r="${(SIZE - _thickness) / 2}" fill="none" stroke-width="${_thickness}" />
+            <circle id="progress" cx="${SIZE}" cy="${SIZE}" r="${(SIZE - _thickness) / 2}" fill="none" stroke-width="${_thickness}" />
           </svg>
         `}
       </div>`;
@@ -223,7 +232,7 @@ export class CircularProgress extends LitElement {
   updated(_changedProperties: PropertyValues) {
     super.updated(_changedProperties);
 
-    const { fixed, determinate, SIZE, size, thickness, progress } = this;
+    const { fixed, determinate, SIZE, _size, thickness, progress } = this;
 
     if (determinate || fixed) {
         const circumference = 2 * Math.PI * ((SIZE - thickness) / 2);
@@ -240,8 +249,8 @@ export class CircularProgress extends LitElement {
         this.circleEl.style.strokeDashoffset = strokeDashoffset;
     }
 
-    this.mdcRoot.style.width = `${size}px`;
-    this.mdcRoot.style.height = `${size}px`;
+    this.mdcRoot.style.width = `${_size}px`;
+    this.mdcRoot.style.height = `${_size}px`;
   }
 
   /**
