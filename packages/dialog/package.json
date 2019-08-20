@@ -1,6 +1,6 @@
 {
   "name": "@authentic/mwc-dialog",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "",
   "main": "mwc-dialog.js",
   "repository": {
@@ -13,9 +13,9 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@authentic/mwc-base": "^0.7.1",
-    "@authentic/mwc-button": "^0.7.1",
-    "@authentic/mwc-ripple": "^0.7.1",
+    "@authentic/mwc-base": "^0.7.2",
+    "@authentic/mwc-button": "^0.7.2",
+    "@authentic/mwc-ripple": "^0.7.2",
     "@material/button": "~2.3.0",
     "@material/dialog": "~2.3.0",
     "@material/dom": "~1.1.0",
