@@ -78,16 +78,16 @@ export class CircularProgress extends LitElement {
   secondary = false;
 
   /**
-   * Optional. Default value is 40. A number representing the size of the circle
+   * A number representing the size of the circle
    */
   @property({ type: Number })
-  size = 40;
+  size = 44;
 
   /**
-   * Optional. Default value is 3.6. A number representing thickness of the circle
+   * A number representing thickness of the circle
    */
   @property({ type: Number })
-  thickness = 3.6;
+  thickness = 4;
 
   /**
    * Optional. Default value sets to false. Allows the indicator to be set to a defined state of progress, from 0 to 100%
