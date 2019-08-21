@@ -60,6 +60,13 @@ limitations under the License.
   }
 }
 
+.mdc-select__selected-text-inner {
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 // slot[name="menu"]::slotted(*) {
 //   position: relative;
 // }

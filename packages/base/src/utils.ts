@@ -83,3 +83,22 @@ export function addHasRemoveClass(element: HTMLElement) {
     hasClass: (className: string) => element.classList.contains(className)
   }
 }
+
+/**
+ * Returns the event’s path which is an array of the objects on which listeners will be invoked
+ */
+export function eventPath(e: MouseEvent): EventTarget[] {
+  if ('composedPath' in e) return e.composedPath();
+  if ('path' in e) return e['path'];
+  //polyfill
+  const path = [];
+  let currentElem = e['target'];
+  while (currentElem) {
+    path.push(currentElem);
+    currentElem = currentElem['parentElement'] as never;
+  }
+  if (path.indexOf(window as never) === -1 && path.indexOf(document as never) === -1) path.push(document as never);
+  if (path.indexOf(window as never) === -1) path.push(window as never);
+
+  return path;
+}

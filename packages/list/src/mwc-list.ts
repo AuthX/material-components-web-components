@@ -220,7 +220,7 @@ export class List extends BaseElement {
         const toggleEl = listItem.querySelector<HTMLInputElement>(this.selectors.checkboxRadio);
         if (toggleEl && toggleEl.parentElement === listItem) {
           toggleEl.checked = isChecked;
-          emit(toggleEl, 'change', {}, true);
+          emit(toggleEl, 'change', { index }, true);
         }
       },
       setTabIndexForListItemChildren: (listItemIndex, tabIndexValue) => {
@@ -294,11 +294,23 @@ export class List extends BaseElement {
 
     // List items with checkbox need to have role="checkbox"
     this.listElements.filter(item => item.querySelector(this.selectors.checkbox))
-      .forEach((el: Element) => el.setAttribute('role', 'checkbox'));
+      .forEach((el: Element) => {
+        el.setAttribute('role', 'checkbox');
+
+        if (el.querySelector(this.selectors.checkbox)!['checked']) {
+          el.setAttribute('aria-checked', 'true');
+        }
+      });
 
     // List items with radio button need to have role="radio"
     this.listElements.filter(item => item.querySelector(this.selectors.radio))
-      .forEach((el: Element) => el.setAttribute('role', 'radio'));
+      .forEach((el: Element) => {
+        el.setAttribute('role', 'radio');
+
+        if (el.querySelector(this.selectors.radio)!['checked']) {
+          el.setAttribute('aria-checked', 'true');
+        }
+      });
 
     // Child button/a elements are not tabbable until the list item is focused.
     this.listElements
@@ -327,7 +339,9 @@ export class List extends BaseElement {
     ) as MWCListItem;
 
     if (hasCheckboxListItems) {
-      const preselectedItems = this.mdcRoot.querySelectorAll(strings.ARIA_CHECKED_CHECKBOX_SELECTOR);
+      const preselectedItems = this.listElements.filter(
+        item => item.getAttribute('aria-checked') === 'true'
+      );
       this.mdcFoundation.setSelectedIndex(
         [...preselectedItems]
         .map(
@@ -340,9 +354,9 @@ export class List extends BaseElement {
       }
 
       this.singleSelection = true;
-      this.mdcFoundation.setSelectedIndex(this.listElements.indexOf(singleSelectedListItem));
+      this.selectedIndex = this.listElements.indexOf(singleSelectedListItem);
     } else if (radioSelectedListItem) {
-      this.mdcFoundation.setSelectedIndex(this.listElements.indexOf(radioSelectedListItem));
+      this.selectedIndex = this.listElements.indexOf(radioSelectedListItem);
     }
   }
 

@@ -22,7 +22,7 @@ import { Constructor } from './utils';
 export * from 'lit-element';
 export { classMap } from 'lit-html/directives/class-map';
 export { observer } from './observer';
-export { addHasRemoveClass, emit, findAssignedElement, findAssignedElements } from './utils';
+export { addHasRemoveClass, emit, findAssignedElement, findAssignedElements, eventPath } from './utils';
 export * from '@material/base/types';
 
 export abstract class BaseElement extends LitElement {

@@ -41,6 +41,7 @@ import * as menuSurfaceConstants from '@material/menu-surface/constants';
 import { ripple } from '@authentic/mwc-ripple/ripple-directive';
 import { Menu as MWCMenu, EVENTS as MENU_EVENTS } from '@authentic/mwc-menu/mwc-menu';
 import { ListItem as MWCListItem } from '@authentic/mwc-list/mwc-list-item';
+import { MDCListIndex } from '@material/list/types';
 
 import { style } from './mwc-select-css';
 
@@ -75,11 +76,11 @@ export class Select extends FormElement {
   @query('.mdc-select__selected-text')
   protected _selectedText!: HTMLElement;
 
-  @query('slot[name="select"]')
-  protected slotSelect!: HTMLSlotElement;
+  @query('.mdc-select__selected-text-inner')
+  protected _selectedTextInner!: HTMLElement;
 
-  @query('slot[name="menu"]')
-  protected slotMenu!: HTMLSlotElement;
+  @query('slot')
+  protected slotEl!: HTMLSlotElement;
 
   @query(strings.LABEL_SELECTOR)
   protected labelElement!: HTMLLabelElement;
@@ -101,6 +102,15 @@ export class Select extends FormElement {
 
   @property({ type: Boolean })
   public outlined = false;
+
+  @property({ type: Boolean, reflect: true })
+  @observer(function(this: Select, value: boolean) {
+    if (this.slottedMenu) this.slottedMenu.singleSelection = !value;
+  })
+  public multiple = false;
+
+  @property({ type: String, reflect: true })
+  public type = 'text';
 
   @property({ type: Boolean, reflect: true })
   @observer(function(this: Select, value: boolean) {
@@ -166,15 +176,19 @@ export class Select extends FormElement {
   }
 
   public set value(value) {
-    this.mdcFoundation.setValue(value);
+    if (this.value !== value) {
+      this.mdcFoundation.setValue(value);
+    }
   }
 
   public get selectedIndex() {
-    return this._getSelectedIndex() as number;
+    return this._getSelectedIndex();
   }
 
-  public set selectedIndex(value: number) {
-    this.mdcFoundation.setSelectedIndex(value);
+  public set selectedIndex(value: MDCListIndex) {
+    if (JSON.stringify(this.selectedIndex) !== JSON.stringify(value)) {
+      this._setSelectedIndex(value);
+    }
   }
 
   /**
@@ -186,19 +200,15 @@ export class Select extends FormElement {
   }
 
   public get slottedSelect(): HTMLSelectElement | null {
-    return this.slotSelect && findAssignedElement(this.slotSelect, 'select') as HTMLSelectElement;
+    return this.slotEl && findAssignedElement(this.slotEl, 'select') as HTMLSelectElement;
   }
 
   public get slottedMenu(): MWCMenu | null {
-    return this.slotMenu && findAssignedElement(this.slotMenu, 'mwc-menu') as MWCMenu;
+    return this.slotEl && findAssignedElement(this.slotEl, 'mwc-menu') as MWCMenu;
   }
 
   protected get formElement(): HTMLElement {
     return (this._nativeControl || this._selectedText) as HTMLElement;
-  }
-
-  protected get selectEl() {
-    return this.slottedSelect;
   }
 
   protected _formElementId = `_${Math.random().toString(36).substr(2, 9)}`;
@@ -236,6 +246,8 @@ export class Select extends FormElement {
   protected _handleMenuClosed = this._onMenuClosed.bind(this) as EventListenerOrEventListenerObject;
 
   protected _handleMenuSelected = this._onMenuSelected.bind(this) as EventListenerOrEventListenerObject;
+
+  protected _handleMenuChange = this._onMenuChange.bind(this) as EventListenerOrEventListenerObject;
 
   protected mdcFoundation!: MDCSelectFoundation;
 
@@ -290,14 +302,35 @@ export class Select extends FormElement {
   protected _getEnhancedSelectAdapterMethods() {
     return {
       getValue: () => {
-        return this._selectedItem ? this._selectedItem.value : '';
+        if (!this.slottedMenu!.items) return '';
+
+        if (!this.multiple) {
+          const selectedItem = this.slottedMenu!.items[this.selectedIndex as number];
+          return selectedItem ? selectedItem.value : '';
+        }
+        
+        return Array.isArray(this.selectedIndex)
+          ? this.selectedIndex.map(
+            index => this.slottedMenu!.items[index].value
+          ).join(', ')
+          : '';
       },
       setValue: (value: string) => {
         if (!this.slottedMenu!.items) return;
 
-        const element = this.slottedMenu!.items.find(item => item['value'] === value);
-        // const element = this.slottedMenu!.querySelector(`[${strings.ENHANCED_VALUE_ATTR}="${value}"]`);
-        this._setEnhancedSelectedIndex(element ? this.slottedMenu!.items.indexOf(element) : -1);
+        if (!this.multiple) {
+          const element = this.slottedMenu!.items.find(item => item['value'] === value);
+          // const element = this.slottedMenu!.querySelector(`[${strings.ENHANCED_VALUE_ATTR}="${value}"]`);
+          this._setEnhancedSelectedIndex(element ? this.slottedMenu!.items.indexOf(element) : -1);
+        } else {
+          const values = value.trim().split(',');
+
+          const selectedIndex = this.slottedMenu!.items
+            .filter(item => values.includes(item.value))
+            .map(item => this.slottedMenu!.items.indexOf(item));
+
+          this._setEnhancedSelectedIndex(selectedIndex);
+        }
       },
       openMenu: () => {
         if (this.slottedMenu && !this.slottedMenu.open) {
@@ -313,7 +346,9 @@ export class Select extends FormElement {
         }
       },
       isMenuOpen: () => Boolean(this.slottedMenu) && this._isMenuOpen,
-      setSelectedIndex: (index: number) => this._setEnhancedSelectedIndex(index),
+      setSelectedIndex: (index: number) => {
+        this._setEnhancedSelectedIndex(index)
+      },
       setDisabled: (isDisabled: boolean) => {
         this._selectedText!.setAttribute('tabindex', isDisabled ? '-1' : '0');
         this._selectedText!.setAttribute('aria-disabled', isDisabled.toString());
@@ -417,6 +452,20 @@ export class Select extends FormElement {
     `;
   }
 
+  _renderDropdownIcon() {
+    return html`
+      <i class="mdc-select__dropdown-icon"></i>
+    `;
+  }
+
+  _renderSelectedText() {
+    return html`
+      <div class="mdc-select__selected-text">
+        <span class="mdc-select__selected-text-inner">&nbsp;</span>
+      </div>
+    `;
+  }
+
   render() {
     const hasLeadingIcon = this.leadingIconContent;
     const hasOutline = this.outlined;
@@ -430,14 +479,13 @@ export class Select extends FormElement {
       <div class="${classMap(classes)}" .ripple="${!hasOutline && ripple({ unbounded: false })}">
         <input type="hidden" name="enhanced-select">
         ${hasLeadingIcon ? this._renderLeadingIcon() : ''}
-        <i class="mdc-select__dropdown-icon"></i>
-        <div class="mdc-select__selected-text">&nbsp;</div>
-        <slot name="select"></slot>
+        ${this._renderDropdownIcon()}
+        ${this._renderSelectedText()}
+        <slot></slot>
         ${hasLabel && !hasOutline ? this._renderFloatingLabel() : ''}
         ${hasOutline ? this._renderNotchedOutline() : this._renderLineRipple()}
       </div>
       ${this._renderHelperText()}
-      <slot name="menu"></slot>
     `;
   }
 
@@ -464,7 +512,6 @@ export class Select extends FormElement {
 
     super.firstUpdated();
 
-    this.formElement.addEventListener('change', this._handleChange);
     this.formElement.addEventListener('focus', this._handleFocus);
     this.formElement.addEventListener('blur', this._handleBlur);
 
@@ -474,9 +521,14 @@ export class Select extends FormElement {
 
     if (this.slottedMenu) {
       this._selectedText!.addEventListener('keydown', this._handleKeydown);
-      this.slottedMenu!.addEventListener(menuSurfaceConstants.strings.CLOSED_EVENT, this._handleMenuClosed);
-      this.slottedMenu!.addEventListener(menuSurfaceConstants.strings.OPENED_EVENT, this._handleMenuOpened);
-      this.slottedMenu!.addEventListener(MENU_EVENTS.selected, this._handleMenuSelected);
+      this.slottedMenu.addEventListener(menuSurfaceConstants.strings.CLOSED_EVENT, this._handleMenuClosed);
+      this.slottedMenu.addEventListener(menuSurfaceConstants.strings.OPENED_EVENT, this._handleMenuOpened);
+
+      if (!this.multiple) {
+        this.slottedMenu.addEventListener(MENU_EVENTS.selected, this._handleMenuSelected);
+      } else {
+        this.slottedMenu.addEventListener('change', this._handleMenuChange);
+      }
 
       this.slottedMenu.updateComplete
         .then(
@@ -502,11 +554,10 @@ export class Select extends FormElement {
     }
 
     if (this.slottedSelect) {
+      this.slottedSelect.addEventListener('change', this._handleChange);
+
       this._nativeSelectSetup();
     }
-
-    // Initially sync floating label
-    this.mdcFoundation.handleChange(false);
 
     if (
       this.mdcRoot.classList.contains(cssClasses.DISABLED) ||
@@ -514,6 +565,8 @@ export class Select extends FormElement {
     ) {
       this.disabled = true;
     }
+
+    setTimeout(() => this.layout());
   }
 
   createFoundation() {
@@ -528,16 +581,15 @@ export class Select extends FormElement {
   /**
    * Handle change event
    */
-  protected _onChange(evt) {
-    evt.stopImmediatePropagation();
-    this.mdcFoundation.handleChange(true);
+  protected _onChange(e) {
+    e.stopImmediatePropagation();
 
-    if (this.slottedSelect) {
-      setTimeout(() => {
-        this._setNativeSelectedIndex(this.slottedSelect!.selectedIndex);
-        window && window.focus(); // Fixes IE11 selection
-      });
-    }
+    setTimeout(() => {
+      this._setNativeSelectedIndex(this.selectedIndex as number);
+      window && window.focus(); // Fixes IE11 selection
+
+      this.mdcFoundation.handleChange(true);
+    });
   }
   
   /**
@@ -578,13 +630,13 @@ export class Select extends FormElement {
    * Handle menu opened event
    */
   protected _onMenuOpened() {
-    if (this.slottedMenu!.items.length === 0) {
+    if (this.slottedMenu!.items.length === 0 || Array.isArray(this.selectedIndex)) {
       return;
     }
 
     // Menu should open to the last selected element, should open to first menu item otherwise.
     const focusItemIndex = this.selectedIndex >= 0 ? this.selectedIndex : 0;
-    const focusItemEl = this.slottedMenu!.items[focusItemIndex] as HTMLElement;
+    const focusItemEl = this.slottedMenu!.items[focusItemIndex as number] as HTMLElement;
     focusItemEl.focus();
   }
 
@@ -608,10 +660,31 @@ export class Select extends FormElement {
   /**
    * Handle menu selected event
    */
-  protected _onMenuSelected(evt) {
-    this._selectedItem = evt.detail.item;
-    this._selectedText!.textContent = this._selectedItem.textContent!.trim();
+  protected _onMenuSelected() {
+    const selectedItem = this.slottedMenu!.items[this.selectedIndex as number];
+    this._selectedTextInner!.textContent = selectedItem.textContent!.trim();
+
     this.mdcFoundation.handleChange(true);
+  }
+
+  /**
+   * Handle menu change event
+   */
+  protected _onMenuChange(e: CustomEvent) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+
+    setTimeout(() => {
+      const nextTextContent = (this.selectedIndex as number[])
+        .sort()
+        .map(i => this.slottedMenu!.items[i].textContent!.trim())
+        .join(', ');
+
+      if (nextTextContent !== this._selectedTextInner!.textContent) {
+        this._selectedTextInner!.textContent = nextTextContent;
+        this.mdcFoundation.handleChange(true);
+      }
+    })
   }
 
   /**
@@ -629,6 +702,11 @@ export class Select extends FormElement {
     this.slottedSelect!.style.font = getComputedStyle(this._selectedText).font;
     this.slottedSelect!.style.fontSize = getComputedStyle(this._selectedText).fontSize;
     this.slottedSelect!.style.padding = getComputedStyle(this._selectedText).padding;
+
+    if (this.slottedSelect!.value !== '') {
+      this._setNativeSelectedIndex(this.selectedIndex as number);
+      this.mdcFoundation.handleChange(true);
+    }
   }
 
   /**
@@ -640,7 +718,9 @@ export class Select extends FormElement {
     this.slottedMenu!.setAnchorCorner(menuSurfaceConstants.Corner.BOTTOM_START);
     this.slottedMenu!.setAnchorElement(this.mdcRoot);
     this.slottedMenu!.wrapFocus = false;
-    this.slottedMenu!.singleSelection = true;
+    this.slottedMenu!.singleSelection = !this.multiple;
+
+    this.shadowRoot!.appendChild(this.slotEl!);
   }
 
   /**
@@ -677,16 +757,16 @@ export class Select extends FormElement {
   protected async _setNativeSelectedIndex(index: number) {
     if (index === -1) {
       await this.updateComplete;
-      this._selectedText!.textContent = '';
+      this._selectedTextInner!.textContent = '';
       this._nativeControl!.value = '';
       
       this.mdcLabel.classList.remove("mdc-floating-label--float-above")
     } else if (this.slottedSelect!.options[index]) {
-        this._selectedText!.textContent = this.slottedSelect!.options[index].textContent;
+      this._selectedTextInner!.textContent = this.slottedSelect!.options[index].textContent;
     }
   }
 
-  protected _setEnhancedSelectedIndex(index: number) {
+  protected _setEnhancedSelectedIndex(index: MDCListIndex) {
     const listEl = this.slottedMenu!.list;
     listEl!.selectedIndex = index;
   }
@@ -751,6 +831,15 @@ export class Select extends FormElement {
     }
 
     return -1;
+  }
+
+  protected _setSelectedIndex(value: MDCListIndex) {
+    if (!Array.isArray(value)) {
+      this.mdcFoundation.setSelectedIndex(value as number);
+    } else {
+      this._setEnhancedSelectedIndex(value);
+      this.mdcFoundation.handleChange(true);
+    }
   }
 
   /**

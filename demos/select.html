@@ -29,6 +29,7 @@ limitations under the License.
   <script type="module" src="../node_modules/@authentic/mwc-list/mwc-list-item.js"></script>
   <script type="module" src="../node_modules/@authentic/mwc-list/mwc-list-divider.js"></script>
   <script type="module" src="../node_modules/@authentic/mwc-icon/mwc-icon.js"></script>
+  <script type="module" src="../node_modules/@authentic/mwc-checkbox/mwc-checkbox.js"></script>
   <link rel="stylesheet" href="demo-component.css">
 
   <style>
@@ -51,8 +52,8 @@ limitations under the License.
     <div class="demo-group">
       <div>
         <h3>box</h3>
-        <mwc-select leadingIconContent="event" label="Choose an item...">
-          <select slot="select">
+        <mwc-select leadingIconContent="event" label="Choose an item">
+          <select>
             <option value="" disabled selected></option>
             <option value="grains">
               Bread and Cereal
@@ -69,8 +70,8 @@ limitations under the License.
 
       <div>
         <h3>box enhanced</h3>
-        <mwc-select leadingIconContent="event" label="Choose an item...">
-          <mwc-menu slot="menu">
+        <mwc-select leadingIconContent="event" label="Choose an item">
+          <mwc-menu>
             <mwc-list>
               <mwc-list-item value="one">this is choice one</mwc-list-item>
               <mwc-list-item value="two">this is choice two</mwc-list-item>
@@ -86,8 +87,8 @@ limitations under the License.
 
       <div>
         <h3>box required</h3>
-        <mwc-select box required leadingIconContent="event" label="Choose an item...">
-          <select slot="select">
+        <mwc-select box required leadingIconContent="event" label="Choose an item">
+          <select>
             <option value="" disabled selected></option>
             <option value="grains">
               Bread and Cereal
@@ -106,7 +107,7 @@ limitations under the License.
         <h3>box disabled</h3>
 
         <mwc-select leadingIconContent="event" box disabled label="Disabled...">
-          <mwc-menu slot="menu">
+          <mwc-menu>
             <mwc-list>
               <mwc-list-item value="one">this is choice one</mwc-list-item>
               <mwc-list-item value="two">this is choice two</mwc-list-item>
@@ -119,8 +120,8 @@ limitations under the License.
     <div class="demo-group">
       <div>
         <h3>outlined</h3>
-        <mwc-select outlined leadingIconContent="event" label="Choose an item...">
-          <select slot="select">
+        <mwc-select outlined leadingIconContent="event" label="Choose an item">
+          <select>
             <option value="" disabled selected></option>
             <option value="grains">
               Bread and Cereal
@@ -137,8 +138,8 @@ limitations under the License.
 
       <div>
         <h3>outlined enhanced</h3>
-        <mwc-select leadingIconContent="event" outlined label="Choose an item...">
-          <mwc-menu slot="menu">
+        <mwc-select leadingIconContent="event" outlined label="Choose an item">
+          <mwc-menu>
             <mwc-list>
               <mwc-list-item value="one">this is choice one</mwc-list-item>
               <mwc-list-item value="two">this is choice two</mwc-list-item>
@@ -156,7 +157,7 @@ limitations under the License.
         <h3>outlined disabled</h3>
 
         <mwc-select outlined disabled leadingIconContent="event" label="Disabled...">
-          <mwc-menu slot="menu">
+          <mwc-menu>
             <mwc-list>
               <mwc-list-item value="one">this is choice one</mwc-list-item>
               <mwc-list-item value="two">this is choice two</mwc-list-item>
@@ -172,14 +173,14 @@ limitations under the License.
       <div>
         <mwc-select
           outlined
-          label="Choose an item..."
+          label="Choose an item"
           helperTextContent="Helper Text"
           validationMessage="Validation Message"
           persistentHelperText
           required
           leadingIconContent="event" 
         >
-          <select slot="select">
+          <select>
             <option value="" disabled selected></option>
             <option value="grains">
               Bread and Cereal
@@ -197,14 +198,14 @@ limitations under the License.
       <div>
         <mwc-select
           outlined
-          label="Choose an item..."
+          label="Choose an item"
           helperTextContent="Helper Text"
           validationMessage="Validation Message"
           persistentHelperText
           required
           leadingIconContent="event"
         >
-          <mwc-menu slot="menu">
+          <mwc-menu>
             <mwc-list>
               <mwc-list-item value="one">this is choice one</mwc-list-item>
               <mwc-list-item value="two">this is choice two</mwc-list-item>
@@ -225,16 +226,16 @@ limitations under the License.
       <div>
         <mwc-select
           outlined
-          label="Choose an item..."
+          label="Choose an item"
           helperTextContent="Helper Text"
           persistentHelperText
           id="select_1"
           value="grains"
           leadingIconContent="event" 
         >
-          <select slot="select">
-            <option value="" disabled selected></option>
-            <option value="grains">
+          <select>
+            <option value="" disabled></option>
+            <option value="grains" selected>
               Bread and Cereal
             </option>
             <option value="vegetables">
@@ -250,21 +251,61 @@ limitations under the License.
       <div>
         <mwc-select
           outlined
-          label="Choose an item..."
+          label="Choose an item"
           helperTextContent="Helper Text"
           persistentHelperText
           id="select_2"
           leadingIconContent="event"
         >
-          <mwc-menu slot="menu">
+          <mwc-menu>
             <mwc-list>
-              <mwc-list-item value="one">this is choice one</mwc-list-item>
+              <mwc-list-item value="one" selected>this is choice one</mwc-list-item>
               <mwc-list-item value="two">this is choice two</mwc-list-item>
               <mwc-list-item value="three">this is choice three</mwc-list-item>
               <mwc-list-item disabled value="four">this is choice four</mwc-list-item>
               <mwc-list-divider></mwc-list-divider>
               <mwc-list-item value="aaa">this is choice aaa</mwc-list-item>
               <mwc-list-item value="bbb">this is choice bbb</mwc-list-item>
+            </mwc-list>
+          </mwc-menu>
+        </mwc-select>
+      </div>
+    </div>
+
+    <h3>Multi Select</h3>
+
+    <div class="demo-group">
+      <div>
+        <mwc-select
+          outlined
+          multiple
+          label="Choose items..."
+          helperTextContent="Helper Text"
+          persistentHelperText
+          leadingIconContent="event" 
+          id="select_3"
+        >
+          <mwc-menu>
+            <mwc-list>
+              <mwc-list-item value="one">
+                Item one
+                <mwc-checkbox slot="graphic" checked></mwc-checkbox>
+              </mwc-list-item>
+
+              <mwc-list-item value="two">
+                Item two
+                <mwc-checkbox slot="graphic" checked></mwc-checkbox>
+              </mwc-list-item>
+
+              <mwc-list-item value="three">
+                Item three
+                <mwc-checkbox slot="graphic" checked></mwc-checkbox>
+              </mwc-list-item>
+
+              <mwc-list-item value="four">
+                Item four
+                <mwc-checkbox slot="graphic" checked></mwc-checkbox>
+              </mwc-list-item>
             </mwc-list>
           </mwc-menu>
         </mwc-select>
@@ -281,6 +322,7 @@ limitations under the License.
 
     select_1.addEventListener('change', this._handleChange.bind(this));
     select_2.addEventListener('change', this._handleChange.bind(this));
+    select_3.addEventListener('change', this._handleChange.bind(this));
   </script>
 </body>
 

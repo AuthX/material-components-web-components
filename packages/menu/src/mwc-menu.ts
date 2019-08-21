@@ -23,7 +23,8 @@ import {
   property,
   observer,
   emit,
-  findAssignedElement
+  findAssignedElement,
+  eventPath
 } from '@authentic/mwc-base/base-element';
 import { MDCMenuFoundation, MDCMenuAdapter, Corner } from '@material/menu';
 import { DefaultFocusState } from '@material/menu/constants';
@@ -182,6 +183,60 @@ export class Menu extends BaseElement {
       this.list.addEventListener('keydown', this._handleKeydown);
       this.list.addEventListener(EVENTS.action, this._handleItemAction);
     }
+
+    this._setupFoundation();
+  }
+
+  protected _setupFoundation() {
+    const menuSurfaceFoundation = this._menuSurface['foundation_'];
+    const mdcAdapter = this.mdcFoundation['adapter_'];
+
+    menuSurfaceFoundation.handleBodyClick = (e: MouseEvent) => {
+      const hasCheckbox = eventPath(e).find(item => {
+        if (item instanceof HTMLElement) {
+          const role = (item as HTMLElement).getAttribute('role');
+          return role === 'checkbox';
+        }
+
+        return false;
+      });
+
+      if (hasCheckbox) {
+        e.stopImmediatePropagation();
+      } else {
+        this.open = false;
+      }
+    }
+
+    this.mdcFoundation.handleItemAction = listItem => {
+      const index = mdcAdapter.getElementIndex(listItem);
+
+      if (index < 0) {
+        if (Array(this.list.selectedIndex).length > 0) {
+          emit(this, EVENTS.selected, {
+            index: this.list.selectedIndex
+          }, true)
+        }
+
+        return;
+      }
+
+      mdcAdapter.notifySelected({
+        index: index
+      });
+
+      const role = listItem.getAttribute('role');
+
+      if (role && role === 'checkbox') return;
+      
+      mdcAdapter.closeSurface();
+      this.mdcFoundation['closeAnimationEndTimerId_'] = setTimeout(() => {
+        var selectionGroup = this.mdcFoundation['getSelectionGroup_'](listItem);
+        if (selectionGroup) {
+          this.mdcFoundation['handleSelectionGroup_'](selectionGroup, index);
+        }
+      }, MDCMenuSurfaceFoundation.numbers.TRANSITION_CLOSE_DURATION);
+    };
   }
 
   protected _onKeydown(evt) {
