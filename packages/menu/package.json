@@ -1,6 +1,6 @@
 {
   "name": "@authentic/mwc-menu",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "description": "",
   "main": "mwc-menu.js",
   "repository": {
@@ -13,8 +13,8 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@authentic/mwc-base": "^0.7.2",
-    "@authentic/mwc-list": "^0.7.2",
+    "@authentic/mwc-base": "^0.8.0",
+    "@authentic/mwc-list": "^0.8.0",
     "@material/menu": "~2.3.0",
     "@material/menu-surface": "~2.3.0"
   },
