@@ -79,6 +79,9 @@ export class Select extends FormElement {
   @query('.mdc-select__selected-text-inner')
   protected _selectedTextInner!: HTMLElement;
 
+  @query('.mdc-select__placeholder')
+  protected _placeholderEl!: HTMLElement;
+
   @query('slot')
   protected slotEl!: HTMLSlotElement;
 
@@ -108,9 +111,6 @@ export class Select extends FormElement {
     if (this.slottedMenu) this.slottedMenu.singleSelection = !value;
   })
   public multiple = false;
-
-  @property({ type: String, reflect: true })
-  public type = 'text';
 
   @property({ type: Boolean, reflect: true })
   @observer(function(this: Select, value: boolean) {
@@ -158,6 +158,12 @@ export class Select extends FormElement {
     }
   })
   public required = false;
+
+  @property({ type: Boolean })
+  public floatLabel = false;
+
+  @property({ type: String })
+  public placeholder = '';
 
   public get valid(): boolean {
     return this.mdcFoundation && this.mdcFoundation.isValid();
@@ -414,65 +420,83 @@ export class Select extends FormElement {
 
   static styles = style;
 
-  _renderFloatingLabel() {
+  protected _renderFloatingLabel() {
     return html`
       <label class="mdc-floating-label" for="${this._formElementId}">${this.label}</label>
     `;
   }
 
-  _renderNotchedOutline() {
-    const hasLabel = this.label;
-
+  protected _renderNotchedOutline(showAdjacentLabel: boolean | string) {
     return html`
       <div class="mdc-notched-outline">
         <div class="mdc-notched-outline__leading"></div>
         <div class="mdc-notched-outline__notch">
-          ${hasLabel ? this._renderFloatingLabel() : ''}
+        ${!showAdjacentLabel ? this._renderFloatingLabel() : ''}
         </div>
         <div class="mdc-notched-outline__trailing"></div>
       </div>
     `;
   }
 
-  _renderLineRipple() {
+  protected _renderLineRipple() {
     return html`
       <div class="mdc-line-ripple"></div> 
     `;
   }
 
-  _renderHelperText() {
+  protected _renderHelperText() {
     return html`
       <div class="mdc-select-helper-text"></div>
     `
   }
 
-  _renderLeadingIcon() {
+  protected _renderLeadingIcon() {
     return html`
       <i class="material-icons mdc-select__icon">${this.leadingIconContent}</i>
     `;
   }
 
-  _renderDropdownIcon() {
+  protected _renderDropdownIcon() {
     return html`
       <i class="mdc-select__dropdown-icon"></i>
     `;
   }
 
-  _renderSelectedText() {
+  protected _renderPlaceholder() {
+    return html`
+      <span class="mdc-select__placeholder">${this.placeholder}</span>
+    `;
+  }
+
+  protected _renderSelectedText() {
     return html`
       <div class="mdc-select__selected-text">
-        <span class="mdc-select__selected-text-inner">&nbsp;</span>
+        <span class="mdc-select__selected-text-inner">${!this.placeholder ? html`&nbsp;` : ''}</span>
+        ${this.placeholder ? this._renderPlaceholder() : ''}
       </div>
     `;
   }
 
+  protected _renderAdjacentLabel() {
+    const classes = {
+      'mdc-floating-label--adjacent': true,
+    };
+
+    return html`
+      <div class="${classMap(classes)}" for="${this._formElementId}">${this.label}</div>
+    `;
+  }
+
   render() {
-    const hasLeadingIcon = this.leadingIconContent;
     const hasOutline = this.outlined;
     const hasLabel = this.label;
+    const hasLabelAndIsNotOutlined = hasLabel && !hasOutline;
+    const hasLeadingIcon = this.leadingIconContent;
+    const showAdjacentLabel = hasLabel && !this.floatLabel;
     const classes = {
       'mdc-select': true,
-      'mdc-select--outlined': hasOutline
+      'mdc-select--outlined': hasOutline,
+      'mdc-select--with-label-adjacent': showAdjacentLabel,
     }
 
     return html`
@@ -482,10 +506,11 @@ export class Select extends FormElement {
         ${this._renderDropdownIcon()}
         ${this._renderSelectedText()}
         <slot></slot>
-        ${hasLabel && !hasOutline ? this._renderFloatingLabel() : ''}
-        ${hasOutline ? this._renderNotchedOutline() : this._renderLineRipple()}
+        ${!showAdjacentLabel && hasLabelAndIsNotOutlined ? this._renderFloatingLabel() : ''}
+        ${hasOutline ? this._renderNotchedOutline(showAdjacentLabel) : this._renderLineRipple()}
       </div>
       ${this._renderHelperText()}
+      ${showAdjacentLabel ? this._renderAdjacentLabel() : ''}
     `;
   }
 
@@ -662,7 +687,7 @@ export class Select extends FormElement {
    */
   protected _onMenuSelected() {
     const selectedItem = this.slottedMenu!.items[this.selectedIndex as number];
-    this._selectedTextInner!.textContent = selectedItem.textContent!.trim();
+    this._setTextContent(selectedItem.textContent!.trim());
 
     this.mdcFoundation.handleChange(true);
   }
@@ -681,10 +706,18 @@ export class Select extends FormElement {
         .join(', ');
 
       if (nextTextContent !== this._selectedTextInner!.textContent) {
-        this._selectedTextInner!.textContent = nextTextContent;
+        this._setTextContent(nextTextContent);
         this.mdcFoundation.handleChange(true);
       }
     })
+  }
+
+  protected _setTextContent(value: string) {
+    this._selectedTextInner!.textContent = value;
+
+    if (this._placeholderEl) {
+      this._placeholderEl.classList.toggle('mdc-select__placeholder--hidden', Boolean(value));
+    }
   }
 
   /**
@@ -703,10 +736,8 @@ export class Select extends FormElement {
     this.slottedSelect!.style.fontSize = getComputedStyle(this._selectedText).fontSize;
     this.slottedSelect!.style.padding = getComputedStyle(this._selectedText).padding;
 
-    if (this.slottedSelect!.value !== '') {
-      this._setNativeSelectedIndex(this.selectedIndex as number);
-      this.mdcFoundation.handleChange(true);
-    }
+    this._setNativeSelectedIndex(this.selectedIndex as number);
+    this.mdcFoundation.handleChange(true);
   }
 
   /**
@@ -757,12 +788,12 @@ export class Select extends FormElement {
   protected async _setNativeSelectedIndex(index: number) {
     if (index === -1) {
       await this.updateComplete;
-      this._selectedTextInner!.textContent = '';
+      this._setTextContent('');
       this._nativeControl!.value = '';
       
       this.mdcLabel.classList.remove("mdc-floating-label--float-above")
     } else if (this.slottedSelect!.options[index]) {
-      this._selectedTextInner!.textContent = this.slottedSelect!.options[index].textContent;
+      this._setTextContent(this.slottedSelect!.options[index].textContent || '');
     }
   }
 

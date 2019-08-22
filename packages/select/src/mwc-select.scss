@@ -38,6 +38,15 @@ limitations under the License.
   .mdc-select__selected-text {
     cursor: pointer;
   }
+
+  &.mdc-select--with-label-adjacent {
+    margin-top: 20px;
+
+    .mdc-select__selected-text {
+      padding-bottom: 12px;
+      padding-top: 14px;
+    }
+  }
 }
 
 // Fixes selected-text bottom-line hover state
@@ -60,17 +69,68 @@ limitations under the License.
   }
 }
 
+.mdc-select__selected-text {
+  display: flex;
+}
+
 .mdc-select__selected-text-inner {
-  width: 100%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 
-// slot[name="menu"]::slotted(*) {
-//   position: relative;
-// }
+.mdc-select__placeholder {
+  color: rgba(0, 0, 0, 0.54);
+  
+  &--hidden {
+    display: none;
+  }
+}
 
 ::slotted(select) {
   min-height: 100%;
+}
+
+.mdc-floating-label--adjacent {
+  pointer-events: none;
+	color: rgba(0, 0, 0, 0.6);
+  padding-left: 16px;
+  padding-right: 16px;
+  font-family: Roboto, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.0333333em;
+  top: 0;
+  position: absolute;
+}
+
+.mdc-select--focused:not(.mdc-select--disabled) ~ .mdc-floating-label--adjacent {
+  opacity: 0.87;
+  color: var(--mdc-theme-primary, #6200EE);
+}
+
+.mdc-select:not(.mdc-select--disabled):not(.mdc-select--invalid):not(.mdc-select--focused) ~ .mdc-floating-label--adjacent {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.mdc-select--focused .mdc-select__input:required ~ .mdc-floating-label--adjacent::after,
+.mdc-select--focused .mdc-select__input:required ~ .mdc-notched-outline .mdc-floating-label--adjacent::after {
+  opacity: 0.87;
+  color: var(--mdc-theme-primary, #6200EE);
+}
+
+.mdc-select--invalid:not(.mdc-select--disabled) ~ .mdc-floating-label--adjacent {
+  color: #b00020;
+  /* @alternate */
+  color: var(--mdc-theme-error, #b00020);
+}
+
+.mdc-select--invalid .mdc-select__input:required ~ .mdc-floating-label--adjacent::after,
+.mdc-select--invalid .mdc-select__input:required ~ .mdc-notched-outline .mdc-floating-label--adjacent::after {
+  color: #b00020;
+  /* @alternate */
+  color: var(--mdc-theme-error, #b00020);
+}
+
+.mdc-select--disabled ~ .mdc-floating-label--adjacent {
+  color: rgba(0, 0, 0, 0.37);
 }
