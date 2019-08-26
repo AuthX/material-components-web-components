@@ -498,7 +498,7 @@ export class Select extends FormElement {
     const classes = {
       'mdc-select': true,
       'mdc-select--outlined': hasOutline,
-      'mdc-select--with-label-adjacent': showAdjacentLabel,
+      'mdc-select--with-adjacent-label': showAdjacentLabel,
     }
 
     return html`
