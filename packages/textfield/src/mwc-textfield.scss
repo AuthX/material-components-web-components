@@ -25,6 +25,7 @@ limitations under the License.
 :host {
   display: block;
   outline: none;
+  position: relative;
 }
 
 :host([fullwidth]) {
@@ -74,39 +75,22 @@ limitations under the License.
   }
 }
 
+// Textarea with adjacent label
+.mdc-text-field--with-adjacent-label {
+  margin-top: 24px;
+}
+
 .mdc-floating-label--adjacent {
-  position: relative;
-  pointer-events: none;
 	color: rgba(0, 0, 0, 0.6);
-  padding-left: 16px;
-  padding-right: 16px;
   font-family: Roboto, sans-serif;
   font-size: 0.75rem;
+  line-height: 20px;
   letter-spacing: 0.0333333em;
-  top: -94px;
-
-  @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {  
-    /* IE10+ specific styles go here */
-    top: -97px;
-  }
-}
-
-.mdc-floating-label--adjacent.mdc-floating-label--adjacent-textarea-character-counter {
-  top: -129px;
-
-  @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {  
-    /* IE10+ specific styles go here */
-    top: -115px;
-  }
-}
-
-.mdc-floating-label--adjacent.mdc-floating-label--adjacent-textarea {
-  top: -118px;
-
-  @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {  
-    /* IE10+ specific styles go here */
-    top: -99px;
-  }
+  padding-left: 16px;
+  padding-right: 16px;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
 }
 
 .mdc-text-field--focused:not(.mdc-text-field--disabled) ~ .mdc-floating-label--adjacent {

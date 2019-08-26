@@ -445,9 +445,11 @@ export class Select extends FormElement {
   }
 
   protected _renderHelperText() {
-    return html`
-      <div class="mdc-select-helper-text"></div>
-    `
+    return this.helperTextContent || this.validationMessage
+      ? html`
+        <div class="mdc-select-helper-text"></div>
+      `
+      : '';
   }
 
   protected _renderLeadingIcon() {
@@ -750,6 +752,13 @@ export class Select extends FormElement {
     this.slottedMenu!.setAnchorElement(this.mdcRoot);
     this.slottedMenu!.wrapFocus = false;
     this.slottedMenu!.singleSelection = !this.multiple;
+
+    if (this.slottedMenu) {
+      const menuRoot = this.slottedMenu.shadowRoot!.querySelector('.mdc-menu')! as HTMLElement;
+      const margin = getComputedStyle(this.mdcRoot).marginTop;
+      menuRoot.style.marginTop = margin;
+      menuRoot.style.marginBottom = margin;
+    }
 
     this.shadowRoot!.appendChild(this.slotEl!);
   }
