@@ -453,10 +453,11 @@ export class TextField extends FormElement {
   _renderHelperLine() {
     const isTextarea = this.type === 'textarea';
     const hasCharacterCounter = this.maxLength && this.maxLength > 0;
+    const hasHelperText = this.helperTextContent || this.validationMessage;
 
     return html`
       <div class="mdc-text-field-helper-line">
-        ${this._renderHelperText()}
+        ${hasHelperText ? this._renderHelperText() : ''}
         ${hasCharacterCounter && !isTextarea ? this._renderCharacterCounter() : ''}
       </div>
     `;
@@ -479,11 +480,9 @@ export class TextField extends FormElement {
     `;
   }
 
-  _renderAdjacentLabel(isTextarea: boolean, hasCharacterCounter: boolean) {
+  _renderAdjacentLabel() {
     const classes = {
-      'mdc-floating-label--adjacent': true,
-      'mdc-floating-label--adjacent-textarea': isTextarea && !hasCharacterCounter,
-      'mdc-floating-label--adjacent-textarea-character-counter': isTextarea && hasCharacterCounter,
+      'mdc-floating-label--adjacent': true
     };
 
     return html`
@@ -509,7 +508,8 @@ export class TextField extends FormElement {
       'mdc-text-field--disabled': this.disabled,
       'mdc-text-field--with-leading-icon': hasLeadingIcon,
       'mdc-text-field--with-trailing-icon': hasTrailingIcon,
-      'mdc-text-field--with-trailing-icon-interaction' : this.trailingIconInteraction
+      'mdc-text-field--with-trailing-icon-interaction' : this.trailingIconInteraction,
+      'mdc-text-field--with-adjacent-label': showAdjacentLabel
     };
 
     return html`
@@ -522,7 +522,7 @@ export class TextField extends FormElement {
         ${hasOutline ? this._renderNotchedOutline(showAdjacentLabel) : this._renderLineRipple()}
       </div>
       ${this._renderHelperLine()}
-      ${showAdjacentLabel ? this._renderAdjacentLabel(isTextarea, hasCharacterCounter) : ''}
+      ${showAdjacentLabel ? this._renderAdjacentLabel() : ''}
     `;
   }
 
