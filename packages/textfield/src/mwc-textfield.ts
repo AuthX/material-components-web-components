@@ -455,12 +455,14 @@ export class TextField extends FormElement {
     const hasCharacterCounter = this.maxLength && this.maxLength > 0;
     const hasHelperText = this.helperTextContent || this.validationMessage;
 
-    return html`
-      <div class="mdc-text-field-helper-line">
-        ${hasHelperText ? this._renderHelperText() : ''}
-        ${hasCharacterCounter && !isTextarea ? this._renderCharacterCounter() : ''}
-      </div>
-    `;
+    return hasCharacterCounter || hasHelperText
+      ? html`
+        <div class="mdc-text-field-helper-line">
+          ${hasHelperText ? this._renderHelperText() : ''}
+          ${hasCharacterCounter && !isTextarea ? this._renderCharacterCounter() : ''}
+        </div>
+      `
+      : '';
   }
 
   _renderHelperText() {
