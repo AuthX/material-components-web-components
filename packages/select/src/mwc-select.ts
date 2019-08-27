@@ -657,6 +657,8 @@ export class Select extends FormElement {
    * Handle menu opened event
    */
   protected _onMenuOpened() {
+    this.menuLayout();
+
     if (this.slottedMenu!.items.length === 0 || Array.isArray(this.selectedIndex)) {
       return;
     }
@@ -752,13 +754,6 @@ export class Select extends FormElement {
     this.slottedMenu!.setAnchorElement(this.mdcRoot);
     this.slottedMenu!.wrapFocus = false;
     this.slottedMenu!.singleSelection = !this.multiple;
-
-    if (this.slottedMenu) {
-      const menuRoot = this.slottedMenu.shadowRoot!.querySelector('.mdc-menu')! as HTMLElement;
-      const margin = getComputedStyle(this.mdcRoot).marginTop;
-      menuRoot.style.marginTop = margin;
-      menuRoot.style.marginBottom = margin;
-    }
 
     this.shadowRoot!.appendChild(this.slotEl!);
   }
@@ -887,5 +882,20 @@ export class Select extends FormElement {
    */
   public layout() {
     this.mdcFoundation.layout();
+  }
+
+  /**
+   * Recomputes Menu position
+   */
+  public menuLayout() {
+    const menuRoot = this.slottedMenu!.shadowRoot!.querySelector('.mdc-menu')! as HTMLElement;
+    const marginTop = getComputedStyle(this.mdcRoot).marginTop;
+    const marginBottom = (
+      this.helperTextElement.getBoundingClientRect().height +
+      Number((getComputedStyle(this.helperTextElement) as any).marginTop.replace('px', ''))
+    );
+    
+    menuRoot.style.marginTop = marginTop;
+    menuRoot.style.marginBottom = `${marginBottom}px`;
   }
 }
