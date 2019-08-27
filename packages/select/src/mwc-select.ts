@@ -892,10 +892,12 @@ export class Select extends FormElement {
   public menuLayout() {
     const menuRoot = this.slottedMenu!.shadowRoot!.querySelector('.mdc-menu')! as HTMLElement;
     const marginTop = getComputedStyle(this.mdcRoot).marginTop;
-    const marginBottom = (
-      this.helperTextElement.getBoundingClientRect().height +
-      Number((getComputedStyle(this.helperTextElement) as any).marginTop.replace('px', ''))
-    );
+    const marginBottom = this.helperTextElement
+      ? (
+        this.helperTextElement.getBoundingClientRect().height +
+        Number((getComputedStyle(this.helperTextElement) as any).marginTop.replace('px', ''))
+      )
+      : 0;
     
     menuRoot.style.marginTop = marginTop;
     menuRoot.style.marginBottom = `${marginBottom}px`;
