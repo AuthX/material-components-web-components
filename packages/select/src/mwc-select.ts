@@ -661,6 +661,8 @@ export class Select extends FormElement {
       return;
     }
 
+    this.menuLayout();
+
     // Menu should open to the last selected element, should open to first menu item otherwise.
     const focusItemIndex = this.selectedIndex >= 0 ? this.selectedIndex : 0;
     const focusItemEl = this.slottedMenu!.items[focusItemIndex as number] as HTMLElement;
@@ -752,13 +754,6 @@ export class Select extends FormElement {
     this.slottedMenu!.setAnchorElement(this.mdcRoot);
     this.slottedMenu!.wrapFocus = false;
     this.slottedMenu!.singleSelection = !this.multiple;
-
-    if (this.slottedMenu) {
-      const menuRoot = this.slottedMenu.shadowRoot!.querySelector('.mdc-menu')! as HTMLElement;
-      const margin = getComputedStyle(this.mdcRoot).marginTop;
-      menuRoot.style.marginTop = margin;
-      menuRoot.style.marginBottom = margin;
-    }
 
     this.shadowRoot!.appendChild(this.slotEl!);
   }
@@ -887,5 +882,19 @@ export class Select extends FormElement {
    */
   public layout() {
     this.mdcFoundation.layout();
+  }
+
+  /**
+   * Recomputes Menu position
+   */
+  public menuLayout() {
+    const menuRoot = this.slottedMenu!.shadowRoot!.querySelector('.mdc-menu')! as HTMLElement;
+    const marginTop = getComputedStyle(this.mdcRoot).marginTop;
+    const marginBottom = (
+      this.helperTextElement.getBoundingClientRect().height +
+      Number((getComputedStyle(this.helperTextElement) as any).marginTop.replace('px', ''))
+    );
+    menuRoot.style.marginTop = marginTop;
+    menuRoot.style.marginBottom = `${marginBottom}px`;
   }
 }
