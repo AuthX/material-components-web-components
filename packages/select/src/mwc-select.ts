@@ -657,6 +657,8 @@ export class Select extends FormElement {
    * Handle menu opened event
    */
   protected _onMenuOpened() {
+    this.menuLayout();
+
     if (this.slottedMenu!.items.length === 0 || Array.isArray(this.selectedIndex)) {
       return;
     }
@@ -894,6 +896,7 @@ export class Select extends FormElement {
       this.helperTextElement.getBoundingClientRect().height +
       Number((getComputedStyle(this.helperTextElement) as any).marginTop.replace('px', ''))
     );
+    
     menuRoot.style.marginTop = marginTop;
     menuRoot.style.marginBottom = `${marginBottom}px`;
   }
