@@ -502,17 +502,19 @@ export class Select extends FormElement {
     }
 
     return html`
-      <div class="${classMap(classes)}" .ripple="${!hasOutline && ripple({ unbounded: false })}">
-        <input type="hidden" name="enhanced-select">
-        ${hasLeadingIcon ? this._renderLeadingIcon() : ''}
-        ${this._renderDropdownIcon()}
-        ${this._renderSelectedText()}
-        <slot></slot>
-        ${!showAdjacentLabel && hasLabelAndIsNotOutlined ? this._renderFloatingLabel() : ''}
-        ${hasOutline ? this._renderNotchedOutline(showAdjacentLabel) : this._renderLineRipple()}
+      <div class="mdc-select-wrapper">
+        <div class="${classMap(classes)}" .ripple="${!hasOutline && ripple({ unbounded: false })}">
+          <input type="hidden" name="enhanced-select">
+          ${hasLeadingIcon ? this._renderLeadingIcon() : ''}
+          ${this._renderDropdownIcon()}
+          ${this._renderSelectedText()}
+          <slot></slot>
+          ${!showAdjacentLabel && hasLabelAndIsNotOutlined ? this._renderFloatingLabel() : ''}
+          ${hasOutline ? this._renderNotchedOutline(showAdjacentLabel) : this._renderLineRipple()}
+        </div>
+        ${this._renderHelperText()}
+        ${showAdjacentLabel ? this._renderAdjacentLabel() : ''}
       </div>
-      ${this._renderHelperText()}
-      ${showAdjacentLabel ? this._renderAdjacentLabel() : ''}
     `;
   }
 

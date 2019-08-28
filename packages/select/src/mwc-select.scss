@@ -40,6 +40,10 @@ limitations under the License.
   }
 }
 
+.mdc-select-wrapper {
+  position: relative;
+}
+
 // Fixes selected-text bottom-line hover state
 .mdc-select:hover {
   &:not(.mdc-select--outlined):not(.mdc-select--disabled):not(.mdc-select--invalid) {
