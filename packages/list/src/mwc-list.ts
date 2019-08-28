@@ -286,24 +286,29 @@ export class List extends BaseElement {
   protected layout() {
 
     // List items need to have at least tabindex=-1 to be focusable.
-    this.listElements.filter(item => !item.getAttribute('tabindex'))
-      .forEach((el: Element) => {
-        el.setAttribute('tabindex', '-1');
-        el.setAttribute('role', 'option');
+    this.listElements
+      .forEach(item => {
+        item.setAttribute('role', 'option');
+        
+        if (!item.getAttribute('tabindex')) {
+          item.setAttribute('tabindex', '-1');
+        }
       });
 
     // List items with checkbox need to have role="checkbox"
-    this.listElements.filter(item => item.querySelector(this.selectors.checkbox))
-      .forEach((el: Element) => {
-        el.setAttribute('role', 'checkbox');
+    this.listElements
+      .filter(item => item.querySelector(this.selectors.checkbox))
+      .forEach(item => {
+        item.setAttribute('role', 'checkbox');
 
-        if (el.querySelector(this.selectors.checkbox)!['checked']) {
-          el.setAttribute('aria-checked', 'true');
+        if (item.querySelector(this.selectors.checkbox)!['checked']) {
+          item.setAttribute('aria-checked', 'true');
         }
       });
 
     // List items with radio button need to have role="radio"
-    this.listElements.filter(item => item.querySelector(this.selectors.radio))
+    this.listElements
+      .filter(item => item.querySelector(this.selectors.radio))
       .forEach((el: Element) => {
         el.setAttribute('role', 'radio');
 
@@ -314,13 +319,11 @@ export class List extends BaseElement {
 
     // Child button/a elements are not tabbable until the list item is focused.
     this.listElements
-      .map(
-        item =>
-          item.querySelectorAll(this.selectors.focusableChildElements)
+      .map(item =>
+        item.querySelectorAll(this.selectors.focusableChildElements)
       )
-      .forEach(
-        children =>
-          children.forEach(child => child.setAttribute('tabindex', '-1'))
+      .forEach(children =>
+        children.forEach(child => child.setAttribute('tabindex', '-1'))
       );
 
     this.mdcFoundation.layout();
