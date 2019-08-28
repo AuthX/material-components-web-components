@@ -177,7 +177,7 @@ export class List extends BaseElement {
       },
       hasRadioAtIndex: (index) => {
         const listItem = this.listElements[index];
-        return !!listItem.shadowRoot!.querySelector(this.selectors.radio);
+        return !!listItem.querySelector(this.selectors.radio);
       },
       isCheckboxCheckedAtIndex: (index) => {
         const listItem = this.listElements[index];
