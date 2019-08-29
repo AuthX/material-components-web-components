@@ -359,7 +359,7 @@ export class Dialog extends BaseElement {
     this.addEventListener(EVENTS.closing, this._handleClosing)
   }
 
-  protected open(): void {
+  public open(): void {
     clearTimeout(this.closeTimeout)
 
     
@@ -374,7 +374,7 @@ export class Dialog extends BaseElement {
     }, 100)
   }
 
-  protected close(action: string = ''): void {
+  public close(action: string = ''): void {
     this.mdcFoundation.close(action)
     
     this.closeTimeout = setTimeout(() => {
