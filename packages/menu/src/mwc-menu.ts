@@ -212,12 +212,6 @@ export class Menu extends BaseElement {
       const index = mdcAdapter.getElementIndex(listItem);
 
       if (index < 0) {
-        if (Array(this.list.selectedIndex).length > 0) {
-          emit(this, EVENTS.selected, {
-            index: this.list.selectedIndex
-          }, true)
-        }
-
         return;
       }
 
