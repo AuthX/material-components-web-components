@@ -1,6 +1,6 @@
 {
   "name": "@authentic/mwc-snackbar",
-  "version": "0.8.9",
+  "version": "0.8.10",
   "description": "",
   "main": "mwc-snackbar.js",
   "repository": {
@@ -13,7 +13,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@authentic/mwc-base": "^0.8.9",
+    "@authentic/mwc-base": "^0.8.10",
     "@material/snackbar": "~2.3.0"
   },
   "publishConfig": {
