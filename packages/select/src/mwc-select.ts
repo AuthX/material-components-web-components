@@ -66,6 +66,9 @@ declare global {
 export class Select extends FormElement {
   @query('.mdc-select')
   protected mdcRoot!: HTMLElementWithRipple;
+
+  @query('.mdc-select-wrapper')
+  protected wrapper!: HTMLElement;
   
   @query('.mdc-floating-label')
   protected mdcLabel!: HTMLElement;
@@ -759,7 +762,7 @@ export class Select extends FormElement {
     this.slottedMenu!.wrapFocus = false;
     this.slottedMenu!.singleSelection = !this.multiple;
 
-    this.shadowRoot!.appendChild(this.slotEl!);
+    this.wrapper!.appendChild(this.slotEl!);
   }
 
   /**
