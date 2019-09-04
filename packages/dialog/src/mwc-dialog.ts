@@ -304,19 +304,18 @@ export class Dialog extends BaseElement {
     `
   }
 
+  protected _renderTitle(headerLabel: string) {
+    return html`<h2 id="dialog-title" class="mdc-dialog__title">${headerLabel}</h2>`;
+  }
+
   protected render(): TemplateResult {
     const { headerLabel, acceptLabel, declineLabel, noFormatContent } = this;
-
-    const headerClasses = {
-        'mdc-dialog__header': true,
-        'mdc-dialog__header--hide': headerLabel === ''
-    };
 
     const contentClasses = {
         'mdc-dialog__content': true,
         'mdc-dialog__content--no-format': noFormatContent
     };
-    
+  
     return html`
       <aside
         class="mdc-dialog
@@ -331,8 +330,8 @@ export class Dialog extends BaseElement {
       >
         <div class="mdc-dialog_container">
           <div class="mdc-dialog__surface">
-            <header class="${classMap(headerClasses)}">
-              <h2 id="dialog-title" class="mdc-dialog__title">${headerLabel}</h2>
+            <header class="mdc-dialog__header">
+              ${headerLabel ? this._renderTitle(headerLabel) : ''}
               <slot name="header"></slot>
             </header>
             <section id="dialog-content" class="${classMap(contentClasses)}">
