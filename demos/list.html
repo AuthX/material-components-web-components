@@ -15,7 +15,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<html>
+<html lang="en">
 
 <head>
   <title>list demo</title>
@@ -62,7 +62,7 @@ limitations under the License.
 <body class="unresolved">
   <header>
     <a href="index.html">
-      <mwc-icon-button icon="arrow_back"></mwc-icon-button>
+      <mwc-icon-button icon="arrow_back" label="back"></mwc-icon-button>
     </a>
     <span>List item</span>
   </header>
@@ -109,11 +109,11 @@ limitations under the License.
 
             <mwc-list>
               <mwc-list-item>
-                <mwc-checkbox slot="graphic"></mwc-checkbox>
+                <mwc-checkbox slot="graphic" label="line 1"></mwc-checkbox>
                 Line item
               </mwc-list-item>
               <mwc-list-item>
-                <mwc-checkbox slot="graphic"></mwc-checkbox>
+                <mwc-checkbox slot="graphic" label="line 2"></mwc-checkbox>
                 Line item
               </mwc-list-item>
             </mwc-list>
@@ -124,11 +124,11 @@ limitations under the License.
 
             <mwc-list>
               <mwc-list-item>
-                <mwc-checkbox slot="meta"></mwc-checkbox>
+                <mwc-checkbox slot="meta" label="line 1"></mwc-checkbox>
                 Line item
               </mwc-list-item>
               <mwc-list-item>
-                <mwc-checkbox slot="meta"></mwc-checkbox>
+                <mwc-checkbox slot="meta" label="line 2"></mwc-checkbox>
                 Line item
               </mwc-list-item>
           </mwc-list-group>
@@ -139,9 +139,9 @@ limitations under the License.
         <h2>List with Radio</h2>
         <div class="demo-list">
           <mwc-list>
-            <mwc-list-item><mwc-radio slot="graphic" name="radio"></mwc-radio> Line item</mwc-list-item>
-            <mwc-list-item><mwc-radio slot="graphic" name="radio"></mwc-radio> Line item</mwc-list-item>
-            <mwc-list-item><mwc-radio slot="graphic" name="radio"></mwc-radio> Line item</mwc-list-item>
+            <mwc-list-item><mwc-radio slot="graphic" name="radio" label="line 1"></mwc-radio> Line item</mwc-list-item>
+            <mwc-list-item><mwc-radio slot="graphic" name="radio" label="line 2"></mwc-radio> Line item</mwc-list-item>
+            <mwc-list-item><mwc-radio slot="graphic" name="radio" label="line 3"></mwc-radio> Line item</mwc-list-item>
           </mwc-list>
         </div>
       </section>
@@ -151,19 +151,19 @@ limitations under the License.
         <div class="demo-list">
           <mwc-list type="two-line" avatarList singleSelection>
             <mwc-list-item>
-              <mwc-icon slot="graphic" aria-hidden>folder</mwc-icon>
+              <mwc-icon slot="graphic" aria-hidden="true">folder</mwc-icon>
               <span slot="primary">First-line text</span>
               <span slot="secondary">Second-line text</span>
-              <mwc-icon-button icon="info" slot="meta"></mwc-icon-button>
+              <mwc-icon-button icon="info" slot="meta" label="info"></mwc-icon-button>
             </mwc-list-item>
 
             <mwc-list-divider padded></mwc-list-divider>
 
             <mwc-list-item>
-              <mwc-icon slot="graphic" aria-hidden>folder</mwc-icon>
+              <mwc-icon slot="graphic" aria-hidden="true">folder</mwc-icon>
               <span slot="primary">First-line text</span>
               <span slot="secondary">Second-line text</span>
-              <mwc-icon-button icon="info" slot="meta"></mwc-icon-button>
+              <mwc-icon-button icon="info" slot="meta" label="info"></mwc-icon-button>
             </mwc-list-item>
           </mwc-list>
         </div>
@@ -174,15 +174,15 @@ limitations under the License.
         <div class="demo-list">
           <mwc-list nonInteractive>
             <mwc-list-item>
-              <mwc-icon slot="graphic" aria-hidden>wifi</mwc-icon>
+              <mwc-icon slot="graphic" aria-hidden="true">wifi</mwc-icon>
               Line item
             </mwc-list-item>
             <mwc-list-item>
-              <mwc-icon slot="graphic" aria-hidden>bluetooth</mwc-icon>
+              <mwc-icon slot="graphic" aria-hidden="true">bluetooth</mwc-icon>
               Line item
             </mwc-list-item>
             <mwc-list-item>
-              <mwc-icon slot="graphic" aria-hidden>data_usage</mwc-icon>
+              <mwc-icon slot="graphic" aria-hidden="true">data_usage</mwc-icon>
               Line item
             </mwc-list-item>
           </mwc-list>
@@ -194,16 +194,16 @@ limitations under the License.
         <div class="demo-list">
           <mwc-list>
             <mwc-list-item expandable>
-              <mwc-icon slot="graphic" aria-hidden>local_dining</mwc-icon>
+              <mwc-icon slot="graphic" aria-hidden="true">local_dining</mwc-icon>
               Line item
               <mwc-list slot="content">
-                <mwc-list-item><mwc-checkbox slot="graphic"></mwc-checkbox> Line item</mwc-list-item>
-                <mwc-list-item><mwc-checkbox slot="graphic"></mwc-checkbox> Line item</mwc-list-item>
-                <mwc-list-item><mwc-checkbox slot="graphic"></mwc-checkbox> Line item</mwc-list-item>
+                <mwc-list-item><mwc-checkbox slot="graphic" label="line 1"></mwc-checkbox> Line item</mwc-list-item>
+                <mwc-list-item><mwc-checkbox slot="graphic" label="line 2"></mwc-checkbox> Line item</mwc-list-item>
+                <mwc-list-item><mwc-checkbox slot="graphic" label="line 3"></mwc-checkbox> Line item</mwc-list-item>
               </mwc-list>
             </mwc-list-item>
             <mwc-list-item expandable>
-              <mwc-icon slot="graphic" aria-hidden>data_usage</mwc-icon>
+              <mwc-icon slot="graphic" aria-hidden="true">data_usage</mwc-icon>
               Line item
               <mwc-list slot="content">
                 <mwc-list-item>Line item</mwc-list-item>

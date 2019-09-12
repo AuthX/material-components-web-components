@@ -93,7 +93,6 @@ export class List extends BaseElement {
   @property({ type: Boolean })
   @observer(function (this: List, value: boolean) {
     this.mdcFoundation.setSingleSelection(value);
-    this.setAttribute('role', value ? 'listbox' : 'list');
   })
   public singleSelection = false;
 
@@ -303,17 +302,21 @@ export class List extends BaseElement {
 
         if (item.querySelector(this.selectors.checkbox)!['checked']) {
           item.setAttribute('aria-checked', 'true');
+        } else {
+          item.setAttribute('aria-checked', 'false');
         }
       });
 
     // List items with radio button need to have role="radio"
     this.listElements
       .filter(item => item.querySelector(this.selectors.radio))
-      .forEach((el: Element) => {
-        el.setAttribute('role', 'radio');
+      .forEach((item: Element) => {
+        item.setAttribute('role', 'radio');
 
-        if (el.querySelector(this.selectors.radio)!['checked']) {
-          el.setAttribute('aria-checked', 'true');
+        if (item.querySelector(this.selectors.radio)!['checked']) {
+          item.setAttribute('aria-checked', 'true');
+        } else {
+          item.setAttribute('aria-checked', 'false');
         }
       });
 
@@ -336,6 +339,9 @@ export class List extends BaseElement {
     const checkboxListItems = this.listElements.filter(item => 
       item.querySelector<HTMLInputElement>(this.selectors.checkbox)
     );
+    const checkboxRadioListItems = this.listElements.filter(item => 
+      item.querySelector<HTMLInputElement>(this.selectors.checkboxRadio)
+    );
     const singleSelectedListItem = this.listElements.find(item =>
       item.activated || item.selected
     );
@@ -347,6 +353,7 @@ export class List extends BaseElement {
       const preselectedItems = this.listElements.filter(
         item => item.getAttribute('aria-checked') === 'true'
       );
+
       this.mdcFoundation.setSelectedIndex(
         [...preselectedItems]
         .map(
@@ -362,6 +369,17 @@ export class List extends BaseElement {
       this.selectedIndex = this.listElements.indexOf(singleSelectedListItem);
     } else if (radioSelectedListItem) {
       this.selectedIndex = this.listElements.indexOf(radioSelectedListItem);
+    }
+
+    if (!this.singleSelection && checkboxRadioListItems.length === 0) {
+      this.setAttribute('role', 'list');
+
+      this.listElements
+        .forEach(item => {
+          item.setAttribute('role', 'listitem');
+        });
+    } else {
+      this.setAttribute('role', 'listbox');
     }
   }
 

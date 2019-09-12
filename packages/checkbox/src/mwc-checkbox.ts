@@ -71,6 +71,12 @@ export class Checkbox extends FormElement {
   value = ''
 
   /**
+   * Optional. Setter/getter for the checkbox's
+   */
+  @property({ type: String })
+  label = ''
+
+  /**
    * Optional. Setter/getter for the checkbox's name
    */
   @property({ type: String })
@@ -125,7 +131,7 @@ export class Checkbox extends FormElement {
   render() {
     return html`
       <div class="mdc-checkbox" @animationend="${this._animationEndHandler}" .ripple="${ripple()}">
-        <input type="checkbox" class="mdc-checkbox__native-control" @change="${this._changeHandler}" .indeterminate="${this.indeterminate}"
+        <input type="checkbox" class="mdc-checkbox__native-control" aria-label="${this.label}" @change="${this._changeHandler}" .indeterminate="${this.indeterminate}"
           .checked="${this.checked}" .value="${this.value}">
         <div class="mdc-checkbox__background">
           <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">

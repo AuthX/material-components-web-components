@@ -127,10 +127,10 @@ export abstract class IconButtonBase extends BaseElement {
    */
   render() {
     return html`
-      <button .ripple="${ripple()}" class="mdc-icon-button" @click="${this.handleClick}" aria-hidden="true" aria-label="${this.label}"
+      <button .ripple="${ripple()}" class="mdc-icon-button" @click="${this.handleClick}" aria-label="${this.label}"
         ?disabled="${this.disabled}">
-        <i class="material-icons mdc-icon-button__icon">${this.offIcon}</i>
-        <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">${this.icon}</i>
+        <i class="material-icons mdc-icon-button__icon" aria-hidden="true">${this.offIcon}</i>
+        <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on" aria-hidden="true">${this.icon}</i>
       </button>`;
   }
 }

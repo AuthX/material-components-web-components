@@ -67,6 +67,9 @@ export class Radio extends FormElement {
   @property({ type: String })
   name = '';
 
+  @property({ type: String })
+  label = '';
+
   protected mdcFoundationClass = MDCRadioFoundation;
 
   protected mdcFoundation!: MDCRadioFoundation;
@@ -131,7 +134,7 @@ export class Radio extends FormElement {
   render() {
     return html`
       <div class="mdc-radio" .ripple="${ripple()}">
-        <input class="mdc-radio__native-control" type="radio" name="${this.name}" .checked="${this.checked}" .value="${this.value}"
+        <input class="mdc-radio__native-control" type="radio" name="${this.name}" aria-label="${this.label}" .checked="${this.checked}" .value="${this.value}"
           @change="${this._changeHandler}" @focus="${this._focusHandler}" @click="${this._clickHandler}">
         <div class="mdc-radio__background">
           <div class="mdc-radio__outer-circle"></div>
