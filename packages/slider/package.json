@@ -1,6 +1,6 @@
 {
   "name": "@authentic/mwc-slider",
-  "version": "0.8.10",
+  "version": "0.8.11",
   "description": "",
   "main": "mwc-slider.js",
   "repository": {
@@ -13,7 +13,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@authentic/mwc-base": "^0.8.10",
+    "@authentic/mwc-base": "^0.8.11",
     "@material/slider": "~2.3.0",
     "lit-html": "~1.1.1",
     "resize-observer-polyfill": "~1.5.1"
@@ -21,5 +21,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "ac1ca55b2054bdae8ba8988d7d2084f2d68b5c89"
+  "gitHead": "51f6654540c7bc2433145fa5c8eb3a49c394b395"
 }
