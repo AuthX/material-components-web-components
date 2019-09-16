@@ -113,13 +113,11 @@ export class TextField extends FormElement {
 
   @property({ type: String, reflect: true })
   @observer(function(this: TextField, value: string) {
-    if (this.mdcFoundation) {
-      this.mdcFoundation.setValue(value);
-
-      if (value !== this.mdcFoundation.getValue() && !this._isFocus) {
-        this._notifyChange();
-      }
+    if (this.mdcFoundation && !this._isFocus) {
+      this._notifyChange();
     }
+
+    this.mdcFoundation && this.mdcFoundation.setValue(value);
   })
   public value = '';
 
@@ -254,16 +252,6 @@ export class TextField extends FormElement {
 
   @property({ type: Boolean })
   public floatLabel = false;
-
-  @property({ type: String, reflect: true })
-  @observer(function(this: TextField, value: string) {
-    if (this.mdcFoundation && !this._isFocus) {
-      this._notifyChange();
-    }
-
-    this.mdcFoundation && this.mdcFoundation.setValue(value);
-  })
-  public value = '';
 
   public get valid(): boolean {
     return this.mdcFoundation && this.mdcFoundation.isValid();
