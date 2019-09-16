@@ -111,6 +111,18 @@ export class TextField extends FormElement {
   @queryAll(strings.ICON_SELECTOR)
   protected iconElements!: HTMLElement[];
 
+  @property({ type: String, reflect: true })
+  @observer(function(this: TextField, value: string) {
+    if (this.mdcFoundation) {
+      this.mdcFoundation.setValue(value);
+
+      if (value !== this.mdcFoundation.getValue() && !this._isFocus) {
+        this._notifyChange();
+      }
+    }
+  })
+  public value = '';
+
   @property({ type: Boolean, reflect: true })
   @observer(function(this: TextField, value: boolean) {
     this.mdcFoundation && this.mdcFoundation.setDisabled(value);
