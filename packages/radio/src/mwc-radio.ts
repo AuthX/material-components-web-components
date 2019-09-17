@@ -40,33 +40,54 @@ declare global {
 @customElement('mwc-radio' as any)
 export class Radio extends FormElement {
 
+  /**
+   * Root element for Radio component. This root element is use for MDC Foundation usage
+   */
   @query('.mdc-radio')
   protected mdcRoot!: HTMLElementWithRipple;
 
+  /**
+   * Provides special properties and methods for manipulating the options, layout, and presentation of <input> elements.
+   */
   @query('input')
   protected formElement!: HTMLInputElement
 
+  /**
+   * Optional. Default value is false. Setter/getter for the radio's checked state
+   */
   @property({ type: Boolean })
   @observer(function (this: Radio, checked: boolean) {
     this.formElement.checked = checked;
   })
   checked = false;
 
+  /**
+   * Optional. Default value is false. Setter/getter for the radio's disabled state
+   */
   @property({ type: Boolean })
   @observer(function (this: Radio, disabled: boolean) {
     this.mdcFoundation.setDisabled(disabled);
   })
   disabled = false;
 
+  /**
+   * Optional. Setter/getter for the radio's value
+   */
   @property({ type: String })
   @observer(function (this: Radio, value: string) {
     this.formElement.value = value;
   })
   value = '';
 
+  /**
+   * Optional. Setter/getter for the radio's name
+   */
   @property({ type: String })
   name = '';
 
+  /**
+   * Optional. Setter/getter for the radio's label
+   */
   @property({ type: String })
   label = '';
 
@@ -76,6 +97,9 @@ export class Radio extends FormElement {
 
   protected _selectionController: SelectionController | null = null;
 
+  /**
+   * An instance method use to set the initial values for Radio
+   */
   constructor() {
     super();
     // Selection Controller is only needed for native ShadowDOM
@@ -84,26 +108,43 @@ export class Radio extends FormElement {
     }
   }
 
+  /**
+   * Invoked each time the custom element is appended into the DOM. 
+   * This will happen each time the node is moved, and may happen before the element's contents have been fully parsed
+   */
   connectedCallback() {
     super.connectedCallback();
   }
 
+  /**
+   * Invoked each time the custom element is disconnected from the document's DOM.
+   */
   disconnectedCallback() {
     if (this._selectionController) {
       this._selectionController.unregister(this);
     }
   }
 
+  /**
+   * Used to sets the formElement's focus
+   */
   focusNative() {
     this.formElement.focus();
   }
 
   static styles = style;
 
+  /**
+   * Ripple getter for Ripple integration
+   */
   get ripple() {
     return this.mdcRoot.ripple;
   }
 
+  /**
+   * Create the adapter for the `mdcFoundation`.
+   * Override and return an object with the Adapter's functions implemented
+   */
   protected createAdapter(): MDCRadioAdapter {
     return {
       ...addHasRemoveClass(this.mdcRoot),
@@ -113,6 +154,9 @@ export class Radio extends FormElement {
     };
   }
 
+  /**
+   * Handles the change event for the radio
+   */
   protected _changeHandler() {
     this.checked = this.formElement.checked;
     if (this._selectionController) {
@@ -120,17 +164,26 @@ export class Radio extends FormElement {
     }
   }
 
+  /**
+   * Handles the focus event for the radio
+   */
   protected _focusHandler() {
     if (this._selectionController) {
       this._selectionController.focus(this);
     }
   }
 
+  /**
+   * Handles the click event for the radio
+   */
   protected _clickHandler() {
     // Firefox has weird behavior with radios if they are not focused
     this.formElement.focus();
   }
 
+  /**
+   * Used to render the lit-html TemplateResult to the element's DOM
+   */
   render() {
     return html`
       <div class="mdc-radio" .ripple="${ripple()}">
@@ -143,6 +196,15 @@ export class Radio extends FormElement {
       </div>`;
   }
 
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * @param _changedProperties Map of changed properties with old values
+   */
   firstUpdated() {
     super.firstUpdated();
     if (this._selectionController) {

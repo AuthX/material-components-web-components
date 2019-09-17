@@ -21,18 +21,36 @@ import { style } from './mwc-ripple-css';
 @customElement('mwc-ripple' as any)
 export class Ripple extends LitElement {
 
+  /**
+   * Optional. Default value sets to false. To use the primary color of the ripple effect.
+   */
   @property({ type: Boolean })
   primary = false;
 
+  /**
+   * Optional. Default value sets to false. Activates the ripple (the first stage, 
+   * which happens when the ripple surface is engaged via interaction, 
+   * such as a mousedown or a pointerdown event). 
+   * It expands from the center.
+   */
   @property({ type: Boolean })
   active: boolean | undefined;
 
+  /**
+   * Optional. Default value sets to false. To use the secondary color of the ripple effect.
+   */
   @property({ type: Boolean })
   accent = false;
 
+  /**
+   * Optional. Default value sets to false. Sets the ripple to be unbounded or not, based on the given boolean.
+   */
   @property({ type: Boolean })
   unbounded = false;
 
+  /**
+   * Optional. Default value sets to false. Makes the ripple inactive and inaccessible via interaction.
+   */
   @property({ type: Boolean })
   disabled = false;
 
@@ -41,6 +59,10 @@ export class Ripple extends LitElement {
 
   static styles = style;
 
+  /**
+   * Invoked each time the custom element is appended into the DOM. 
+   * This will happen each time the node is moved, and may happen before the element's contents have been fully parsed
+   */
   connectedCallback() {
     if (this.interactionNode === this) {
       this.interactionNode = this.parentNode as HTMLElement;
@@ -49,6 +71,9 @@ export class Ripple extends LitElement {
   }
 
   // TODO(sorvell) #css: sizing.
+  /**
+   * Used to render the lit-html TemplateResult to the element's DOM
+   */
   render() {
     const classes = {
       'mdc-ripple-surface--primary': this.primary,

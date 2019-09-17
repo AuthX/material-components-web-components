@@ -69,54 +69,93 @@ export class Slider extends FormElement {
   @query('.mdc-slider__track-marker-container')
   protected trackMarkerContainer!: HTMLElement;
 
-
+  /**
+   * Optional. Setter/getter for the slider's name
+   */
   @property({ type: String })
   name = ''
 
+  /**
+   * Optional. Default value is 0. The current value of the slider. 
+   * Changing this will update the slider's value.
+   */
   @property({ type: Number })
   @observer(function (this: Slider, value: number) {
     this.mdcFoundation.setValue(value);
   })
   value = 0;
 
+  /**
+   * Optional. Default value is 0. The minimum value a slider can have. 
+   * Values set programmatically will be clamped to this minimum value. 
+   * Changing this property will update the slider's value if it is lower than the new minimum
+   */
   @property({ type: Number })
   @observer(function (this: Slider, value: number) {
     this.mdcFoundation.setMin(value);
   })
   min = 0;
 
+  /**
+   * Optional. Default value is 100. The maximum value a slider can have. 
+   * Values set programmatically will be clamped to this maximum value. 
+   * Changing this property will update the slider's value if it is greater than the new maximum
+   */
   @property({ type: Number })
   @observer(function (this: Slider, value: number) {
     this.mdcFoundation.setMax(value);
   })
   max = 100;
 
+  /**
+   * Optional. Default value is 0. 
+   * Specifies the increments at which a slider value can be set. 
+   * Can be any positive number, or 0 for no step. 
+   * Changing this property will update the slider's value to be quantized along the new step increments
+   */
   @property({ type: Number })
   @observer(function (this: Slider, value: number) {
     this.mdcFoundation.setStep(value);
   })
   step = 0;
 
+  /**
+   * Optional. Default value is false. Used to sets the slider's disabled state
+   */
   @property({ type: Boolean, reflect: true })
   @observer(function (this: Slider, value: boolean) {
     this.mdcFoundation.setDisabled(value);
   })
   disabled = false;
 
+  
+  /**
+   * Optional. Default value is false. Discrete sliders are required to have a positive step value other than 0. 
+   * If a step value of 0 is provided, or no value is provided, the step value will default to 1.
+   */
   @property({ type: Boolean, reflect: true })
   discrete = false;
 
+  /**
+   * Optional. Default value is false. Use it along with 'discrete' property to displays the value in a container above the pin when the slider is active.
+   */
   @property({ type: Boolean, reflect: true })
   @observer(function (this: Slider) {
     this.mdcFoundation.setupTrackMarker();
   })
   markers = false;
 
+  /**
+   * Optional. Default value is 0. Use to set up the number of markers on a discrete slider
+   */
   @property({ type: Number })
   protected _numMarkers = 0;
 
   static styles = style;
 
+  /**
+   * Used to render the lit-html TemplateResult for a discrete pin
+   */
   discretePin() {
     return html`
       <div class="mdc-slider__pin">
@@ -124,6 +163,10 @@ export class Slider extends FormElement {
       </div>
     `;
   }
+
+  /**
+   * Used to render the lit-html TemplateResult for discrete markers
+   */
   discreteMarkers(count) {
     return html`
       <div class="mdc-slider__track-marker-container">
@@ -132,6 +175,9 @@ export class Slider extends FormElement {
     `;
   }
 
+  /**
+   * Used to define de Slider's list of classes 
+   */
   sliderClass() {
     return classMap({
       'mdc-slider--discrete': this.discrete,
@@ -140,6 +186,9 @@ export class Slider extends FormElement {
   }
 
   // TODO(sorvell) #css: needs a default width
+  /**
+   * Used to render the lit-html TemplateResult to the element's DOM
+   */
   render() {
     const { value, min, max, step, disabled, discrete, markers, _numMarkers } = this;
     return html`
@@ -160,6 +209,15 @@ export class Slider extends FormElement {
       </div>`;
   }
 
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * @param _changedProperties Map of changed properties with old values
+   */
   firstUpdated() {
     super.firstUpdated();
 
@@ -170,10 +228,17 @@ export class Slider extends FormElement {
       });
   }
 
+  /**
+   * Handles the resize of the Slider's mdcRoot 
+   */
   protected _handleResizeObserver() {
     this.layout();
   }
 
+  /**
+   * Create the adapter for the `mdcFoundation`.
+   * Override and return an object with the Adapter's functions implemented
+   */
   protected createAdapter(): MDCSliderAdapter {
     return {
       ...addHasRemoveClass(this.mdcRoot),
@@ -223,6 +288,11 @@ export class Slider extends FormElement {
     };
   }
 
+  /**
+   * Recomputes the dimensions and re-lays out the component. 
+   * This should be called if the dimensions of the slider itself or any of its parent elements change programmatically 
+   * (it is called automatically on resize)
+   */
   layout() {
     this.mdcFoundation.layout();
   }
