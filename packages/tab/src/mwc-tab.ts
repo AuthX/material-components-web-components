@@ -89,12 +89,12 @@ export class Tab extends BaseElement {
    */
 
   @query('mwc-tab-indicator')
-  private _tabIndicator!: HTMLElement;
+  protected _tabIndicator!: HTMLElement;
 
   @query('.mdc-tab__content')
-  private _contentElement!: HTMLElement;
+  protected _contentElement!: HTMLElement;
 
-  private _handleClick() {
+  protected _handleClick() {
     this.mdcFoundation.handleClick();
   }
 

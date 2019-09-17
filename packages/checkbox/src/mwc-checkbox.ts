@@ -145,7 +145,7 @@ export class Checkbox extends FormElement {
   /**
    * Handles the change event for the checkbox
    */
-  private _changeHandler() {
+  protected _changeHandler() {
     this.checked = this.formElement.checked;
     this.indeterminate = this.formElement.indeterminate;
     this.mdcFoundation.handleChange();
@@ -154,7 +154,7 @@ export class Checkbox extends FormElement {
   /**
    * Handles the animation end event for the checkbox
    */
-  private _animationEndHandler() {
+  protected _animationEndHandler() {
     this.mdcFoundation.handleAnimationEnd();
   }
 }

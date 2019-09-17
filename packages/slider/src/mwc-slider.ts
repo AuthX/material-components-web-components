@@ -113,7 +113,7 @@ export class Slider extends FormElement {
   markers = false;
 
   @property({ type: Number })
-  private _numMarkers = 0;
+  protected _numMarkers = 0;
 
   static styles = style;
 

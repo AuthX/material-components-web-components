@@ -29,13 +29,13 @@ class SelectionSet {
 }
 
 export class SelectionController {
-  private sets: {[name: string]: SelectionSet} = {};
+  protected sets: {[name: string]: SelectionSet} = {};
 
-  private focusedSet: SelectionSet | null = null;
+  protected focusedSet: SelectionSet | null = null;
 
-  private mouseIsDown = false;
+  protected mouseIsDown = false;
 
-  private updating = false;
+  protected updating = false;
 
   static getController(element: HTMLElement) {
     const root = element.getRootNode();

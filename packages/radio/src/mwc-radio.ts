@@ -74,7 +74,7 @@ export class Radio extends FormElement {
 
   protected mdcFoundation!: MDCRadioFoundation;
 
-  private _selectionController: SelectionController | null = null;
+  protected _selectionController: SelectionController | null = null;
 
   constructor() {
     super();

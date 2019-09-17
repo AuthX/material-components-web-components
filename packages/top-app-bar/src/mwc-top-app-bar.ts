@@ -59,10 +59,10 @@ export class TopAppBar extends BaseElement {
   protected mdcRoot!: HTMLElement;
 
   @query('[name="navigationIcon"]')
-  private _navIconSlot!: HTMLSlotElement;
+  protected _navIconSlot!: HTMLSlotElement;
 
   @query('[name="actionItems"]')
-  private _actionItemsSlot!: HTMLSlotElement;
+  protected _actionItemsSlot!: HTMLSlotElement;
 
   // type can be 'fixed' || 'prominent' || 'short' || 'shortCollapsed' || 'prominentFixed'
   @property({ reflect: true })
@@ -74,7 +74,7 @@ export class TopAppBar extends BaseElement {
   @property({ type: Boolean, reflect: true })
   centerTitle = false;
 
-  private _scrollTarget!: HTMLElement | Window;
+  protected _scrollTarget!: HTMLElement | Window;
 
   get scrollTarget() {
     return this._scrollTarget || window as Window;

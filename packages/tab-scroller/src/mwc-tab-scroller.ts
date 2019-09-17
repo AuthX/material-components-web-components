@@ -51,15 +51,15 @@ export class TabScroller extends BaseElement {
   protected scrollContentElement!: HTMLElement;
 
   @eventOptions({ passive: true } as EventListenerOptions)
-  private _handleInteraction() {
+  protected _handleInteraction() {
     this.mdcFoundation.handleInteraction();
   }
 
-  private _handleTransitionEnd(e: Event) {
+  protected _handleTransitionEnd(e: Event) {
     this.mdcFoundation.handleTransitionEnd(e);
   }
 
-  private _scrollbarHeight = -1;
+  protected _scrollbarHeight = -1;
 
   static styles = style;
 

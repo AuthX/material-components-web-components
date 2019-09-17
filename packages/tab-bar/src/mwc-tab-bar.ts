@@ -72,13 +72,13 @@ export class TabBar extends BaseElement {
   @property({ type: Number })
   activeIndex = 0;
 
-  private _previousActiveIndex = -1;
+  protected _previousActiveIndex = -1;
 
-  private _handleTabInteraction(e: MDCTabInteractionEvent) {
+  protected _handleTabInteraction(e: MDCTabInteractionEvent) {
     this.mdcFoundation.handleTabInteraction(e);
   }
 
-  private _handleKeydown(e: KeyboardEvent) {
+  protected _handleKeydown(e: KeyboardEvent) {
     this.mdcFoundation.handleKeyDown(e);
   }
 
@@ -96,11 +96,11 @@ export class TabBar extends BaseElement {
   }
 
   // TODO(sorvell): probably want to memoize this and use a `slotChange` event
-  private _getTabs() {
+  protected _getTabs() {
     return this.tabsSlot.assignedNodes({ flatten: true }).filter((e: unknown) => e instanceof Tab) as Tab[];
   }
 
-  private _getTab(index) {
+  protected _getTab(index) {
     return this._getTabs()[index];
   }
 
