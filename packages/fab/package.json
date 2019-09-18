@@ -1,6 +1,6 @@
 {
   "name": "@authentic/mwc-fab",
-  "version": "0.8.16",
+  "version": "0.8.17",
   "description": "",
   "main": "mwc-fab.js",
   "repository": {
@@ -13,9 +13,9 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@authentic/mwc-base": "^0.8.16",
-    "@authentic/mwc-icon": "^0.8.16",
-    "@authentic/mwc-ripple": "^0.8.16",
+    "@authentic/mwc-base": "^0.8.17",
+    "@authentic/mwc-icon": "^0.8.17",
+    "@authentic/mwc-ripple": "^0.8.17",
     "@material/fab": "~2.3.0"
   },
   "publishConfig": {
