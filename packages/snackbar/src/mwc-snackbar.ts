@@ -55,27 +55,46 @@ export class Snackbar extends BaseElement {
   @query('.mdc-snackbar__label')
   protected labelElement!: HTMLElement
 
+  /**
+   * Read-only. Default value sets to false. Whether the snackbar is currently open.
+   */
   @property({ type: Boolean, reflect: true })
   isOpen = false;
 
+  /**
+   * Optional. Default value sets to 5000. Automatic dismiss timeout in milliseconds. 
+   * Value must be between 4000 and 10000 or an error will be thrown. 
+   */
   @property({ type: Number })
   @observer(function (this: Snackbar, value: number) {
     this.mdcFoundation.setTimeoutMs(value);
   })
   timeoutMs = 5000;
 
+  /**
+   * Optional. Default value sets to false. Whether the snackbar closes when it is focused and the user presses the ESC key
+   */
   @observer(function (this: Snackbar, value: boolean) {
     this.mdcFoundation.setCloseOnEscape(value);
   })
   @property({ type: Boolean })
   closeOnEscape = false;
 
+  /**
+   * Optional. The text content the label element.
+   */
   @property()
   labelText = '';
 
+  /**
+   * Optional. Default value sets to false. Use stacked property when action buttons with long text should be positioned below the label instead of alongside it
+   */
   @property({ type: Boolean })
   stacked = false;
 
+  /**
+   * Optional. Default value sets to false. Use leading property on larger screens, they can optionally be displayed on the leading edge of the screen
+   */
   @property({ type: Boolean })
   leading = false;
 
@@ -95,6 +114,10 @@ export class Snackbar extends BaseElement {
       </div>
     `;
   }
+
+  /**
+   * Used to render the lit-html TemplateResult to the element's DOM
+   */
   render() {
     const classes = {
       'mdc-snackbar--stacked': this.stacked,
@@ -133,22 +156,38 @@ export class Snackbar extends BaseElement {
     };
   }
 
+  /**
+   * Used this method to opens the snackbar.
+   */
   open() {
     this.mdcFoundation.open();
   }
 
+  /**
+   * Used this method to closes the snackbar,
+   * optionally with the specified reason indicating why it was closed.
+   */
   close(reason = '') {
     this.mdcFoundation.close(reason);
   }
 
+  /**
+   * Handle keydown event for Snackbar
+   */
   _handleKeydown(e: KeyboardEvent) {
     this.mdcFoundation.handleKeyDown(e);
   }
 
+  /**
+   * Handle click event on action button
+   */
   _handleActionClick(e: MouseEvent) {
     this.mdcFoundation.handleActionButtonClick(e);
   }
 
+  /**
+   * Handle click event on dismiss icon button
+   */
   _handleDismissClick(e: MouseEvent) {
     this.mdcFoundation.handleActionIconClick(e);
   }

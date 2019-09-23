@@ -38,18 +38,40 @@ declare global {
 
 @customElement('mwc-switch' as any)
 export class Switch extends FormElement {
+
+  @query('.mdc-switch')
+  protected mdcRoot!: HTMLElement;
+
+  @query('input')
+  protected formElement!: HTMLInputElement;
+
+  @query('.mdc-switch__thumb-underlay')
+  protected rippleNode!: HTMLElementWithRipple;
+
+  /**
+   * Optional. Default value is false. Setter/getter for the switch's checked state
+   */
   @property({ type: Boolean })
   @observer(function (this: Switch, value: boolean) {
     this.mdcFoundation.setChecked(value);
   })
   checked = false;
 
+  /**
+   * Optional. Setter/getter for the switch's name
+   */
   @property({ type: String })
   name = ''
 
+  /**
+   * Optional. Setter/getter for the switch's
+   */
   @property({ type: String })
   value = ''
 
+  /**
+   * Optional. Default value is false. Setter/getter for the switch's disabled state
+   */
   @property({ type: Boolean })
   @observer(function (this: Switch, value: boolean) {
     this.mdcFoundation.setDisabled(value);
@@ -58,14 +80,11 @@ export class Switch extends FormElement {
 
   static styles = style;
 
-  @query('.mdc-switch')
-  protected mdcRoot!: HTMLElement;
-
-  @query('input')
-  protected formElement!: HTMLInputElement;
-
   protected mdcFoundation!: MDCSwitchFoundation;
 
+  /**
+   * Handles the change event for the switch
+   */
   protected _changeHandler(e: Event) {
     this.mdcFoundation.handleChange(e);
     // catch "click" event and sync properties
@@ -74,6 +93,10 @@ export class Switch extends FormElement {
 
   protected readonly mdcFoundationClass = MDCSwitchFoundation;
 
+  /**
+   * Create the adapter for the `mdcFoundation`.
+   * Override and return an object with the Adapter's functions implemented
+   */
   protected createAdapter(): MDCSwitchAdapter {
     return {
       ...addHasRemoveClass(this.mdcRoot),
@@ -86,13 +109,16 @@ export class Switch extends FormElement {
     }
   }
 
+  /**
+   * Ripple getter for Ripple integration
+   */
   get ripple() {
     return this.rippleNode.ripple;
   }
 
-  @query('.mdc-switch__thumb-underlay')
-  protected rippleNode!: HTMLElementWithRipple;
-
+  /**
+   * Used to render the lit-html TemplateResult to the element's DOM
+   */
   render() {
     return html`
       <div class="mdc-switch">

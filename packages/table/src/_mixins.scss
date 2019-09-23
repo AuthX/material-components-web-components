@@ -55,15 +55,3 @@
     }
   }
 }
-
-@mixin mwc-table-shape-n-elevation($shape) {
-  &[class*="mwc-table--elevation-"] {
-    @include mwc-table-shape-radius($shape);
-    
-    @for $i from 1 to 24 {
-      &.mwc-table--elevation-#{$i} {
-        @include mdc-elevation($i);
-      }
-    }
-  }
-}

@@ -26,7 +26,6 @@ import { classMap } from 'lit-html/directives/class-map';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 import { findAssignedElement, emit } from '@authentic/mwc-base/utils';
 import { observer } from '@authentic/mwc-base/observer';
-import { cssClasses } from './constants';
 
 import { style } from './mwc-table-css';
 
@@ -79,9 +78,6 @@ export class Table extends LitElement {
 
   @property({ type: Number })
   public progressSize = 32;
-
-  @property({ type: Number })
-  public elevation = 2;
 
   @property({ type: Boolean })
   public header = true;
@@ -137,8 +133,7 @@ export class Table extends LitElement {
 
   render() {
     const classes = {
-      'mwc-table': true,
-      [`${cssClasses.TABLE_ELEVATION}-${this.elevation}`]: <Number>this.elevation !== 0
+      'mwc-table': true
     };
 
     return html`

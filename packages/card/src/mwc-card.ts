@@ -174,7 +174,7 @@ export class Card extends LitElement {
 
     this.primaryActionEl!.classList.toggle('mdc-card__primary-action--empty', !_hasPrimaryAction)
     this.actionButtonsEl!.classList.toggle('mdc-card__action-buttons--empty', !_hasActionButtons);
-    this.actionButtonsEl!.classList.toggle('mdc-card__action-icons--empty', !_hasActionIcons);
+    this.actionIconsEl!.classList.toggle('mdc-card__action-icons--empty', !_hasActionIcons);
     this.actionsEl!.classList.toggle('mdc-card__actions--empty', !_hasActions);
   }
 }

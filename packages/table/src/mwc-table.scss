@@ -34,7 +34,7 @@ limitations under the License.
   @include mwc-table-head-color(text-secondary-on-background);
   @include mwc-table-body-color(text-primary-on-background);
   
-  @include mwc-table-shape-n-elevation(small);
+  @include mwc-table-shape-radius(small);
   
   @include mdc-typography(caption);
   
