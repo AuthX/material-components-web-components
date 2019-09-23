@@ -1,6 +1,6 @@
 {
   "name": "@authentic/mwc-ripple",
-  "version": "0.8.15",
+  "version": "0.8.17",
   "description": "",
   "main": "mwc-ripple.js",
   "repository": {
@@ -13,7 +13,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@authentic/mwc-base": "^0.8.15",
+    "@authentic/mwc-base": "^0.8.17",
     "@material/dialog": "~1.1.0",
     "@material/ripple": "~2.3.0",
     "lit-html": "~1.1.1"
@@ -21,5 +21,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "a9da843963351e5b67b4f5974e8204bf8257fca5"
+  "gitHead": "ebca9a24f66ef7ccf828473c67315e54a2e541e0"
 }

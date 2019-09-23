@@ -1,6 +1,6 @@
 {
   "name": "@authentic/mwc-menu",
-  "version": "0.8.15",
+  "version": "0.8.17",
   "description": "",
   "main": "mwc-menu.js",
   "repository": {
@@ -13,8 +13,8 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@authentic/mwc-base": "^0.8.15",
-    "@authentic/mwc-list": "^0.8.15",
+    "@authentic/mwc-base": "^0.8.17",
+    "@authentic/mwc-list": "^0.8.17",
     "@material/menu": "~2.3.0",
     "@material/menu-surface": "~2.3.0"
   },
@@ -22,5 +22,5 @@
     "access": "public"
   },
   "private": false,
-  "gitHead": "a9da843963351e5b67b4f5974e8204bf8257fca5"
+  "gitHead": "ebca9a24f66ef7ccf828473c67315e54a2e541e0"
 }
