@@ -48,6 +48,16 @@ declare global {
       remove(HTMLElement): Boolean;
     }
   }
+
+  interface PopoverPosition {
+    top: string | number;
+    left?: string | number;
+    transformOrigin?: string;
+    bottom?: string | number;
+    width?: string;
+    right?: string | number;
+    maxWidth?: string;
+  }
 }
 
 @customElement('mwc-dialog' as any)
@@ -128,6 +138,9 @@ export class Dialog extends BaseElement {
   @property({ type: String })
   protected popoverStyles = {};
 
+  @property({ type: String })
+  protected popoverposition = 'auto';
+
   /**
    * Optional. Default value is 'close'. Action to be emitted with the 'closing' and 'closed' events when the dialog closes because the escape key was pressed
    */
@@ -177,6 +190,9 @@ export class Dialog extends BaseElement {
 
   protected anchorElement: {el: HTMLElement} = new AnchorElement();
   protected closeTimeout!: any;
+  
+  protected gap: number = 8;
+
 
   /**
    * Used this in case you want to know if the dialog is currently open.
@@ -232,58 +248,32 @@ export class Dialog extends BaseElement {
     this.anchorElement.el = element;
   }
 
-  protected calcPopoverPosition(): object {
-    const gap = 30;
+  protected calcPopoverPosition(): PopoverPosition {
+    const { isPhone, anchorElement, parentElement, mdcRoot } = this
 
-    this.controller_ = this.anchorElement.el 
-    ? this.anchorElement.el
+    this.controller_ = anchorElement.el 
+    ? anchorElement.el
     : this.for === '' 
-        ? this.parentElement 
-        : this.parentElement!.querySelector(`#${this.for}`);
+        ? parentElement 
+        : parentElement!.querySelector(`#${this.for}`);
 
-    this.mdcRoot.classList.add('mdc-dialog--popover-show')
-    const rootSettings = this.mdcRoot.getBoundingClientRect()
+    mdcRoot.classList.add('mdc-dialog--popover-show')
+    const rootSettings: ClientRect = mdcRoot.getBoundingClientRect()
     const controllerSettings = this.controller_ != null ? this.controller_.getBoundingClientRect() : {} as DOMRect
-    this.mdcRoot.classList.remove('mdc-dialog--popover-show')
+    mdcRoot.classList.remove('mdc-dialog--popover-show')
 
-    if (this.isPhone) {
-      return {
-        left: 0,
-        bottom: 0,
-        width: '100%',
-        top: 'auto',
-        right: 'auto',
-        'max-width': '100%'
-      }
+    const popoverMargins = {
+      left: controllerSettings.left,
+      right: window.innerWidth - controllerSettings.left,
+      top: controllerSettings.top,
+      bottom: window.innerHeight - controllerSettings.top
     }
-
-    const leftMargin = controllerSettings.left
-    const rightMargin = window.innerWidth - leftMargin
-    const topMargin = controllerSettings.top
-    const bottomMargin = window.innerHeight - topMargin 
-
-    let leftPosition = 0
-    let topPosition = 0
-    let transformOriginX = ''
-    let transformOriginY = ''
-
-    leftPosition = leftMargin + controllerSettings.width + gap
-    transformOriginX = 'left'
-    if (this.thereIsMoreSpaceOnTheLeftSide(rightMargin, leftMargin)) {
-      leftPosition = +controllerSettings.left - rootSettings.width - gap
-      transformOriginX = 'right'
-    }
-
-    topPosition = controllerSettings.top - rootSettings.height / 2 + controllerSettings.height / 2
-    transformOriginY = 'bottom'
-    if (this.halfPopoverDoesntFitOnBottom(bottomMargin, rootSettings.height, gap)) {
-      topPosition = controllerSettings.bottom - rootSettings.height
-    }
-    if (this.halfPopoverDoesntFitOnTop(topMargin, rootSettings.height, gap)) {
-      transformOriginY = 'top'
-      topPosition = controllerSettings.top
-    }
-    return { top: topPosition + 'px', left: leftPosition + 'px', transformOrigin: `${transformOriginX} ${transformOriginY}` }
+    
+    return isPhone 
+      ? this._getMobilePosition()
+      : this.popoverposition === 'auto' 
+        ? this._getAutoPosition(controllerSettings, rootSettings, popoverMargins)
+        : this._getFixedPosition(controllerSettings, rootSettings, popoverMargins)
   }
 
   protected createAdapter(): MDCDialogAdapter {
@@ -323,6 +313,79 @@ export class Dialog extends BaseElement {
         }
       }
     }
+  }
+
+  protected _getMobilePosition(): PopoverPosition {
+    return {
+      left: 0,
+      bottom: 0,
+      width: '100%',
+      top: 'auto',
+      right: 'auto',
+      maxWidth: '100%'
+    }
+  }
+
+  protected _getFixedPosition(controllerSettings: ClientRect, rootSettings: ClientRect, popoverMargins: any): PopoverPosition {
+    const positionDash: number = this.popoverposition.indexOf('-')
+    const popoverPositionY: string = this.popoverposition.substr(0, positionDash)
+    const popoverPositionX: string = this.popoverposition.substr(positionDash + 1, positionDash + this.popoverposition.length)
+    
+    let horizontalPosition: number = popoverMargins[popoverPositionX]
+    let verticalPosition: number = 0
+    let transformOriginX: string = popoverPositionX
+    let transformOriginY: string = ''
+        
+    if (popoverPositionX === 'right' ) {
+      horizontalPosition = popoverMargins.right - controllerSettings.width
+    }
+        
+    if (popoverPositionX === 'center' ) {
+      horizontalPosition = popoverMargins.left - (rootSettings.width - controllerSettings.width) / 2
+    }
+        
+    if (popoverPositionY === 'bottom' ) {
+      verticalPosition = popoverMargins.top + controllerSettings.height + this.gap
+      transformOriginY = 'top'
+    }
+    
+    if (popoverPositionY === 'top' ) {
+      verticalPosition = popoverMargins.top - rootSettings.height - this.gap
+      transformOriginY = 'bottom'
+    }
+
+    return {
+      top: verticalPosition + 'px', 
+      [popoverPositionX === 'center' ? 'left' : popoverPositionX]: horizontalPosition + 'px', 
+      transformOrigin: `${transformOriginX} ${transformOriginY}` 
+    } 
+  }
+
+  protected _getAutoPosition(controllerSettings: ClientRect, rootSettings: ClientRect, popoverMargins: any): PopoverPosition {
+    let horizontalPosition: number = popoverMargins.left + controllerSettings.width + this.gap
+    let verticalPosition: number = controllerSettings.top - rootSettings.height / 2 + controllerSettings.height / 2
+    let transformOriginX: string = 'left'
+    let transformOriginY: string = 'bottom'
+
+    if (this.thereIsMoreSpaceOnTheLeftSide(popoverMargins.right, popoverMargins.left)) {
+      horizontalPosition = +controllerSettings.left - rootSettings.width - this.gap
+      transformOriginX = 'right'
+    }
+
+    if (this.halfPopoverDoesntFitOnBottom(popoverMargins.bottom, rootSettings.height, this.gap)) {
+      verticalPosition = controllerSettings.bottom - rootSettings.height
+    }
+
+    if (this.halfPopoverDoesntFitOnTop(popoverMargins.top, rootSettings.height, this.gap)) {
+      transformOriginY = 'top'
+      verticalPosition = controllerSettings.top
+    }
+
+    return { 
+      top: verticalPosition + 'px', 
+      left: horizontalPosition + 'px', 
+      transformOrigin: `${transformOriginX} ${transformOriginY}` 
+    } 
   }
 
   protected thereIsMoreSpaceOnTheLeftSide(rightMargin: number, leftMargin: number): boolean {
